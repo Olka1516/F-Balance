@@ -1,4 +1,10 @@
-export type { ActivityLevel, UserGoal, UserProfile } from './userProfile'
+export type {
+  ActivityLevel,
+  ProfileFormValues,
+  UserGoal,
+  UserProfile,
+  UserProfileInput,
+} from './userProfile'
 export type { AppLocale } from './locale'
 export type { DailyEntry } from './dailyEntry'
 export type { Food, FoodSource } from './food'

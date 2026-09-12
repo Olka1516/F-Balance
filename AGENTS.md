@@ -33,15 +33,16 @@ Canonical name: **F-Balance** (CALIO in some docs is the same product). Stack: V
 13. Forms use Regle. API search uses 500–800 ms debounce and a 2–3 character minimum.
 14. No `//` comments. JSDoc on exported APIs (intent only — types stay in TypeScript). Extract repeated logic. Magic values → `src/constants/` and reuse them.
 15. Vue files: `<template>` then `<script setup>`. Styles → `src/styles/views/{route-name}.css` or `src/styles/components/{kebab-name}.css` — no `<style>` in SFCs.
+16. SVG illustrations/icons → `src/assets/` (see `assets-svg.mdc`); import with `?raw` when inlining is needed for theming.
 
 ### Step D — Check before saying "done"
 
-16. The user flow from the spec for this feature works.
-17. Both languages, mobile-first, request states.
-18. RLS / limits / AI estimate — if relevant.
-19. No `//` comments; JSDoc on exports; no duplicated logic; no hardcoded literals.
-20. Vue order template→script; styles external under `src/styles/`.
-21. No features from another stage, no medical wording.
+17. The user flow from the spec for this feature works.
+18. Both languages, mobile-first, request states.
+19. RLS / limits / AI estimate — if relevant.
+20. No `//` comments; JSDoc on exports; no duplicated logic; no hardcoded literals.
+21. Vue order template→script; styles external under `src/styles/`; SVG under `src/assets/`.
+22. No features from another stage, no medical wording.
 
 ---
 
@@ -70,5 +71,6 @@ Canonical name: **F-Balance** (CALIO in some docs is the same product). Stack: V
 | `.cursor/rules/security-limits.mdc` | always — RLS, keys, limits |
 | `.cursor/rules/agent-workflow.mdc` | always — implementation checklist |
 | `.cursor/rules/code-style.mdc` | always — no `//` comments, JSDoc + TS, DRY, constants, Vue order, external CSS |
+| `.cursor/rules/assets-svg.mdc` | always — SVG files in `src/assets`, not large inline markup |
 | `.cursor/rules/build-order.mdc` | always — follow `BUILD.md` phases in order |
 | `.cursor/rules/ui-i18n.mdc` | when working with `src/**/*.{vue,ts,css,json}` |

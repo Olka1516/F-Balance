@@ -10,6 +10,10 @@
   font-weight: 500;
 }
 
+.app-input__control {
+  position: relative;
+}
+
 .app-input__field {
   background-color: var(--color-surface);
   border: 1px solid var(--color-border);
@@ -31,8 +35,66 @@
   border-color: var(--color-error);
 }
 
+.app-input__icon {
+  align-items: center;
+  color: var(--color-text-muted);
+  display: none;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.app-input__icon > svg {
+  display: block;
+  height: 1.15rem;
+  width: 1.15rem;
+}
+
 .app-input__error {
   color: var(--color-error);
   font-size: 0.875rem;
   margin: 0;
+}
+
+.app-input--underline .app-input__label {
+  color: var(--color-text);
+  font-size: 0.8125rem;
+  font-weight: 500;
+}
+
+.app-input--underline .app-input__field {
+  background: transparent;
+  border: none;
+  border-bottom: 1.5px solid color-mix(in srgb, var(--color-text) 35%, var(--color-border));
+  border-radius: 0;
+  min-height: 2.5rem;
+  padding: var(--space-xs) 2rem var(--space-sm) 0;
+}
+
+.app-input--underline .app-input__field:focus {
+  border-bottom-color: var(--color-primary);
+  outline: none;
+}
+
+.app-input--underline .app-input__field--error {
+  border-bottom-color: var(--color-error);
+}
+
+.app-input--underline .app-input__error {
+  background: color-mix(in srgb, var(--color-surface) 82%, var(--color-error));
+  border-radius: var(--radius-sm);
+  color: var(--color-error);
+  font-weight: 600;
+  padding: 0.15rem 0.4rem;
+  width: fit-content;
+}
+
+.app-input--underline .app-input__icon {
+  color: color-mix(in srgb, var(--color-text) 55%, var(--color-text-muted));
+}
+
+.app-input--underline.app-input--with-icon .app-input__icon {
+  bottom: 0.65rem;
+  display: inline-flex;
+  position: absolute;
+  right: 0;
 }

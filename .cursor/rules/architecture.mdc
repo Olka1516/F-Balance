@@ -15,13 +15,14 @@ Query never stores UI state. Pinia never caches API responses.
 ## Folders
 
 ```
-src/assets
+src/assets              # static files; SVG under icons/, auth/, landing/, …
 src/components/{common,dashboard,meals,recommendations,auth,profile}
 src/views
 src/composables
 src/queries
 src/stores
-src/services          # supabase, openFoodFacts, theMealDb — NOT Gemini
+src/services          # supabase/, openFoodFacts, theMealDb — NOT Gemini
+                      # supabase/: client, connection, errors, stub (frontend DB/Auth access)
 src/router
 src/locales/{uk,en}   # common, auth, dashboard, meals (no hardcoded copy)
 src/styles/base.css

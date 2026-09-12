@@ -21,8 +21,24 @@ export function useAppNavigation() {
     router.push({ name: ROUTE_NAMES.login })
   }
 
+  /**
+   * Opens the password-reset screen.
+   */
+  function goToResetPassword(): void {
+    router.push({ name: ROUTE_NAMES.resetPassword })
+  }
+
+  /**
+   * Opens the landing page.
+   */
+  function goToLanding(): void {
+    router.push({ name: ROUTE_NAMES.landing })
+  }
+
   return {
     goToRegister,
     goToLogin,
+    goToResetPassword,
+    goToLanding,
   }
 }

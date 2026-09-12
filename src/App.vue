@@ -3,21 +3,30 @@
 </template>
 
 <script setup lang="ts">
-import { watch } from "vue";
-import { useI18n } from "vue-i18n";
-import { useThemeStore } from "@/stores/theme";
-import "./styles/base.css";
+import { onMounted, watch } from 'vue'
+import { useI18n } from 'vue-i18n'
+import { useAuth } from '@/composables/useAuth'
+import { useSupabaseConnection } from '@/composables/useSupabaseConnection'
+import { useThemeStore } from '@/stores/theme'
+import '@/styles/base.css'
 
-const themeStore = useThemeStore();
-const { locale } = useI18n();
+const themeStore = useThemeStore()
+const { locale } = useI18n()
+const { connect } = useSupabaseConnection()
+const { initAuth } = useAuth()
 
-themeStore.init();
+themeStore.init()
+
+onMounted(async () => {
+  await connect()
+  await initAuth()
+})
 
 watch(
   locale,
   (value) => {
-    document.documentElement.lang = value;
+    document.documentElement.lang = value
   },
   { immediate: true },
-);
+)
 </script>

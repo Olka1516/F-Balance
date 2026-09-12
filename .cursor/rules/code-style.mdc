@@ -76,4 +76,4 @@ Do not copy-paste a composable/query/store "with small tweaks". Extend the exist
 
 Magic numbers, enum-like strings, route names, URLs, limits, debounce ms, meal types, MIME lists, max file size, UI variant unions → `src/constants/` by domain (`routes.ts`, `ui.ts`, `meals.ts`, `api.ts`, `storage.ts`).
 
-Copy → i18n. Colors → theme CSS variables. Import constants; never inline the same literal twice. Prefer reusing existing constants over adding a parallel string.
+Copy → i18n. Colors → theme CSS variables. SVG → `src/assets/` (see `assets-svg.mdc`). Import constants; never inline the same literal twice. Prefer reusing existing constants over adding a parallel string.

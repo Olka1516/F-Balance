@@ -1,20 +1,34 @@
 <template>
-  <div class="app-input">
+  <div
+    class="app-input"
+    :class="[
+      `app-input--${variant ?? APP_INPUT_DEFAULT_VARIANT}`,
+      { 'app-input--with-icon': hasIcon },
+    ]"
+  >
     <label class="app-input__label" :for="inputId">{{ label }}</label>
-    <input
-      :id="inputId"
-      class="app-input__field"
-      :class="{ 'app-input__field--error': hasError }"
-      :type="type ?? APP_INPUT_DEFAULT_TYPE"
-      :value="modelValue"
-      :autocomplete="autocomplete"
-      :placeholder="placeholder"
-      :aria-invalid="hasError"
-      :aria-describedby="hasError ? `${inputId}-error` : undefined"
-      @input="
-        emit('update:modelValue', ($event.target as HTMLInputElement).value)
-      "
-    />
+    <div class="app-input__control">
+      <input
+        :id="inputId"
+        class="app-input__field"
+        :class="{ 'app-input__field--error': hasError }"
+        :type="type ?? APP_INPUT_DEFAULT_TYPE"
+        :value="modelValue"
+        :autocomplete="autocomplete"
+        :placeholder="placeholder"
+        :aria-invalid="hasError"
+        :aria-describedby="hasError ? `${inputId}-error` : undefined"
+        @input="
+          emit('update:modelValue', ($event.target as HTMLInputElement).value)
+        "
+      />
+      <span
+        v-if="hasIcon && iconMarkup"
+        class="app-input__icon"
+        aria-hidden="true"
+        v-html="iconMarkup"
+      />
+    </div>
     <p
       v-if="error"
       :id="`${inputId}-error`"
@@ -28,20 +42,35 @@
 
 <script setup lang="ts">
 import { computed, useId } from 'vue'
+import iconEmail from '@/assets/icons/email.svg?raw'
+import iconPassword from '@/assets/icons/password.svg?raw'
 import {
+  APP_INPUT_DEFAULT_ICON,
   APP_INPUT_DEFAULT_TYPE,
+  APP_INPUT_DEFAULT_VARIANT,
+  APP_INPUT_ICON,
+  type AppInputIcon,
   type AppInputType,
+  type AppInputVariant,
 } from '@/constants/ui'
 import '@/styles/components/app-input.css'
 
-const props = defineProps<{
-  label: string
-  modelValue: string
-  error?: string
-  type?: AppInputType
-  autocomplete?: string
-  placeholder?: string
-}>()
+const props = withDefaults(
+  defineProps<{
+    label: string
+    modelValue: string
+    error?: string
+    type?: AppInputType
+    autocomplete?: string
+    placeholder?: string
+    variant?: AppInputVariant
+    icon?: AppInputIcon
+  }>(),
+  {
+    variant: APP_INPUT_DEFAULT_VARIANT,
+    icon: APP_INPUT_DEFAULT_ICON,
+  },
+)
 
 const emit = defineEmits<{
   'update:modelValue': [value: string]
@@ -49,4 +78,16 @@ const emit = defineEmits<{
 
 const inputId = useId()
 const hasError = computed(() => Boolean(props.error))
+const hasIcon = computed(() => props.icon !== APP_INPUT_ICON.none)
+const iconMarkup = computed(() => {
+  if (props.icon === APP_INPUT_ICON.email) {
+    return iconEmail
+  }
+
+  if (props.icon === APP_INPUT_ICON.password) {
+    return iconPassword
+  }
+
+  return ''
+})
 </script>

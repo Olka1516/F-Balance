@@ -26,6 +26,7 @@ Do not start coding until "Before work" is done. Do not call the task done until
 - [ ] Never call Gemini from `src/services`
 - [ ] No `//` comments; JSDoc on exports; types in TypeScript not in JSDoc
 - [ ] Vue SFC: `<template>` then `<script setup>`; styles in `src/styles/views|components`, not in the SFC
+- [ ] SVG icons/illustrations in `src/assets/` (not large inline markup); theme colors via `var(--color-*)`
 - [ ] Repeated logic extracted; no magic values — reuse `src/constants/`
 
 ## 3. Before handoff
@@ -37,6 +38,7 @@ Do not start coding until "Before work" is done. Do not call the task done until
 - [ ] Neighbor screens that read the same data still work
 - [ ] No leftover `//` comments; exported APIs have JSDoc; no duplicated logic; literals in constants or i18n
 - [ ] No `<style>` in Vue files; CSS lives under `src/styles/` named after the route or component
+- [ ] New/changed SVG lives under `src/assets/` and uses theme tokens for color when themed
 - [ ] Verify the main user path in the browser (or the closest substitute)
 
 ## 4. Stop signs (ask, do not invent)

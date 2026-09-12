@@ -1,0 +1,202 @@
+.auth-page {
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  min-height: 100dvh;
+  overflow: hidden;
+  padding: var(--space-lg) var(--space-md);
+  position: relative;
+}
+
+.auth-page__card {
+  animation: auth-card-enter 0.55s ease-out;
+  -webkit-backdrop-filter: blur(28px) saturate(1.35);
+  backdrop-filter: blur(28px) saturate(1.35);
+  background:
+    linear-gradient(
+      160deg,
+      color-mix(in srgb, var(--color-surface) 88%, transparent) 0%,
+      color-mix(in srgb, var(--color-surface) 72%, transparent) 100%
+    );
+  border: 1px solid color-mix(in srgb, var(--color-surface) 78%, var(--color-border));
+  border-radius: calc(var(--radius-xl) + 0.35rem);
+  box-shadow:
+    var(--shadow-lg),
+    inset 0 1px 0 color-mix(in srgb, var(--color-surface) 90%, transparent);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+  isolation: isolate;
+  margin: 0;
+  max-width: 22.5rem;
+  padding: calc(var(--space-xl) + var(--space-sm)) var(--space-xl) var(--space-xl);
+  position: relative;
+  width: 100%;
+  z-index: 1;
+}
+
+.auth-page__close {
+  align-items: center;
+  background: var(--color-text);
+  border: none;
+  border-radius: var(--radius-sm);
+  color: var(--color-surface);
+  cursor: pointer;
+  display: inline-flex;
+  height: 1.75rem;
+  justify-content: center;
+  padding: 0;
+  position: absolute;
+  right: var(--space-md);
+  top: var(--space-md);
+  width: 1.75rem;
+}
+
+.auth-page__close:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+.auth-page__close-icon {
+  display: block;
+  height: 0.85rem;
+  width: 0.85rem;
+}
+
+.auth-page__close-icon > svg {
+  display: block;
+  height: 100%;
+  width: 100%;
+}
+
+.auth-page__title {
+  color: var(--color-text);
+  font-size: 1.75rem;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  margin: 0;
+  text-align: center;
+}
+
+.auth-page__form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+}
+
+.auth-page__message {
+  border-radius: var(--radius-md);
+  font-size: 0.875rem;
+  line-height: 1.5;
+  margin: 0;
+  padding: var(--space-sm) var(--space-md);
+}
+
+.auth-page__message--error {
+  background: color-mix(in srgb, var(--color-error) 16%, var(--color-surface));
+  color: var(--color-error);
+}
+
+.auth-page__message--success {
+  background: color-mix(in srgb, var(--color-success) 16%, var(--color-surface));
+  color: var(--color-success);
+}
+
+.auth-page__meta {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+  justify-content: space-between;
+}
+
+.auth-page__remember {
+  align-items: center;
+  color: var(--color-text);
+  cursor: pointer;
+  display: inline-flex;
+  font-size: 0.8125rem;
+  gap: var(--space-xs);
+  user-select: none;
+}
+
+.auth-page__remember-input {
+  accent-color: var(--color-primary);
+  height: 1rem;
+  margin: 0;
+  width: 1rem;
+}
+
+.auth-page__actions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.auth-page__submit .app-button {
+  background-color: var(--color-primary);
+  border-color: transparent;
+  border-radius: var(--radius-lg);
+  color: var(--color-surface);
+  font-weight: 700;
+  width: 100%;
+}
+
+.auth-page__submit .app-button:not(:disabled):hover {
+  background-color: var(--color-primary-hover);
+}
+
+.auth-page__footer {
+  color: var(--color-text-muted);
+  display: flex;
+  flex-wrap: wrap;
+  font-size: 0.875rem;
+  gap: var(--space-xs);
+  justify-content: center;
+  margin: 0;
+}
+
+.auth-page__link {
+  background: none;
+  border: none;
+  color: var(--color-primary);
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  padding: 0;
+  text-decoration: none;
+}
+
+.auth-page__link:hover {
+  color: var(--color-primary-hover);
+  text-decoration: underline;
+  text-underline-offset: 0.18em;
+}
+
+.auth-page__link:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+.auth-page__link--emphasis {
+  font-weight: 700;
+}
+
+@media (max-width: 24rem) {
+  .auth-page__card {
+    padding: var(--space-xl) var(--space-lg) var(--space-lg);
+  }
+}
+
+@keyframes auth-card-enter {
+  from {
+    opacity: 0;
+    transform: translateY(0.75rem) scale(0.98);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}

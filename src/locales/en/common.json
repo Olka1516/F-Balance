@@ -31,7 +31,60 @@
     }
   },
   "profile": {
-    "title": "Profile"
+    "title": "Profile",
+    "subtitle": "Update the details used for your daily calorie target. Optional fields can stay empty.",
+    "save": "Save",
+    "saving": "Saving…",
+    "success": "Profile saved",
+    "loadError": "Could not load your profile",
+    "sections": {
+      "goal": "Your goal",
+      "activity": "Activity",
+      "body": "Body metrics",
+      "target": "Daily target"
+    },
+    "fields": {
+      "goal": "Goal",
+      "activityLevel": "Activity",
+      "weight": "Weight (kg)",
+      "height": "Height (cm)",
+      "age": "Age",
+      "dailyCalories": "Daily calories (kcal)"
+    },
+    "placeholders": {
+      "goal": "Choose a goal",
+      "activityLevel": "Choose activity",
+      "optional": "Optional"
+    },
+    "goals": {
+      "lose": "Lose",
+      "maintain": "Maintain",
+      "gain": "Gain"
+    },
+    "activity": {
+      "sedentary": "Sedentary",
+      "light": "Light",
+      "moderate": "Moderate",
+      "active": "Active",
+      "very_active": "Very active"
+    },
+    "validation": {
+      "weightRange": "Weight must be between {min} and {max} kg",
+      "heightRange": "Height must be between {min} and {max} cm",
+      "ageRange": "Age must be between {min} and {max}",
+      "caloriesRange": "Calories must be between {min} and {max}"
+    },
+    "errors": {
+      "tableMissing": "Profile table is missing in Supabase. Run the SQL in supabase/migrations.",
+      "permissionDenied": "No access to the profile. Check RLS policies.",
+      "unknown": "Could not save the profile. Try again"
+    }
+  },
+  "seasons": {
+    "spring": "Spring",
+    "summer": "Summer",
+    "autumn": "Autumn",
+    "winter": "Winter"
   },
   "nav": {
     "dashboard": "Dashboard",

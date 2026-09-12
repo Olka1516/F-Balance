@@ -1,0 +1,85 @@
+.auth-scene {
+  --auth-sky-top: color-mix(in srgb, var(--color-bg) 62%, var(--color-accent));
+  --auth-sky-mid: color-mix(in srgb, var(--color-border) 45%, var(--color-primary));
+  --auth-sky-bottom: color-mix(in srgb, var(--color-primary) 48%, var(--color-text-muted));
+  --auth-tree-far: color-mix(in srgb, var(--color-primary) 58%, var(--color-text-muted));
+  --auth-tree-mid: color-mix(in srgb, var(--color-primary) 42%, var(--color-text));
+  --auth-tree-near: color-mix(in srgb, var(--color-text) 78%, var(--color-primary));
+  --auth-deer: var(--color-text);
+  --auth-grass: color-mix(in srgb, var(--color-text) 86%, var(--color-primary));
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  position: absolute;
+  z-index: 0;
+}
+
+.auth-scene__sky {
+  background: linear-gradient(
+    180deg,
+    var(--auth-sky-top) 0%,
+    var(--auth-sky-mid) 42%,
+    var(--auth-sky-bottom) 72%,
+    color-mix(in srgb, var(--auth-tree-mid) 40%, var(--auth-sky-bottom)) 100%
+  );
+  inset: 0;
+  position: absolute;
+}
+
+.auth-scene__art {
+  bottom: 0;
+  height: min(82vh, 48rem);
+  left: 0;
+  position: absolute;
+  width: 100%;
+}
+
+.auth-scene__art > svg {
+  display: block;
+  height: 100%;
+  width: 100%;
+}
+
+.auth-scene__trees--far {
+  animation: auth-scene-drift 18s ease-in-out infinite alternate;
+  fill: var(--auth-tree-far);
+  opacity: 0.9;
+}
+
+.auth-scene__trees--mid {
+  animation: auth-scene-drift 14s ease-in-out infinite alternate-reverse;
+  fill: var(--auth-tree-mid);
+}
+
+.auth-scene__trees--near {
+  fill: var(--auth-tree-near);
+}
+
+.auth-scene__deer {
+  color: var(--auth-deer);
+  fill: var(--auth-deer);
+}
+
+.auth-scene__grass {
+  fill: var(--auth-grass);
+}
+
+.auth-scene__mist {
+  background: linear-gradient(
+    180deg,
+    transparent 35%,
+    color-mix(in srgb, var(--auth-sky-bottom) 28%, transparent) 100%
+  );
+  inset: 0;
+  position: absolute;
+}
+
+@keyframes auth-scene-drift {
+  from {
+    transform: translateX(0);
+  }
+
+  to {
+    transform: translateX(12px);
+  }
+}

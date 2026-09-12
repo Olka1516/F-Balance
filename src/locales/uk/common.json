@@ -31,7 +31,60 @@
     }
   },
   "profile": {
-    "title": "Профіль"
+    "title": "Профіль",
+    "subtitle": "Оновіть дані для денної цілі калорій. Необовʼязкові поля можна залишити порожніми.",
+    "save": "Зберегти",
+    "saving": "Збереження…",
+    "success": "Профіль збережено",
+    "loadError": "Не вдалося завантажити профіль",
+    "sections": {
+      "goal": "Ваша ціль",
+      "activity": "Активність",
+      "body": "Параметри тіла",
+      "target": "Денна норма"
+    },
+    "fields": {
+      "goal": "Ціль",
+      "activityLevel": "Активність",
+      "weight": "Вага (кг)",
+      "height": "Зріст (см)",
+      "age": "Вік",
+      "dailyCalories": "Денна норма (ккал)"
+    },
+    "placeholders": {
+      "goal": "Оберіть ціль",
+      "activityLevel": "Оберіть рівень",
+      "optional": "Необовʼязково"
+    },
+    "goals": {
+      "lose": "Схуднення",
+      "maintain": "Підтримка",
+      "gain": "Набір"
+    },
+    "activity": {
+      "sedentary": "Малорухливий",
+      "light": "Легка",
+      "moderate": "Помірна",
+      "active": "Висока",
+      "very_active": "Дуже висока"
+    },
+    "validation": {
+      "weightRange": "Вага від {min} до {max} кг",
+      "heightRange": "Зріст від {min} до {max} см",
+      "ageRange": "Вік від {min} до {max}",
+      "caloriesRange": "Калорії від {min} до {max}"
+    },
+    "errors": {
+      "tableMissing": "Таблицю профілів ще не створено в Supabase. Виконайте SQL з supabase/migrations.",
+      "permissionDenied": "Немає доступу до профілю. Перевірте RLS-політики.",
+      "unknown": "Не вдалося зберегти профіль. Спробуйте ще раз"
+    }
+  },
+  "seasons": {
+    "spring": "Весна",
+    "summer": "Літо",
+    "autumn": "Осінь",
+    "winter": "Зима"
   },
   "nav": {
     "dashboard": "Головна",
