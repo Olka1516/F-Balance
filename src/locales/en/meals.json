@@ -1,0 +1,13 @@
+{
+  "title": "Meals",
+  "add": {
+    "title": "Add Food"
+  },
+  "myMeals": {
+    "title": "My Meals"
+  },
+  "breakfast": "Breakfast",
+  "lunch": "Lunch",
+  "dinner": "Dinner",
+  "snack": "Snack"
+}

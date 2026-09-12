@@ -1,0 +1,39 @@
+---
+description: Security, RLS, secrets, API limits, and fallbacks
+alwaysApply: true
+---
+
+# Security and limits
+
+## Secrets
+
+- Gemini / third-party API keys — server-side only (Edge Function env)
+- Supabase `service_role` — never in Vue or client `.env`
+- Client gets anon key + RLS only
+
+## Data
+
+- RLS on every user-specific table: a user sees only their rows
+- Validate on the client (Regle) and never trust the client in Edge Functions
+- Do not surface internal backend errors to the user
+- Do not collect extra personal data
+
+## External APIs — thrift and fallback
+
+Before any request: limit / cooldown / cache → otherwise show "Try again later".
+
+| Service | Client | Fallback |
+|---|---|---|
+| Open Food Facts | debounce 500–800 ms, min 2–3 chars, staleTime, pagination | manual calorie/macro entry |
+| Gemini | Analyze button only, compression, cooldown | app works without AI |
+| TheMealDB | cache, no repeat fetches | Recommendations unavailable, Dashboard stays up |
+
+Never call AI automatically on page load.
+
+## Photos
+
+Check MIME and size → compress / downscale → send. Cap upload size. Do not keep photos in Storage after AI processing unless the user saves them.
+
+## Edge Function
+
+Verify auth, validate input, rate-limit per user, return a structured result (calories only), do not leak the raw Gemini response.

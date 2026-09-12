@@ -1,0 +1,43 @@
+{
+  "appName": "F-Balance",
+  "save": "Зберегти",
+  "cancel": "Скасувати",
+  "loading": "Завантаження…",
+  "empty": "Поки що нічого немає",
+  "language": {
+    "label": "Мова",
+    "uk": "UA",
+    "en": "EN"
+  },
+  "landing": {
+    "nav": {
+      "home": "Головна",
+      "login": "Увійти",
+      "signUp": "Реєстрація"
+    },
+    "headlineLine1": "Ваш денний баланс,",
+    "headlineLine2": "один дотик — і готово",
+    "tagline": "Записуйте їжу за секунди, відстежуйте калорії та КБЖУ, зберігайте улюблені страви й повертайтеся до них без повторного введення.",
+    "centerWord": "Баланс",
+    "centerSub": "FOOD TRACKING",
+    "centerTag": "калорії · макроси · цілі",
+    "cta": "Почати",
+    "loginAction": "Увійти",
+    "preview": {
+      "kcal": "ккал",
+      "protein": "Б",
+      "fat": "Ж",
+      "carbs": "В"
+    }
+  },
+  "profile": {
+    "title": "Профіль"
+  },
+  "nav": {
+    "dashboard": "Головна",
+    "meals": "Мої страви",
+    "addMeal": "Додати їжу",
+    "profile": "Профіль",
+    "recommendations": "Рекомендації"
+  }
+}

@@ -1,0 +1,51 @@
+---
+description: Folder structure, server vs client state, data flows
+alwaysApply: true
+---
+
+# Architecture
+
+## Server state vs client state
+
+- **TanStack Query:** meals, profile, nutrition, recipes, recommendations, statistics, any API/DB data
+- **Pinia:** modals, tabs, sidebar, seasonal theme, form input values before submit
+
+Query never stores UI state. Pinia never caches API responses.
+
+## Folders
+
+```
+src/assets
+src/components/{common,dashboard,meals,recommendations,auth,profile}
+src/views
+src/composables
+src/queries
+src/stores
+src/services          # supabase, openFoodFacts, theMealDb — NOT Gemini
+src/router
+src/locales/{uk,en}   # common, auth, dashboard, meals (no hardcoded copy)
+src/styles/base.css
+src/styles/themes     # autumn, winter, spring, summer
+src/styles/views      # one CSS file per route name (landing.css, login.css, …)
+src/styles/components # one CSS file per component (app-button.css, …)
+src/types
+src/constants         # domain constants — no magic values in components
+src/utils
+supabase/functions/{analyze-photo,analyze-text}
+```
+
+Views (routes): Landing, Login, Register, Onboarding, Dashboard, AddMeal, MyMeals, Recommendations, Profile. AI Estimator is a separate view or part of AddMeal (post-MVP).
+
+View styles: `src/styles/views/{ROUTE_NAMES value}.css`. Component styles: `src/styles/components/{kebab-component-name}.css`. Import from the Vue `<script setup>` — no `<style>` blocks in SFCs.
+
+## Flows
+
+- User data: Vue → Supabase (RLS)
+- Product search: Vue → Open Food Facts (service + query); fallback — manual macros
+- Recipes: Vue → TheMealDB; fallback — Recommendations unavailable, rest of the app works
+- AI: Vue → Edge Function → Gemini → calorie estimate only. Key never in the client
+
+## Data model
+
+User, UserProfile, Food, Meal, MealIngredient, DailyEntry, AIRequest.
+Do not keep AI photos longer than needed for processing.

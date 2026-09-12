@@ -1,0 +1,12 @@
+.theme-autumn {
+  --color-primary: #c45c26;
+  --color-primary-hover: #a84d20;
+  --color-bg: #fdf6ee;
+  --color-surface: #ffffff;
+  --color-text: #2e2218;
+  --color-text-muted: #7a6555;
+  --color-accent: #d4a017;
+  --color-border: #e8d4b8;
+  --color-error: #c94c4c;
+  --color-success: #6b8e23;
+}

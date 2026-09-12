@@ -1,0 +1,53 @@
+---
+description: Mobile-first UI, seasonal themes, i18n, loading/error states
+globs: src/**/*.{vue,ts,css,json}
+alwaysApply: false
+---
+
+# UI, theme, i18n
+
+## UI
+
+- Mobile-first, few elements, generous whitespace, large touch targets
+- Fast access to add-food
+- Desktop is supported, not prioritized
+- Seasonal theme must not change UI structure — colors and light accents only
+
+## Styles
+
+- No `<style>` blocks in Vue SFCs
+- Views → `src/styles/views/{route-name}.css` (same name as `ROUTE_NAMES`)
+- Components → `src/styles/components/{kebab-component-name}.css`
+- Import CSS from `<script setup>`
+- Colors only via theme CSS variables
+
+## Seasonal theme
+
+Date → season (constants, not hardcoded in components) → CSS variables from `src/styles/themes/`.
+The user does not pick a theme. Keep logic isolated (`composables` + `stores/theme.ts`).
+
+- autumn: yellow / gold / orange / red
+- winter: blue / light blue / white
+- spring: green / aquamarine / pink
+- summer: berry / yellow / dark green
+
+## i18n
+
+- Languages: `uk`, `en`. Switch without a full reload
+- Copy lives in `src/locales/{uk,en}/*.json`, not in templates
+- Every new button / error / label goes into both locales at once
+
+```vue
+<!-- BAD --><button>Save</button>
+<!-- GOOD --><button>{{ t('common.save') }}</button>
+```
+
+## Async actions
+
+Required: loading, disabled, success, error. The user always knows what is happening.
+
+Especially: login, register, add food, AI, upload, save meal, recommendations, profile update.
+
+## AI in the UI
+
+Show that the result is an **estimate**, not a medically exact value. Allow editing calories before save. No harsh advice when daily calories are low.

@@ -1,0 +1,78 @@
+@import './themes/spring.css';
+@import './themes/summer.css';
+@import './themes/autumn.css';
+@import './themes/winter.css';
+
+:root {
+  --color-primary: #2d8f6f;
+  --color-primary-hover: #247a5f;
+  --color-bg: #f8f9fa;
+  --color-surface: #ffffff;
+  --color-text: #1a1a1a;
+  --color-text-muted: #6b7280;
+  --color-accent: #6366f1;
+  --color-border: #e5e7eb;
+  --color-error: #c94c4c;
+  --color-success: #2d8f6f;
+  --font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --touch-target-min: 44px;
+  --space-xs: 0.25rem;
+  --space-sm: 0.5rem;
+  --space-md: 1rem;
+  --space-lg: 1.5rem;
+  --space-xl: 2rem;
+  --radius-sm: 0.375rem;
+  --radius-md: 0.75rem;
+  --radius-lg: 1rem;
+  --radius-xl: 1.5rem;
+  --radius-full: 9999px;
+  --shadow-sm: 0 1px 2px color-mix(in srgb, var(--color-text) 6%, transparent);
+  --shadow-md: 0 8px 24px color-mix(in srgb, var(--color-text) 8%, transparent);
+  --shadow-lg: 0 16px 48px color-mix(in srgb, var(--color-primary) 14%, transparent);
+  --font-display: 'Bebas Neue', var(--font-family);
+  --color-landing-bg: var(--color-bg);
+  --color-landing-bar: color-mix(in srgb, var(--color-text) 92%, black);
+  --color-landing-bar-text: var(--color-surface);
+  --color-landing-accent: var(--color-primary);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  font-family: var(--font-family);
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  min-height: 100%;
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  line-height: 1.5;
+}
+
+#app {
+  min-height: 100%;
+}
+
+.view-shell {
+  margin: 0 auto;
+  max-width: 40rem;
+  min-height: 100dvh;
+  padding: var(--space-lg) var(--space-md);
+}
+
+.view-shell__title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin: 0 0 var(--space-md);
+}
+
+.view-shell__message {
+  color: var(--color-text-muted);
+  margin: 0;
+}

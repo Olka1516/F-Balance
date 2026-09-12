@@ -1,0 +1,174 @@
+.landing-hero-visual {
+  display: contents;
+}
+
+.landing-hero-visual__center {
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  min-height: 16rem;
+  position: relative;
+}
+
+.landing-hero-visual__disc {
+  border-radius: var(--radius-full);
+  position: absolute;
+}
+
+.landing-hero-visual__disc--back {
+  background: color-mix(in srgb, var(--color-landing-bar) 88%, transparent);
+  height: 14rem;
+  width: 14rem;
+}
+
+.landing-hero-visual__disc--front {
+  align-items: center;
+  background: color-mix(in srgb, var(--color-landing-bar) 72%, transparent);
+  display: flex;
+  flex-direction: column;
+  height: 11.5rem;
+  justify-content: center;
+  text-align: center;
+  width: 11.5rem;
+}
+
+.landing-hero-visual__hero-word {
+  color: var(--color-landing-accent);
+  font-family: var(--font-display);
+  font-size: clamp(2.5rem, 8vw, 3.5rem);
+  letter-spacing: 0.06em;
+  line-height: 0.95;
+  margin: 0;
+  text-transform: uppercase;
+}
+
+.landing-hero-visual__hero-sub {
+  color: var(--color-landing-bar-text);
+  font-size: 0.625rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  margin: var(--space-sm) 0 0;
+  text-transform: uppercase;
+}
+
+.landing-hero-visual__hero-tag {
+  color: color-mix(in srgb, var(--color-landing-bar-text) 72%, transparent);
+  font-size: 0.5625rem;
+  letter-spacing: 0.08em;
+  margin: var(--space-xs) 0 0;
+  text-transform: uppercase;
+}
+
+.landing-hero-visual__aside {
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  min-height: 14rem;
+}
+
+.landing-hero-visual__ring-wrap {
+  height: 11rem;
+  position: relative;
+  width: 11rem;
+}
+
+.landing-hero-visual__ring {
+  align-items: center;
+  background: color-mix(
+    in srgb,
+    var(--color-landing-accent) 88%,
+    var(--color-primary)
+  );
+  border-radius: var(--radius-full);
+  display: flex;
+  height: 100%;
+  justify-content: center;
+  position: relative;
+  width: 100%;
+}
+
+.landing-hero-visual__ring-svg {
+  height: 78%;
+  width: 78%;
+}
+
+.landing-hero-visual__ring-track {
+  stroke: color-mix(in srgb, var(--color-surface) 28%, transparent);
+}
+
+.landing-hero-visual__ring-progress {
+  stroke: var(--color-surface);
+  stroke-linecap: round;
+}
+
+.landing-hero-visual__ring-label {
+  align-items: center;
+  color: var(--color-surface);
+  display: flex;
+  flex-direction: column;
+  inset: 0;
+  justify-content: center;
+  position: absolute;
+}
+
+.landing-hero-visual__ring-value {
+  font-family: var(--font-display);
+  font-size: 1.75rem;
+  letter-spacing: 0.04em;
+  line-height: 1;
+}
+
+.landing-hero-visual__ring-unit {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  margin-top: 0.125rem;
+  text-transform: uppercase;
+}
+
+.landing-hero-visual__float {
+  backdrop-filter: blur(6px);
+  background: color-mix(in srgb, var(--color-surface) 82%, transparent);
+  border-radius: var(--radius-sm);
+  color: var(--color-text);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  padding: var(--space-xs) var(--space-sm);
+  position: absolute;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.landing-hero-visual__float--protein {
+  left: -1rem;
+  top: 1.5rem;
+  transform: rotate(-8deg);
+}
+
+.landing-hero-visual__float--carbs {
+  bottom: 0.5rem;
+  right: -1.25rem;
+  transform: rotate(6deg);
+}
+
+@media (max-width: 899px) {
+  .landing-hero-visual__aside {
+    min-height: 10rem;
+  }
+
+  .landing-hero-visual__ring-wrap {
+    height: 9rem;
+    width: 9rem;
+  }
+
+  .landing-hero-visual__disc--back {
+    height: 12rem;
+    width: 12rem;
+  }
+
+  .landing-hero-visual__disc--front {
+    height: 10rem;
+    width: 10rem;
+  }
+}

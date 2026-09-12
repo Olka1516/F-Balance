@@ -1,0 +1,12 @@
+.theme-winter {
+  --color-primary: #3a6ea5;
+  --color-primary-hover: #2f5c8a;
+  --color-bg: #f0f4f8;
+  --color-surface: #ffffff;
+  --color-text: #1a2332;
+  --color-text-muted: #5a6a7a;
+  --color-accent: #7eb8da;
+  --color-border: #c8d8e8;
+  --color-error: #c94c4c;
+  --color-success: #3a8a6e;
+}

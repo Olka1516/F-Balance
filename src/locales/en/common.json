@@ -1,0 +1,43 @@
+{
+  "appName": "F-Balance",
+  "save": "Save",
+  "cancel": "Cancel",
+  "loading": "Loading…",
+  "empty": "Nothing here yet",
+  "language": {
+    "label": "Language",
+    "uk": "UA",
+    "en": "EN"
+  },
+  "landing": {
+    "nav": {
+      "home": "Home",
+      "login": "Log in",
+      "signUp": "Sign up"
+    },
+    "headlineLine1": "Your daily balance,",
+    "headlineLine2": "just one tap away",
+    "tagline": "Log meals in seconds, track calories and macros, save favorite dishes, and bring them back without re-entering everything.",
+    "centerWord": "Balance",
+    "centerSub": "FOOD TRACKING",
+    "centerTag": "calories · macros · goals",
+    "cta": "Get started",
+    "loginAction": "Log in",
+    "preview": {
+      "kcal": "kcal",
+      "protein": "P",
+      "fat": "F",
+      "carbs": "C"
+    }
+  },
+  "profile": {
+    "title": "Profile"
+  },
+  "nav": {
+    "dashboard": "Dashboard",
+    "meals": "My Meals",
+    "addMeal": "Add Food",
+    "profile": "Profile",
+    "recommendations": "Recommendations"
+  }
+}

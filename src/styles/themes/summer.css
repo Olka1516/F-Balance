@@ -1,0 +1,12 @@
+.theme-summer {
+  --color-primary: #c44569;
+  --color-primary-hover: #a83858;
+  --color-bg: #fff8f0;
+  --color-surface: #ffffff;
+  --color-text: #2a1f24;
+  --color-text-muted: #7a5a66;
+  --color-accent: #f4d03f;
+  --color-border: #f0d4c4;
+  --color-error: #c94c4c;
+  --color-success: #2d6a4f;
+}

@@ -1,0 +1,12 @@
+.theme-spring {
+  --color-primary: #2d8f6f;
+  --color-primary-hover: #247a5f;
+  --color-bg: #f4faf7;
+  --color-surface: #ffffff;
+  --color-text: #1a2e28;
+  --color-text-muted: #5a7a6e;
+  --color-accent: #e8a0bf;
+  --color-border: #c5e0d4;
+  --color-error: #c94c4c;
+  --color-success: #2d8f6f;
+}

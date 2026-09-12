@@ -1,0 +1,112 @@
+.landing-page {
+  background: var(--color-landing-bg);
+  display: flex;
+  flex-direction: column;
+  height: 100dvh;
+  overflow: hidden;
+}
+
+.landing-page__main {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  margin: 0 auto;
+  max-width: 72rem;
+  min-height: 0;
+  padding: var(--space-lg) var(--space-md);
+  width: 100%;
+}
+
+.landing-page__hero {
+  align-items: center;
+  display: grid;
+  flex: 1;
+  gap: var(--space-lg);
+  grid-template-columns: 1fr;
+  min-height: 0;
+}
+
+.landing-page__intro {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+  max-width: 22rem;
+}
+
+.landing-page__headline {
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 6vw, 3.25rem);
+  font-weight: 400;
+  letter-spacing: 0.03em;
+  line-height: 0.95;
+  margin: 0;
+  text-transform: uppercase;
+}
+
+.landing-page__headline-accent {
+  color: var(--color-landing-accent);
+  display: block;
+}
+
+.landing-page__lead {
+  color: var(--color-text-muted);
+  font-size: 0.875rem;
+  line-height: 1.65;
+  margin: 0;
+  max-width: 18rem;
+}
+
+.landing-page__actions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  max-width: 14rem;
+}
+
+.landing-page__pill-btn {
+  border: none;
+  border-radius: var(--radius-full);
+  cursor: pointer;
+  font-family: var(--font-display);
+  font-size: 1rem;
+  letter-spacing: 0.06em;
+  min-height: var(--touch-target-min);
+  padding: var(--space-sm) var(--space-lg);
+  text-transform: uppercase;
+  transition:
+    transform 0.15s ease,
+    filter 0.15s ease;
+}
+
+.landing-page__pill-btn--dark {
+  background: var(--color-landing-bar);
+  color: var(--color-landing-bar-text);
+}
+
+.landing-page__pill-btn:hover {
+  filter: brightness(1.08);
+  transform: translateY(-1px);
+}
+
+.landing-page__pill-btn:focus-visible {
+  outline: 2px solid var(--color-landing-accent);
+  outline-offset: 2px;
+}
+
+@media (min-width: 900px) {
+  .landing-page__hero {
+    grid-template-columns: minmax(16rem, 22rem) 1fr 1fr;
+  }
+
+  .landing-page__intro {
+    align-self: center;
+  }
+}
+
+@media (max-width: 899px) {
+  .landing-page {
+    height: auto;
+    min-height: 100dvh;
+    overflow: visible;
+  }
+}

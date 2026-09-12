@@ -1,0 +1,44 @@
+---
+description: Mandatory agent checklist before, during, and after a task
+alwaysApply: true
+---
+
+# Agent checklist
+
+Do not start coding until "Before work" is done. Do not call the task done until "Before handoff" is done.
+
+## 1. Before work
+
+- [ ] Read the relevant parts of `project_TZ.txt`, `structure.md`, `limits.md`
+- [ ] Decide the stage: **MVP** or **post-MVP** — do not pull in the next stage
+- [ ] Find existing files/patterns in the same area (no duplicates)
+- [ ] List files that will change; new folders only if they match `architecture`
+- [ ] If the task uses an external API or AI — record fallback and limits
+
+## 2. During implementation
+
+- [ ] Types from the data model (`User`, `UserProfile`, `Food`, `Meal`, …)
+- [ ] Server state → TanStack Query; UI state → Pinia
+- [ ] Forms → Regle; copy → vue-i18n (`uk` + `en`)
+- [ ] Async: loading / disabled / error / success
+- [ ] No secrets in the client; user data only through RLS
+- [ ] Mobile-first; colors only via theme tokens
+- [ ] Never call Gemini from `src/services`
+- [ ] No `//` comments; JSDoc on exports; types in TypeScript not in JSDoc
+- [ ] Vue SFC: `<template>` then `<script setup>`; styles in `src/styles/views|components`, not in the SFC
+- [ ] Repeated logic extracted; no magic values — reuse `src/constants/`
+
+## 3. Before handoff
+
+- [ ] Behavior matches the spec for this feature, no extra scope
+- [ ] Both languages, loading/error, empty state if there is a list
+- [ ] If DB — RLS; if external API — debounce/cache/fallback
+- [ ] If AI — estimate + editable before save; key on the server
+- [ ] Neighbor screens that read the same data still work
+- [ ] No leftover `//` comments; exported APIs have JSDoc; no duplicated logic; literals in constants or i18n
+- [ ] No `<style>` in Vue files; CSS lives under `src/styles/` named after the route or component
+- [ ] Verify the main user path in the browser (or the closest substitute)
+
+## 4. Stop signs (ask, do not invent)
+
+A separate backend, paid services, libraries outside the stack, medical advice, Zod/VeeValidate, Gemini from Vue, other users' data.
