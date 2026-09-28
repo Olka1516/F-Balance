@@ -1,0 +1,8 @@
+# Auth is checked inside the functions (user JWT → getUser).
+# Gateway JWT verification breaks browser OPTIONS preflight (CORS).
+
+[functions.analyze-text]
+verify_jwt = false
+
+[functions.analyze-photo]
+verify_jwt = false

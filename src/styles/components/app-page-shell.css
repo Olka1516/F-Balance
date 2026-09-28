@@ -1,6 +1,6 @@
 .app-page {
   min-height: 100dvh;
-  overflow: hidden;
+  overflow-x: hidden;
   padding: var(--space-lg) var(--space-md) var(--space-xl);
   position: relative;
 }
@@ -103,6 +103,16 @@
 
 .app-page__card--wide {
   max-width: 40rem;
+}
+
+@media (min-width: 48rem) {
+  .app-page {
+    padding: var(--space-xl) var(--space-lg) calc(var(--space-xl) + var(--space-md));
+  }
+
+  .app-page__card--wide {
+    max-width: 48rem;
+  }
 }
 
 .app-page__season {

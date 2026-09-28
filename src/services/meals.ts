@@ -1,6 +1,7 @@
 import type { SupabaseClient } from '@supabase/supabase-js'
 import {
   DAILY_ENTRY_DEFAULT_SERVINGS,
+  type MealType,
 } from '@/constants/meals'
 import {
   getSupabase,
@@ -11,7 +12,12 @@ import {
   createSupabaseFailure,
   mapSupabaseErrorCode,
 } from '@/services/supabase/errors'
-import type { DailyEntry, ManualMealInput, MealWithIngredients } from '@/types'
+import type {
+  DailyEntry,
+  DailyEntryWithMeal,
+  ManualMealInput,
+  MealWithIngredients,
+} from '@/types'
 import {
   buildManualMealNutrition,
   mapMealWithIngredientsRow,
@@ -328,6 +334,57 @@ export async function duplicateUserMeal(
 }
 
 /**
+ * Loads diary entries for one calendar day with meal nutrition.
+ */
+export async function fetchDailyEntriesForDate(
+  userId: string,
+  date: string,
+): Promise<MealActionResult<DailyEntryWithMeal[]>> {
+  const readiness = getSupabaseReadiness()
+
+  if (!readiness.ready) {
+    return createSupabaseFailure(readiness.code)
+  }
+
+  const { data, error } = await getLiveSupabase()
+    .from('daily_entries')
+    .select(
+      `
+      id,
+      user_id,
+      meal_id,
+      entry_date,
+      amount,
+      created_at,
+      meals (
+        id,
+        name,
+        meal_type,
+        calories,
+        protein,
+        fat,
+        carbs,
+        total_weight
+      )
+    `,
+    )
+    .eq('user_id', userId)
+    .eq('entry_date', date)
+    .order('created_at', { ascending: true })
+
+  if (error) {
+    return { ok: false, code: mapMealErrorCode(error) }
+  }
+
+  return {
+    ok: true,
+    data: (data ?? [])
+      .map((row) => mapDailyEntryWithMealRow(row))
+      .filter((entry): entry is DailyEntryWithMeal => entry !== null),
+  }
+}
+
+/**
  * Logs a saved meal into today's daily entries.
  */
 export async function addMealToToday(
@@ -405,6 +462,62 @@ async function fetchRequiredMeal(
   }
 
   return { ok: true, data: result.data }
+}
+
+function mapDailyEntryWithMealRow(row: {
+  id: string
+  user_id: string
+  meal_id: string
+  entry_date: string
+  amount: number | string
+  created_at: string
+  meals:
+    | {
+        id: string
+        name: string
+        meal_type: string
+        calories: number | string
+        protein: number | string
+        fat: number | string
+        carbs: number | string
+        total_weight: number | string
+      }
+    | {
+        id: string
+        name: string
+        meal_type: string
+        calories: number | string
+        protein: number | string
+        fat: number | string
+        carbs: number | string
+        total_weight: number | string
+      }[]
+    | null
+}): DailyEntryWithMeal | null {
+  const mealRow = Array.isArray(row.meals) ? row.meals[0] : row.meals
+
+  if (!mealRow) {
+    return null
+  }
+
+  return {
+    id: row.id,
+    userId: row.user_id,
+    mealId: row.meal_id,
+    date: row.entry_date,
+    amount: Number(row.amount),
+    createdAt: row.created_at,
+    meal: {
+      id: mealRow.id,
+      name: mealRow.name,
+      mealType: mealRow.meal_type as MealType,
+      calories: Number(mealRow.calories),
+      protein: Number(mealRow.protein),
+      fat: Number(mealRow.fat),
+      carbs: Number(mealRow.carbs),
+      totalWeight: Number(mealRow.total_weight),
+    },
+  }
 }
 
 function mapMealErrorCode(error: { message: string; code?: string }): string {

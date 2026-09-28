@@ -50,3 +50,22 @@
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
+
+@media (min-width: 48rem) {
+  .my-meals-page__item {
+    align-items: center;
+    flex-direction: row;
+    justify-content: space-between;
+  }
+
+  .my-meals-page__item-main {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+
+  .my-meals-page__item-actions {
+    flex: 0 0 auto;
+    grid-template-columns: repeat(2, minmax(7.5rem, 1fr));
+    width: min(22rem, 100%);
+  }
+}

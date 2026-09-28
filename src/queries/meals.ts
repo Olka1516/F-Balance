@@ -9,11 +9,17 @@ import {
   createManualMeal,
   deleteUserMeal,
   duplicateUserMeal,
+  fetchDailyEntriesForDate,
   fetchUserMeal,
   fetchUserMeals,
+  formatLocalDate,
   updateManualMeal,
 } from '@/services/meals'
-import type { ManualMealInput, MealWithIngredients } from '@/types'
+import type {
+  DailyEntryWithMeal,
+  ManualMealInput,
+  MealWithIngredients,
+} from '@/types'
 
 /**
  * Loads and caches the current user's saved meals.
@@ -74,7 +80,7 @@ export function useMealQuery(
 }
 
 /**
- * Creates or updates a manual meal and refreshes the meals list.
+ * Creates or updates a manual meal and refreshes related caches.
  */
 export function useSaveManualMealMutation() {
   const queryClient = useQueryClient()
@@ -84,6 +90,7 @@ export function useSaveManualMealMutation() {
       userId: string
       mealId?: string
       input: ManualMealInput
+      logToToday?: boolean
     }): Promise<MealWithIngredients> => {
       const result = payload.mealId
         ? await updateManualMeal(payload.userId, payload.mealId, payload.input)
@@ -93,12 +100,24 @@ export function useSaveManualMealMutation() {
         throw new Error(result.code)
       }
 
+      if (!payload.mealId && payload.logToToday) {
+        await addMealToToday(payload.userId, result.data.id)
+      }
+
       return result.data
     },
     onSuccess: (_meal, variables) => {
       void queryClient.invalidateQueries({
         queryKey: [...MEALS_QUERY_KEY, variables.userId],
       })
+
+      if (!variables.mealId && variables.logToToday) {
+        const today = formatLocalDate(new Date())
+
+        void queryClient.invalidateQueries({
+          queryKey: [...DAILY_ENTRIES_QUERY_KEY, variables.userId, today],
+        })
+      }
     },
   })
 }
@@ -158,6 +177,39 @@ export function useDuplicateMealMutation() {
 }
 
 /**
+ * Loads today's diary entries for the dashboard.
+ */
+export function useTodayDailyEntriesQuery(
+  userId: MaybeRefOrGetter<string | undefined>,
+) {
+  const today = formatLocalDate(new Date())
+
+  return useQuery({
+    queryKey: computed(() => [
+      ...DAILY_ENTRIES_QUERY_KEY,
+      toValue(userId) ?? 'anonymous',
+      today,
+    ]),
+    enabled: computed(() => Boolean(toValue(userId))),
+    queryFn: async (): Promise<DailyEntryWithMeal[]> => {
+      const id = toValue(userId)
+
+      if (!id) {
+        return []
+      }
+
+      const result = await fetchDailyEntriesForDate(id, today)
+
+      if (!result.ok) {
+        throw new Error(result.code)
+      }
+
+      return result.data
+    },
+  })
+}
+
+/**
  * Adds a meal to today's diary and refreshes daily entries.
  */
 export function useAddMealToTodayMutation() {
@@ -174,8 +226,10 @@ export function useAddMealToTodayMutation() {
       return result.data
     },
     onSuccess: (_entry, variables) => {
+      const today = formatLocalDate(new Date())
+
       void queryClient.invalidateQueries({
-        queryKey: [...DAILY_ENTRIES_QUERY_KEY, variables.userId],
+        queryKey: [...DAILY_ENTRIES_QUERY_KEY, variables.userId, today],
       })
     },
   })

@@ -14,6 +14,9 @@
   --color-border: #e5e7eb;
   --color-error: #c94c4c;
   --color-success: #2d8f6f;
+  --color-macro-protein: #c45c6a;
+  --color-macro-fat: #d4a017;
+  --color-macro-carbs: #3a7ca5;
   --font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
   --touch-target-min: 44px;
   --space-xs: 0.25rem;

@@ -18,6 +18,9 @@ export type UserProfile = {
   age: number | null
   activityLevel: ActivityLevel | null
   dailyCalories: number | null
+  dailyProtein: number | null
+  dailyFat: number | null
+  dailyCarbs: number | null
   onboardingCompleted: boolean
   updatedAt: string
 }
@@ -32,6 +35,9 @@ export type UserProfileInput = {
   age: number | null
   activityLevel: ActivityLevel | null
   dailyCalories: number | null
+  dailyProtein: number | null
+  dailyFat: number | null
+  dailyCarbs: number | null
   onboardingCompleted: boolean
 }
 
@@ -45,4 +51,7 @@ export type ProfileFormValues = {
   age: string
   activityLevel: string
   dailyCalories: string
+  dailyProtein: string
+  dailyFat: string
+  dailyCarbs: string
 }

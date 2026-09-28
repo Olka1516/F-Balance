@@ -1,5 +1,15 @@
-export type { DailyEntry } from './dailyEntry'
+export type {
+  DailyEntry,
+  DailyEntryMealSummary,
+  DailyEntryWithMeal,
+} from './dailyEntry'
 export type { Food, FoodSource } from './food'
+export type { FoodSearchHit } from './foodSearch'
+export type {
+  AiCalorieEstimate,
+  AiNutritionEstimate,
+  AiServiceErrorCode,
+} from './ai'
 export type {
   ManualMealInput,
   Meal,

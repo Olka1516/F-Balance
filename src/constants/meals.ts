@@ -19,6 +19,36 @@ export const MEAL_TYPE_DEFAULT: MealType = 'lunch'
 export const FOOD_SOURCE_MANUAL = 'manual' as const
 
 /**
+ * Food source when nutrition came from Open Food Facts.
+ */
+export const FOOD_SOURCE_OPEN_FOOD_FACTS = 'open_food_facts' as const
+
+/**
+ * Food source when calories came from AI estimate.
+ */
+export const FOOD_SOURCE_AI = 'ai' as const
+
+/**
+ * Default portion grams when applying a searched product (per 100 g data).
+ */
+export const FOOD_SEARCH_DEFAULT_AMOUNT_G = 100
+
+/**
+ * Add Food entry modes: search API, AI estimate, or manual macros.
+ */
+export const ADD_MEAL_ENTRY_TABS = ['search', 'ai', 'manual'] as const
+
+/**
+ * Add Food entry tab identifier.
+ */
+export type AddMealEntryTab = (typeof ADD_MEAL_ENTRY_TABS)[number]
+
+/**
+ * Default Add Food tab for new meals.
+ */
+export const ADD_MEAL_ENTRY_TAB_DEFAULT: AddMealEntryTab = 'search'
+
+/**
  * Minimum grams for a meal amount.
  */
 export const MEAL_AMOUNT_MIN_G = 1

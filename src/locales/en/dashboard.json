@@ -1,5 +1,52 @@
 {
-  "title": "Dashboard",
+  "title": "Today",
+  "subtitle": "Your daily calorie target, macros, and meals logged for today.",
+  "addFood": "Add food",
+  "summary": {
+    "target": "Target",
+    "consumed": "Eaten",
+    "remaining": "Left",
+    "over": "Over",
+    "kcal": "kcal",
+    "noTarget": "Set a daily target in Profile"
+  },
+  "macros": {
+    "title": "Macros today",
+    "protein": "Protein",
+    "fat": "Fat",
+    "carbs": "Carbs",
+    "grams": "{value} g",
+    "ofTarget": "{value} / {target} g",
+    "noTarget": "No macro targets yet — set them in Profile",
+    "over": "Over target"
+  },
+  "chart": {
+    "title": "Progress charts",
+    "tabs": {
+      "calories": "Calories",
+      "macros": "Macros"
+    },
+    "consumed": "Eaten",
+    "target": "Target",
+    "aria": "Bar chart comparing calories eaten today with your daily target",
+    "macrosAria": "Pie chart of protein, fat, and carbs eaten today",
+    "macrosEmpty": "No macros logged yet today",
+    "withinTarget": "Within your calorie target",
+    "overTarget": "Over target by {value} kcal",
+    "macrosWithin": "Macros within your targets",
+    "macrosOver": "One or more macros are over target",
+    "macrosNoTarget": "Set macro targets in Profile to compare"
+  },
+  "meals": {
+    "title": "Today’s meals",
+    "emptyTitle": "Nothing logged yet",
+    "emptyMessage": "Add a meal or pick one from My Meals to see it here.",
+    "macros": "{calories} kcal · P {protein} · F {fat} · C {carbs}",
+    "servings": "×{count}"
+  },
+  "errors": {
+    "load": "Could not load today’s progress. Try again"
+  },
   "recommendations": {
     "title": "Recommendations",
     "stub": "Recommendations will arrive after MVP"

@@ -3,12 +3,61 @@
   "add": {
     "title": "Add Food",
     "editTitle": "Edit meal",
-    "subtitle": "Enter the name, portion weight, and macros manually. You can reuse the meal later from My Meals.",
+    "subtitle": "Search a product, estimate with AI, or enter macros manually. New meals are saved and logged to today.",
+    "editSubtitle": "Update this saved meal. Changes apply the next time you add it to a day.",
+    "tabs": {
+      "search": "Search",
+      "ai": "AI",
+      "manual": "Manual"
+    },
     "save": "Save",
+    "saveAndLog": "Save & add to today",
     "saving": "Saving…",
     "toMyMeals": "Go to My Meals",
-    "createSuccess": "Meal saved",
+    "createSuccess": "Meal saved and added to today",
     "updateSuccess": "Meal updated"
+  },
+  "ai": {
+    "disclaimer": "AI calorie results are an estimate only — not medical advice. Review and edit before saving.",
+    "modes": {
+      "text": "Text",
+      "photo": "Photo"
+    },
+    "descriptionLabel": "Describe the food",
+    "descriptionPlaceholder": "e.g. bowl of oatmeal with banana and honey",
+    "photoLabel": "Food photo",
+    "analyze": "Analyze",
+    "analyzing": "Analyzing…",
+    "applied": "Estimate applied ({calories} kcal + macros). Review and edit before saving.",
+    "errors": {
+      "unauthorized": "Sign in again to use AI analysis.",
+      "cooldown": "Please wait a few seconds before another analysis.",
+      "rateLimited": "AI limit reached for now. Wait a minute and try again.",
+      "dailyLimit": "Daily AI limit reached. Use Search or Manual instead.",
+      "invalidDescription": "Enter a short food description first.",
+      "invalidImage": "Choose a JPG, PNG, or WebP photo under 8 MB.",
+      "imageTooLarge": "Photo is still too large after compression. Try another image.",
+      "unavailable": "AI analysis is unavailable. Enter calories manually.",
+      "misconfigured": "AI is not configured on the server yet.",
+      "modelUnavailable": "No Gemini model is available for this API key. Set GEMINI_MODEL=gemini-2.5-flash and redeploy.",
+      "unknown": "Could not analyze. Try again or enter calories manually."
+    }
+  },
+  "search": {
+    "queryLabel": "Product search",
+    "placeholder": "e.g. oatmeal, yogurt",
+    "hint": "Type at least {min} characters. Results come from Open Food Facts (per 100 g).",
+    "emptyTitle": "No products found",
+    "emptyMessage": "Try another name, or switch to Manual and enter macros yourself.",
+    "macros": "{calories} kcal · P {protein} · F {fat} · C {carbs} / 100 g",
+    "incomplete": "Incomplete macros — edit manually after selecting",
+    "applied": "Product applied. Review the values, then save.",
+    "appliedIncomplete": "Some macros are missing. Fill them in manually, then save.",
+    "errors": {
+      "rateLimited": "Too many searches. Try again later.",
+      "unavailable": "Product search is unavailable. Enter the meal manually.",
+      "unknown": "Could not search products. Try again or use Manual."
+    }
   },
   "myMeals": {
     "title": "My Meals",

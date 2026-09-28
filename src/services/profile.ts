@@ -10,6 +10,9 @@ export type ProfileActionResult =
   | { ok: true; profile: UserProfile | null }
   | { ok: false; code: string }
 
+const PROFILE_SELECT =
+  'user_id, goal, weight, height, age, activity_level, daily_calories, daily_protein, daily_fat, daily_carbs, onboarding_completed, updated_at'
+
 /**
  * Loads the authenticated user's profile row, or null when missing.
  */
@@ -24,9 +27,7 @@ export async function fetchUserProfile(
 
   const { data, error } = await getSupabase()
     .from('user_profiles')
-    .select(
-      'user_id, goal, weight, height, age, activity_level, daily_calories, onboarding_completed, updated_at',
-    )
+    .select(PROFILE_SELECT)
     .eq('user_id', userId)
     .maybeSingle()
 
@@ -65,13 +66,14 @@ export async function upsertUserProfile(
         age: input.age,
         activity_level: input.activityLevel,
         daily_calories: input.dailyCalories,
+        daily_protein: input.dailyProtein,
+        daily_fat: input.dailyFat,
+        daily_carbs: input.dailyCarbs,
         onboarding_completed: input.onboardingCompleted,
       },
       { onConflict: 'user_id' },
     )
-    .select(
-      'user_id, goal, weight, height, age, activity_level, daily_calories, onboarding_completed, updated_at',
-    )
+    .select(PROFILE_SELECT)
     .single()
 
   if (error) {

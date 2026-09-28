@@ -1,5 +1,5 @@
 import type { MealType } from '@/constants/meals'
-import type { Food } from './food'
+import type { Food, FoodSource } from './food'
 import type { MealIngredient } from './mealIngredient'
 
 /**
@@ -49,4 +49,5 @@ export type ManualMealInput = {
   protein: number
   fat: number
   carbs: number
+  source?: FoodSource
 }

@@ -1,11 +1,15 @@
 import {
+  FOOD_SEARCH_DEFAULT_AMOUNT_G,
   FOOD_SOURCE_MANUAL,
   MEAL_TYPE_DEFAULT,
   MEAL_TYPES,
   type MealType,
 } from '@/constants/meals'
+import { AI_ESTIMATE_DEFAULT_NAME } from '@/constants/ai'
 import type {
   Food,
+  FoodSearchHit,
+  FoodSource,
   ManualMealInput,
   Meal,
   MealFormValues,
@@ -52,11 +56,54 @@ export function createEmptyMealForm(): MealFormValues {
   return {
     name: '',
     mealType: MEAL_TYPE_DEFAULT,
-    amount: '100',
+    amount: String(FOOD_SEARCH_DEFAULT_AMOUNT_G),
     calories: '',
     protein: '',
     fat: '',
     carbs: '',
+  }
+}
+
+/**
+ * Fills meal form fields from an Open Food Facts hit (values per selected grams).
+ */
+export function foodSearchHitToFormValues(
+  hit: FoodSearchHit,
+  mealType: MealType | '',
+  amountGrams = FOOD_SEARCH_DEFAULT_AMOUNT_G,
+): MealFormValues {
+  return {
+    name: hit.brand ? `${hit.name} (${hit.brand})` : hit.name,
+    mealType: mealType || MEAL_TYPE_DEFAULT,
+    amount: String(amountGrams),
+    calories:
+      hit.caloriesPer100g == null ? '' : String(hit.caloriesPer100g),
+    protein: hit.proteinPer100g == null ? '' : String(hit.proteinPer100g),
+    fat: hit.fatPer100g == null ? '' : String(hit.fatPer100g),
+    carbs: hit.carbsPer100g == null ? '' : String(hit.carbsPer100g),
+  }
+}
+
+/**
+ * Builds editable form values from an AI nutrition estimate.
+ */
+export function aiEstimateToFormValues(input: {
+  calories: number
+  protein?: number | null
+  fat?: number | null
+  carbs?: number | null
+  mealType: MealType | ''
+  name?: string | null
+  amountGrams?: number
+}): MealFormValues {
+  return {
+    name: (input.name ?? '').trim() || AI_ESTIMATE_DEFAULT_NAME,
+    mealType: input.mealType || MEAL_TYPE_DEFAULT,
+    amount: String(input.amountGrams ?? FOOD_SEARCH_DEFAULT_AMOUNT_G),
+    calories: String(input.calories),
+    protein: String(input.protein ?? 0),
+    fat: String(input.fat ?? 0),
+    carbs: String(input.carbs ?? 0),
   }
 }
 
@@ -106,6 +153,7 @@ export function mealToFormValues(meal: MealWithIngredients): MealFormValues {
  */
 export function formValuesToManualMealInput(
   values: MealFormValues,
+  source: FoodSource = FOOD_SOURCE_MANUAL,
 ): ManualMealInput | null {
   if (!values.name.trim() || !isMealType(values.mealType)) {
     return null
@@ -133,6 +181,7 @@ export function formValuesToManualMealInput(
     protein,
     fat,
     carbs,
+    source,
   }
 }
 
@@ -154,7 +203,7 @@ export function buildManualMealNutrition(input: ManualMealInput) {
   return {
     perHundred,
     totals,
-    source: FOOD_SOURCE_MANUAL,
+    source: input.source ?? FOOD_SOURCE_MANUAL,
   }
 }
 

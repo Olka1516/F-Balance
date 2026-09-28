@@ -1,14 +1,17 @@
 <template>
-  <main class="view-shell">
-    <h1 class="view-shell__title">
-      {{ t("dashboard.recommendations.title") }}
-    </h1>
-    <p class="view-shell__message">{{ t("dashboard.recommendations.stub") }}</p>
-  </main>
+  <AppPageShell>
+    <template #title>
+      {{ t('dashboard.recommendations.title') }}
+    </template>
+    <template #intro>
+      {{ t('dashboard.recommendations.stub') }}
+    </template>
+  </AppPageShell>
 </template>
 
 <script setup lang="ts">
-import { useI18n } from "vue-i18n";
+import { useI18n } from 'vue-i18n'
+import AppPageShell from '@/components/common/AppPageShell.vue'
 
-const { t } = useI18n();
+const { t } = useI18n()
 </script>

@@ -126,6 +126,61 @@
         :error="fieldErrors.dailyCalories"
       />
     </section>
+
+    <section
+      class="profile-form__section"
+      :aria-labelledby="isOnboarding ? 'profile-form-macros' : undefined"
+    >
+      <div class="profile-form__section-head">
+        <h2
+          v-if="isOnboarding"
+          id="profile-form-macros"
+          class="profile-form__section-title"
+        >
+          {{ t('common.profile.sections.macros') }}
+        </h2>
+        <p v-else class="profile-form__section-title">
+          {{ t('common.profile.sections.macros') }}
+        </p>
+        <AppButton
+          type="button"
+          :variant="APP_BUTTON_VARIANT.secondary"
+          :disabled="!canSuggestMacros"
+          @click="applySuggestedMacros"
+        >
+          {{ t('common.profile.suggestMacros') }}
+        </AppButton>
+      </div>
+      <p class="profile-form__hint">
+        {{ t('common.profile.macrosHint') }}
+      </p>
+      <div class="profile-form__grid">
+        <AppInput
+          v-model="form.dailyProtein"
+          :label="t('common.profile.fields.dailyProtein')"
+          :type="APP_INPUT_TYPE.number"
+          :placeholder="t('common.profile.placeholders.optional')"
+          :variant="inputVariant"
+          :error="fieldErrors.dailyProtein"
+        />
+        <AppInput
+          v-model="form.dailyFat"
+          :label="t('common.profile.fields.dailyFat')"
+          :type="APP_INPUT_TYPE.number"
+          :placeholder="t('common.profile.placeholders.optional')"
+          :variant="inputVariant"
+          :error="fieldErrors.dailyFat"
+        />
+        <AppInput
+          v-model="form.dailyCarbs"
+          :label="t('common.profile.fields.dailyCarbs')"
+          :type="APP_INPUT_TYPE.number"
+          :placeholder="t('common.profile.placeholders.optional')"
+          :variant="inputVariant"
+          :error="fieldErrors.dailyCarbs"
+        />
+      </div>
+    </section>
   </div>
 </template>
 
@@ -134,6 +189,7 @@ import { computed, reactive } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRegle } from '@regle/core'
 import { withMessage } from '@regle/rules'
+import AppButton from '@/components/common/AppButton.vue'
 import AppInput from '@/components/common/AppInput.vue'
 import AppSelect from '@/components/common/AppSelect.vue'
 import {
@@ -142,6 +198,10 @@ import {
   PROFILE_AGE_MIN,
   PROFILE_DAILY_CALORIES_MAX,
   PROFILE_DAILY_CALORIES_MIN,
+  PROFILE_DAILY_CARBS_MAX_G,
+  PROFILE_DAILY_FAT_MAX_G,
+  PROFILE_DAILY_MACRO_MIN_G,
+  PROFILE_DAILY_PROTEIN_MAX_G,
   PROFILE_FORM_DEFAULT_VARIANT,
   PROFILE_FORM_VARIANT,
   PROFILE_HEIGHT_MAX_CM,
@@ -152,14 +212,23 @@ import {
   type ProfileFormVariant,
 } from '@/constants/profile'
 import {
+  APP_BUTTON_VARIANT,
   APP_INPUT_TYPE,
   APP_INPUT_VARIANT,
   type AppInputVariant,
 } from '@/constants/ui'
 import type { ProfileFormValues } from '@/types'
+import { suggestMacroTargets } from '@/utils/macroTargets'
+import {
+  isUserGoal,
+  parseOptionalNumber,
+} from '@/utils/profileForm'
 import {
   isOptionalAgeValid,
   isOptionalDailyCaloriesValid,
+  isOptionalDailyCarbsValid,
+  isOptionalDailyFatValid,
+  isOptionalDailyProteinValid,
   isOptionalHeightValid,
   isOptionalWeightValid,
 } from '@/utils/profileValidation'
@@ -206,6 +275,16 @@ const activityOptions = computed(() =>
   })),
 )
 
+const canSuggestMacros = computed(() => {
+  const calories = parseOptionalNumber(form.value.dailyCalories)
+
+  return (
+    calories != null &&
+    calories >= PROFILE_DAILY_CALORIES_MIN &&
+    calories <= PROFILE_DAILY_CALORIES_MAX
+  )
+})
+
 const { r$ } = useRegle(form, {
   weight: {
     range: withMessage(
@@ -251,7 +330,55 @@ const { r$ } = useRegle(form, {
         }),
     ),
   },
+  dailyProtein: {
+    range: withMessage(
+      (value: string | null | undefined) =>
+        isOptionalDailyProteinValid(String(value ?? '')),
+      () =>
+        t('common.profile.validation.macroRange', {
+          min: PROFILE_DAILY_MACRO_MIN_G,
+          max: PROFILE_DAILY_PROTEIN_MAX_G,
+        }),
+    ),
+  },
+  dailyFat: {
+    range: withMessage(
+      (value: string | null | undefined) =>
+        isOptionalDailyFatValid(String(value ?? '')),
+      () =>
+        t('common.profile.validation.macroRange', {
+          min: PROFILE_DAILY_MACRO_MIN_G,
+          max: PROFILE_DAILY_FAT_MAX_G,
+        }),
+    ),
+  },
+  dailyCarbs: {
+    range: withMessage(
+      (value: string | null | undefined) =>
+        isOptionalDailyCarbsValid(String(value ?? '')),
+      () =>
+        t('common.profile.validation.macroRange', {
+          min: PROFILE_DAILY_MACRO_MIN_G,
+          max: PROFILE_DAILY_CARBS_MAX_G,
+        }),
+    ),
+  },
 })
+
+function applySuggestedMacros(): void {
+  const calories = parseOptionalNumber(form.value.dailyCalories)
+
+  if (calories == null) {
+    return
+  }
+
+  const goal = isUserGoal(form.value.goal) ? form.value.goal : null
+  const suggested = suggestMacroTargets(calories, goal)
+
+  form.value.dailyProtein = String(suggested.protein)
+  form.value.dailyFat = String(suggested.fat)
+  form.value.dailyCarbs = String(suggested.carbs)
+}
 
 /**
  * Validates the shared profile fields before save.
@@ -263,6 +390,9 @@ async function validate(): Promise<boolean> {
   fieldErrors.height = undefined
   fieldErrors.age = undefined
   fieldErrors.dailyCalories = undefined
+  fieldErrors.dailyProtein = undefined
+  fieldErrors.dailyFat = undefined
+  fieldErrors.dailyCarbs = undefined
 
   const { valid } = await r$.$validate()
 
@@ -270,6 +400,9 @@ async function validate(): Promise<boolean> {
   fieldErrors.height = r$.height.$errors[0]
   fieldErrors.age = r$.age.$errors[0]
   fieldErrors.dailyCalories = r$.dailyCalories.$errors[0]
+  fieldErrors.dailyProtein = r$.dailyProtein.$errors[0]
+  fieldErrors.dailyFat = r$.dailyFat.$errors[0]
+  fieldErrors.dailyCarbs = r$.dailyCarbs.$errors[0]
 
   return valid
 }

@@ -10,6 +10,7 @@
     "en": "EN"
   },
   "landing": {
+    "navLabel": "Landing navigation",
     "nav": {
       "home": "Home",
       "login": "Log in",
@@ -32,16 +33,19 @@
   },
   "profile": {
     "title": "Profile",
-    "subtitle": "Update the details used for your daily calorie target. Optional fields can stay empty.",
+    "subtitle": "Update calorie and macro targets. Optional fields can stay empty.",
     "save": "Save",
     "saving": "Saving…",
     "success": "Profile saved",
     "loadError": "Could not load your profile",
+    "suggestMacros": "Suggest from calories",
+    "macrosHint": "Guidance only — edit freely. Based on your calorie target and goal.",
     "sections": {
       "goal": "Your goal",
       "activity": "Activity",
       "body": "Body metrics",
-      "target": "Daily target"
+      "target": "Daily calories",
+      "macros": "Daily macros"
     },
     "fields": {
       "goal": "Goal",
@@ -49,7 +53,10 @@
       "weight": "Weight (kg)",
       "height": "Height (cm)",
       "age": "Age",
-      "dailyCalories": "Daily calories (kcal)"
+      "dailyCalories": "Daily calories (kcal)",
+      "dailyProtein": "Protein (g)",
+      "dailyFat": "Fat (g)",
+      "dailyCarbs": "Carbs (g)"
     },
     "placeholders": {
       "goal": "Choose a goal",
@@ -72,7 +79,8 @@
       "weightRange": "Weight must be between {min} and {max} kg",
       "heightRange": "Height must be between {min} and {max} cm",
       "ageRange": "Age must be between {min} and {max}",
-      "caloriesRange": "Calories must be between {min} and {max}"
+      "caloriesRange": "Calories must be between {min} and {max}",
+      "macroRange": "Value must be between {min} and {max} g"
     },
     "errors": {
       "tableMissing": "Profile table is missing in Supabase. Run the SQL in supabase/migrations.",

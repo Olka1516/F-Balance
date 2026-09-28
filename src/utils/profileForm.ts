@@ -18,6 +18,9 @@ type UserProfileRow = {
   age: number | null
   activity_level: string | null
   daily_calories: number | null
+  daily_protein: number | string | null
+  daily_fat: number | string | null
+  daily_carbs: number | string | null
   onboarding_completed: boolean
   updated_at: string
 }
@@ -33,6 +36,9 @@ export function createEmptyProfileForm(): ProfileFormValues {
     age: '',
     activityLevel: '',
     dailyCalories: '',
+    dailyProtein: '',
+    dailyFat: '',
+    dailyCarbs: '',
   }
 }
 
@@ -52,6 +58,10 @@ export function profileToFormValues(profile: UserProfile | null): ProfileFormVal
     activityLevel: profile.activityLevel ?? '',
     dailyCalories:
       profile.dailyCalories == null ? '' : String(profile.dailyCalories),
+    dailyProtein:
+      profile.dailyProtein == null ? '' : String(profile.dailyProtein),
+    dailyFat: profile.dailyFat == null ? '' : String(profile.dailyFat),
+    dailyCarbs: profile.dailyCarbs == null ? '' : String(profile.dailyCarbs),
   }
 }
 
@@ -104,6 +114,9 @@ export function formValuesToProfileInput(
       ? values.activityLevel
       : null,
     dailyCalories: parseOptionalNumber(values.dailyCalories),
+    dailyProtein: parseOptionalNumber(values.dailyProtein),
+    dailyFat: parseOptionalNumber(values.dailyFat),
+    dailyCarbs: parseOptionalNumber(values.dailyCarbs),
     onboardingCompleted,
   }
 }
@@ -123,6 +136,10 @@ export function mapProfileRow(row: UserProfileRow): UserProfile {
         ? row.activity_level
         : null,
     dailyCalories: row.daily_calories,
+    dailyProtein:
+      row.daily_protein == null ? null : Number(row.daily_protein),
+    dailyFat: row.daily_fat == null ? null : Number(row.daily_fat),
+    dailyCarbs: row.daily_carbs == null ? null : Number(row.daily_carbs),
     onboardingCompleted: row.onboarding_completed,
     updatedAt: row.updated_at,
   }

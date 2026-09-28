@@ -1,6 +1,6 @@
 <template>
   <header class="landing-top-bar">
-    <nav class="landing-top-bar__pill" aria-label="Landing navigation">
+    <nav class="landing-top-bar__pill" :aria-label="t('common.landing.navLabel')">
       <div class="landing-top-bar__group landing-top-bar__group--start">
         <button
           type="button"

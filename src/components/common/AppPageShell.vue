@@ -7,7 +7,7 @@
     </div>
 
     <div class="app-page__shell">
-      <AppAuthNav />
+      <AppAuthNav v-if="showNav" />
 
       <section
         class="app-page__card"
@@ -47,9 +47,11 @@ import '@/styles/components/app-page-shell.css'
 withDefaults(
   defineProps<{
     wide?: boolean
+    showNav?: boolean
   }>(),
   {
     wide: false,
+    showNav: true,
   },
 )
 

@@ -4,6 +4,7 @@
   border-radius: var(--radius-full);
   display: inline-flex;
   gap: 0;
+  min-height: var(--touch-target-min);
   padding: 0.125rem;
 }
 
@@ -15,7 +16,7 @@
   cursor: pointer;
   font-size: 0.8125rem;
   font-weight: 600;
-  min-height: 2rem;
+  min-height: calc(var(--touch-target-min) - 0.25rem);
   min-width: 2.75rem;
   padding: var(--space-xs) var(--space-sm);
   transition:

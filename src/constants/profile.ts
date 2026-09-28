@@ -57,6 +57,37 @@ export const PROFILE_DAILY_CALORIES_MIN = 800
 export const PROFILE_DAILY_CALORIES_MAX = 8000
 
 /**
+ * Maximum allowed daily protein target in grams.
+ */
+export const PROFILE_DAILY_PROTEIN_MAX_G = 500
+
+/**
+ * Maximum allowed daily fat target in grams.
+ */
+export const PROFILE_DAILY_FAT_MAX_G = 500
+
+/**
+ * Maximum allowed daily carbs target in grams.
+ */
+export const PROFILE_DAILY_CARBS_MAX_G = 800
+
+/**
+ * Minimum allowed daily macro target in grams.
+ */
+export const PROFILE_DAILY_MACRO_MIN_G = 0
+
+/**
+ * Default macro calorie shares by goal (protein / fat / carbs).
+ * Guidance only — not medical advice.
+ */
+export const MACRO_SPLIT_BY_GOAL = {
+  lose: { protein: 0.3, fat: 0.3, carbs: 0.4 },
+  maintain: { protein: 0.25, fat: 0.3, carbs: 0.45 },
+  gain: { protein: 0.25, fat: 0.25, carbs: 0.5 },
+  default: { protein: 0.25, fat: 0.3, carbs: 0.45 },
+} as const
+
+/**
  * TanStack Query key for the current user profile.
  */
 export const PROFILE_QUERY_KEY = ['profile'] as const

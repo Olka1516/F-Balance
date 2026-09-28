@@ -3,6 +3,10 @@ import {
   PROFILE_AGE_MIN,
   PROFILE_DAILY_CALORIES_MAX,
   PROFILE_DAILY_CALORIES_MIN,
+  PROFILE_DAILY_CARBS_MAX_G,
+  PROFILE_DAILY_FAT_MAX_G,
+  PROFILE_DAILY_MACRO_MIN_G,
+  PROFILE_DAILY_PROTEIN_MAX_G,
   PROFILE_HEIGHT_MAX_CM,
   PROFILE_HEIGHT_MIN_CM,
   PROFILE_WEIGHT_MAX_KG,
@@ -62,4 +66,28 @@ export const isOptionalAgeValid = createOptionalNumberRule(
 export const isOptionalDailyCaloriesValid = createOptionalNumberRule(
   PROFILE_DAILY_CALORIES_MIN,
   PROFILE_DAILY_CALORIES_MAX,
+)
+
+/**
+ * Optional daily protein validator for profile forms.
+ */
+export const isOptionalDailyProteinValid = createOptionalNumberRule(
+  PROFILE_DAILY_MACRO_MIN_G,
+  PROFILE_DAILY_PROTEIN_MAX_G,
+)
+
+/**
+ * Optional daily fat validator for profile forms.
+ */
+export const isOptionalDailyFatValid = createOptionalNumberRule(
+  PROFILE_DAILY_MACRO_MIN_G,
+  PROFILE_DAILY_FAT_MAX_G,
+)
+
+/**
+ * Optional daily carbs validator for profile forms.
+ */
+export const isOptionalDailyCarbsValid = createOptionalNumberRule(
+  PROFILE_DAILY_MACRO_MIN_G,
+  PROFILE_DAILY_CARBS_MAX_G,
 )
