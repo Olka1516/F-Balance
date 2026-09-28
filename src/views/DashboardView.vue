@@ -1,11 +1,13 @@
 <template>
   <main class="view-shell">
-    <h1 class="view-shell__title">{{ t("dashboard.title") }}</h1>
+    <AppAuthNav />
+    <h1 class="view-shell__title">{{ t('dashboard.title') }}</h1>
   </main>
 </template>
 
 <script setup lang="ts">
-import { useI18n } from "vue-i18n";
+import { useI18n } from 'vue-i18n'
+import AppAuthNav from '@/components/common/AppAuthNav.vue'
 
-const { t } = useI18n();
+const { t } = useI18n()
 </script>

@@ -7,4 +7,5 @@ export type DailyEntry = {
   mealId: string
   date: string
   amount: number
+  createdAt: string
 }

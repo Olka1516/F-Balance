@@ -4,10 +4,11 @@
 export type FoodSource = 'manual' | 'open_food_facts' | 'ai'
 
 /**
- * Food product with per-serving macronutrients.
+ * Food product with macronutrients stored per 100 g.
  */
 export type Food = {
   id: string
+  userId: string
   name: string
   calories: number
   protein: number

@@ -1,10 +1,52 @@
 {
   "title": "Страви",
   "add": {
-    "title": "Додати їжу"
+    "title": "Додати їжу",
+    "editTitle": "Редагувати страву",
+    "subtitle": "Введіть назву, вагу порції та КБЖУ вручну. Пізніше можна зберегти страву в «Мої страви».",
+    "save": "Зберегти",
+    "saving": "Збереження…",
+    "toMyMeals": "До моїх страв",
+    "createSuccess": "Страву збережено",
+    "updateSuccess": "Страву оновлено"
   },
   "myMeals": {
-    "title": "Мої страви"
+    "title": "Мої страви",
+    "subtitle": "Редагуйте збережені страви, дублюйте їх або додавайте до сьогоднішнього дня.",
+    "addNew": "Нова страва",
+    "emptyTitle": "Ще немає страв",
+    "emptyMessage": "Додайте першу страву вручну — і вона з’явиться тут.",
+    "edit": "Редагувати",
+    "duplicate": "Дублювати",
+    "addToday": "У сьогодні",
+    "delete": "Видалити",
+    "copySuffix": "копія",
+    "duplicateSuccess": "Копію створено",
+    "addTodaySuccess": "Додано до сьогодні",
+    "deleteSuccess": "Страву видалено",
+    "macros": "{calories} ккал · Б {protein} · Ж {fat} · В {carbs} · {weight} г"
+  },
+  "fields": {
+    "name": "Назва",
+    "mealType": "Прийом їжі",
+    "amount": "Вага (г)",
+    "calories": "Калорії",
+    "protein": "Білки (г)",
+    "fat": "Жири (г)",
+    "carbs": "Вуглеводи (г)"
+  },
+  "validation": {
+    "required": "Обовʼязкове поле",
+    "nameMax": "Максимум {max} символів",
+    "amountRange": "Вага від {min} до {max} г",
+    "caloriesRange": "Калорії від {min} до {max}",
+    "macroRange": "Значення від {min} до {max} г"
+  },
+  "errors": {
+    "tableMissing": "Таблиці страв ще не створені в Supabase. Виконайте SQL з supabase/migrations.",
+    "permissionDenied": "Немає доступу до страв. Перевірте RLS-політики.",
+    "notFound": "Страву не знайдено",
+    "unknown": "Не вдалося виконати дію зі стравою. Спробуйте ще раз"
   },
   "breakfast": "Сніданок",
   "lunch": "Обід",

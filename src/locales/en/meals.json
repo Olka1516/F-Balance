@@ -1,10 +1,52 @@
 {
   "title": "Meals",
   "add": {
-    "title": "Add Food"
+    "title": "Add Food",
+    "editTitle": "Edit meal",
+    "subtitle": "Enter the name, portion weight, and macros manually. You can reuse the meal later from My Meals.",
+    "save": "Save",
+    "saving": "Saving…",
+    "toMyMeals": "Go to My Meals",
+    "createSuccess": "Meal saved",
+    "updateSuccess": "Meal updated"
   },
   "myMeals": {
-    "title": "My Meals"
+    "title": "My Meals",
+    "subtitle": "Edit saved meals, duplicate them, or add one to today.",
+    "addNew": "New meal",
+    "emptyTitle": "No meals yet",
+    "emptyMessage": "Add your first manual meal and it will show up here.",
+    "edit": "Edit",
+    "duplicate": "Duplicate",
+    "addToday": "Add to today",
+    "delete": "Delete",
+    "copySuffix": "copy",
+    "duplicateSuccess": "Copy created",
+    "addTodaySuccess": "Added to today",
+    "deleteSuccess": "Meal deleted",
+    "macros": "{calories} kcal · P {protein} · F {fat} · C {carbs} · {weight} g"
+  },
+  "fields": {
+    "name": "Name",
+    "mealType": "Meal type",
+    "amount": "Weight (g)",
+    "calories": "Calories",
+    "protein": "Protein (g)",
+    "fat": "Fat (g)",
+    "carbs": "Carbs (g)"
+  },
+  "validation": {
+    "required": "This field is required",
+    "nameMax": "At most {max} characters",
+    "amountRange": "Weight must be between {min} and {max} g",
+    "caloriesRange": "Calories must be between {min} and {max}",
+    "macroRange": "Value must be between {min} and {max} g"
+  },
+  "errors": {
+    "tableMissing": "Meal tables are missing in Supabase. Run the SQL in supabase/migrations.",
+    "permissionDenied": "No access to meals. Check RLS policies.",
+    "notFound": "Meal not found",
+    "unknown": "Could not complete the meal action. Try again"
   },
   "breakfast": "Breakfast",
   "lunch": "Lunch",

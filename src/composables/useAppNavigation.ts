@@ -35,10 +35,45 @@ export function useAppNavigation() {
     router.push({ name: ROUTE_NAMES.landing })
   }
 
+  /**
+   * Opens the dashboard.
+   */
+  function goToDashboard(): void {
+    router.push({ name: ROUTE_NAMES.dashboard })
+  }
+
+  /**
+   * Opens the add-food screen, optionally for editing a meal.
+   */
+  function goToAddMeal(mealId?: string): void {
+    router.push({
+      name: ROUTE_NAMES.addMeal,
+      query: mealId ? { mealId } : undefined,
+    })
+  }
+
+  /**
+   * Opens the saved meals list.
+   */
+  function goToMyMeals(): void {
+    router.push({ name: ROUTE_NAMES.myMeals })
+  }
+
+  /**
+   * Opens the profile screen.
+   */
+  function goToProfile(): void {
+    router.push({ name: ROUTE_NAMES.profile })
+  }
+
   return {
     goToRegister,
     goToLogin,
     goToResetPassword,
     goToLanding,
+    goToDashboard,
+    goToAddMeal,
+    goToMyMeals,
+    goToProfile,
   }
 }

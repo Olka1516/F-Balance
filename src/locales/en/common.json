@@ -87,6 +87,7 @@
     "winter": "Winter"
   },
   "nav": {
+    "label": "Main navigation",
     "dashboard": "Dashboard",
     "meals": "My Meals",
     "addMeal": "Add Food",

@@ -1,53 +1,58 @@
 <template>
-  <main class="view-shell profile-page">
-    <h1 class="view-shell__title">{{ t('common.profile.title') }}</h1>
-    <p class="profile-page__intro">{{ t('common.profile.subtitle') }}</p>
-
-    <div class="profile-page__language">
-      <AppLanguageSwitch />
-    </div>
+  <AppPageShell>
+    <template #title>
+      {{ t('common.profile.title') }}
+    </template>
+    <template #intro>
+      {{ t('common.profile.subtitle') }}
+    </template>
 
     <AppLoader v-if="isProfileLoading" />
 
     <template v-else>
-      <ProfileForm ref="profileFormRef" v-model="form" />
+      <ProfileForm
+        ref="profileFormRef"
+        v-model="form"
+        :variant="PROFILE_FORM_VARIANT.onboarding"
+      />
 
       <p
         v-if="formError"
-        class="profile-page__message profile-page__message--error"
+        class="app-page__message app-page__message--error"
         role="alert"
       >
         {{ formError }}
       </p>
       <p
         v-if="formSuccess"
-        class="profile-page__message profile-page__message--success"
+        class="app-page__message app-page__message--success"
         role="status"
       >
         {{ formSuccess }}
       </p>
 
-      <div class="profile-page__actions">
+      <div class="app-page__actions">
         <AppButton
           type="button"
           :loading="isSaving"
           :disabled="isSaving || isLoggingOut"
           @click="onSave"
         >
-          {{ isSaving ? t('common.profile.saving') : t('common.profile.save') }}
+          {{
+            isSaving ? t('common.profile.saving') : t('common.profile.save')
+          }}
         </AppButton>
-        <AppButton
+        <button
           type="button"
-          :variant="APP_BUTTON_VARIANT.secondary"
-          :loading="isLoggingOut"
+          class="app-page__link-action"
           :disabled="isSaving || isLoggingOut"
           @click="onLogout"
         >
           {{ isLoggingOut ? t('auth.loggingOut') : t('auth.logout') }}
-        </AppButton>
+        </button>
       </div>
     </template>
-  </main>
+  </AppPageShell>
 </template>
 
 <script setup lang="ts">
@@ -56,21 +61,22 @@ import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
 import { useQueryClient } from '@tanstack/vue-query'
 import AppButton from '@/components/common/AppButton.vue'
-import AppLanguageSwitch from '@/components/common/AppLanguageSwitch.vue'
 import AppLoader from '@/components/common/AppLoader.vue'
+import AppPageShell from '@/components/common/AppPageShell.vue'
 import ProfileForm from '@/components/profile/ProfileForm.vue'
 import { useAuth } from '@/composables/useAuth'
-import { PROFILE_QUERY_KEY } from '@/constants/profile'
+import {
+  PROFILE_FORM_VARIANT,
+  PROFILE_QUERY_KEY,
+} from '@/constants/profile'
 import { ROUTE_NAMES } from '@/constants/routes'
-import { APP_BUTTON_VARIANT } from '@/constants/ui'
 import { useProfileQuery, useUpsertProfileMutation } from '@/queries/profile'
+import { resolveProfileErrorI18nKey } from '@/utils/profileErrors'
 import {
   createEmptyProfileForm,
   formValuesToProfileInput,
   profileToFormValues,
 } from '@/utils/profileForm'
-import { resolveProfileErrorI18nKey } from '@/utils/profileErrors'
-import '@/styles/views/profile.css'
 
 const { t } = useI18n()
 const router = useRouter()

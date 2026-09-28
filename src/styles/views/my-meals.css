@@ -1,0 +1,52 @@
+.my-meals-page__list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.my-meals-page__item {
+  background: color-mix(in srgb, var(--color-surface) 72%, transparent);
+  border: 1px solid color-mix(in srgb, var(--color-border) 80%, var(--color-surface));
+  border-radius: var(--radius-xl);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+  padding: var(--space-lg);
+}
+
+.my-meals-page__item-type {
+  color: var(--color-primary);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  margin: 0 0 var(--space-xs);
+  text-transform: uppercase;
+}
+
+.my-meals-page__item-name {
+  font-size: 1.125rem;
+  font-weight: 700;
+  margin: 0 0 var(--space-xs);
+}
+
+.my-meals-page__item-macros {
+  color: var(--color-text-muted);
+  font-size: 0.875rem;
+  line-height: 1.45;
+  margin: 0;
+}
+
+.my-meals-page__item-actions {
+  display: grid;
+  gap: var(--space-sm);
+  grid-template-columns: 1fr;
+}
+
+@media (min-width: 32rem) {
+  .my-meals-page__item-actions {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
