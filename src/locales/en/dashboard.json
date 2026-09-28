@@ -24,12 +24,14 @@
     "title": "Progress charts",
     "tabs": {
       "calories": "Calories",
-      "macros": "Macros"
+      "macros": "Macros",
+      "week": "Week"
     },
     "consumed": "Eaten",
     "target": "Target",
     "aria": "Bar chart comparing calories eaten today with your daily target",
     "macrosAria": "Pie chart of protein, fat, and carbs eaten today",
+    "weekAria": "Bar chart of calories eaten over the last 7 days",
     "macrosEmpty": "No macros logged yet today",
     "withinTarget": "Within your calorie target",
     "overTarget": "Over target by {value} kcal",
@@ -49,6 +51,6 @@
   },
   "recommendations": {
     "title": "Recommendations",
-    "stub": "Recommendations will arrive after MVP"
+    "stub": "Open Recommendations from the navigation for recipe ideas."
   }
 }

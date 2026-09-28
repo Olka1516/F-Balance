@@ -4,6 +4,16 @@
 export const DASHBOARD_CHART_HEIGHT_REM = 12
 
 /**
+ * Chart canvas height for the weekly progress chart.
+ */
+export const DASHBOARD_WEEK_CHART_HEIGHT_REM = 14
+
+/**
+ * Number of calendar days shown on the weekly progress chart.
+ */
+export const DASHBOARD_WEEK_DAYS = 7
+
+/**
  * ECharts bar width relative to the category band.
  */
 export const DASHBOARD_CHART_BAR_WIDTH = '42%'
@@ -16,7 +26,7 @@ export const DASHBOARD_CHART_ANIMATION_MS = 450
 /**
  * Dashboard chart tab identifiers.
  */
-export const DASHBOARD_CHART_TABS = ['calories', 'macros'] as const
+export const DASHBOARD_CHART_TABS = ['calories', 'macros', 'week'] as const
 
 /**
  * Dashboard chart tab.

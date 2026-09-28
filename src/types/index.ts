@@ -25,4 +25,11 @@ export type {
   UserProfile,
   UserProfileInput,
 } from './userProfile'
+export type {
+  RecommendationContext,
+  RecipeDetail,
+  RecipeIngredient,
+  RecipeRecommendation,
+  RecipeSummary,
+} from './recipe'
 export type { User } from './user'

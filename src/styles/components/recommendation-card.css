@@ -1,0 +1,102 @@
+.recommendation-card {
+  background: color-mix(in srgb, var(--color-surface) 88%, transparent);
+  border: 1px solid color-mix(in srgb, var(--color-border) 80%, var(--color-surface));
+  border-radius: var(--radius-xl);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.recommendation-card__media {
+  aspect-ratio: 16 / 10;
+  background: color-mix(in srgb, var(--color-border) 40%, var(--color-surface));
+  overflow: hidden;
+}
+
+.recommendation-card__image {
+  display: block;
+  height: 100%;
+  object-fit: cover;
+  width: 100%;
+}
+
+.recommendation-card__body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  padding: var(--space-md);
+}
+
+.recommendation-card__title {
+  color: var(--color-text);
+  font-size: 1.05rem;
+  font-weight: 700;
+  line-height: 1.3;
+  margin: 0;
+}
+
+.recommendation-card__meta {
+  color: var(--color-text-muted);
+  display: flex;
+  flex-wrap: wrap;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  gap: 0.35rem;
+  margin: 0;
+}
+
+.recommendation-card__description {
+  color: var(--color-text);
+  font-size: 0.9rem;
+  line-height: 1.45;
+  margin: 0;
+}
+
+.recommendation-card__note {
+  color: var(--color-text-muted);
+  font-size: 0.75rem;
+  line-height: 1.4;
+  margin: 0;
+}
+
+.recommendation-card__details {
+  border-top: 1px solid var(--color-border);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+  margin-top: var(--space-xs);
+  padding-top: var(--space-md);
+}
+
+.recommendation-card__section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.recommendation-card__section-title {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  margin: 0;
+  text-transform: uppercase;
+}
+
+.recommendation-card__ingredients {
+  color: var(--color-text);
+  display: flex;
+  flex-direction: column;
+  font-size: 0.875rem;
+  gap: 0.35rem;
+  list-style: disc;
+  margin: 0;
+  padding-left: 1.1rem;
+}
+
+.recommendation-card__instructions {
+  color: var(--color-text);
+  font-size: 0.875rem;
+  line-height: 1.55;
+  margin: 0;
+  white-space: pre-wrap;
+}

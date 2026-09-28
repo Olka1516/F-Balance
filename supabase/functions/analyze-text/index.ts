@@ -10,10 +10,10 @@ const corsHeaders: Record<string, string> = {
 
 const TEXT_MIN = 3
 const TEXT_MAX = 500
-const COOLDOWN_MS = 12_000
-const MAX_PER_HOUR = 10
-const MAX_PER_DAY = 40
-const CACHE_TTL_MS = 24 * 60 * 60 * 1000
+const COOLDOWN_MS = 20_000
+const MAX_PER_HOUR = 6
+const MAX_PER_DAY = 24
+const CACHE_TTL_MS = 48 * 60 * 60 * 1000
 
 Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') {

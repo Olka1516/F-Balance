@@ -1,0 +1,37 @@
+{
+  "title": "Recommendations",
+  "subtitle": "Recipe ideas for your next meal, based on your goal, remaining calories, and time of day.",
+  "context": {
+    "goal": "Goal: {goal}",
+    "goalNone": "Goal not set",
+    "remaining": "Left today: {value} kcal",
+    "remainingNone": "Set a daily calorie target in Profile to personalize further",
+    "lowRemaining": "Calories are almost used up — showing lighter ideas only. Not medical advice."
+  },
+  "mealTypes": {
+    "label": "Meal",
+    "breakfast": "Breakfast",
+    "lunch": "Lunch",
+    "dinner": "Dinner",
+    "snack": "Snack"
+  },
+  "card": {
+    "approxCalories": "~{value} kcal",
+    "cookTime": "~{value} min",
+    "ingredients": "Ingredients",
+    "recipe": "Recipe",
+    "openDetails": "Show recipe",
+    "closeDetails": "Hide recipe",
+    "approxNote": "Calories are approximate category guidance from the recipe source, not a lab measurement."
+  },
+  "empty": {
+    "title": "No ideas for this meal yet",
+    "message": "Try another meal type, or check again later."
+  },
+  "errors": {
+    "unavailable": "Recommendations are temporarily unavailable. Dashboard and adding food still work.",
+    "rateLimited": "Too many recipe requests. Try again later.",
+    "unknown": "Could not load recommendations. Try again"
+  },
+  "disclaimer": "Ideas only — not a meal plan or medical advice."
+}

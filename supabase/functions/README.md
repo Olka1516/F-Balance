@@ -1,6 +1,13 @@
-# AI Edge Functions (Phase 8)
+# AI Edge Functions (Phase 8+)
 
 Each function is a **single self-contained** `index.ts` (safe for Dashboard paste/deploy).
+
+## Limits (Phase 10)
+
+- Cooldown: **20 s** between requests per user
+- Cap: **6 / hour**, **24 / day**
+- Cache: identical input hash reused for **48 h**
+- Photos: compressed on the client; sent as base64 in the request body — **not** stored in Supabase Storage
 
 ## Deploy (CLI)
 
@@ -31,5 +38,7 @@ Then redeploy both functions with the latest `index.ts`.
 
 Photos/text return structured estimate: name, calories, protein, fat, carbs.
 User can edit before save. Also run SQL:
+
 - `supabase/migrations/20260321140000_ai_requests.sql`
 - `supabase/migrations/20260321141000_ai_requests_result.sql`
+- `supabase/migrations/20260321143000_storage_meal_photos.sql` (private `meal-photos` bucket; AI must not upload here)

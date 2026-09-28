@@ -340,13 +340,24 @@ export async function fetchDailyEntriesForDate(
   userId: string,
   date: string,
 ): Promise<MealActionResult<DailyEntryWithMeal[]>> {
+  return fetchDailyEntriesInRange(userId, date, date)
+}
+
+/**
+ * Loads diary entries between two inclusive calendar dates.
+ */
+export async function fetchDailyEntriesInRange(
+  userId: string,
+  fromDate: string,
+  toDate: string,
+): Promise<MealActionResult<DailyEntryWithMeal[]>> {
   const readiness = getSupabaseReadiness()
 
   if (!readiness.ready) {
     return createSupabaseFailure(readiness.code)
   }
 
-  const { data, error } = await getLiveSupabase()
+  let query = getLiveSupabase()
     .from('daily_entries')
     .select(
       `
@@ -369,8 +380,15 @@ export async function fetchDailyEntriesForDate(
     `,
     )
     .eq('user_id', userId)
-    .eq('entry_date', date)
     .order('created_at', { ascending: true })
+
+  if (fromDate === toDate) {
+    query = query.eq('entry_date', fromDate)
+  } else {
+    query = query.gte('entry_date', fromDate).lte('entry_date', toDate)
+  }
+
+  const { data, error } = await query
 
   if (error) {
     return { ok: false, code: mapMealErrorCode(error) }

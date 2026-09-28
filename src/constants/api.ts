@@ -36,3 +36,36 @@ export const OPEN_FOOD_FACTS_SEARCH_QUERY_KEY = [
   'open-food-facts',
   'search',
 ] as const
+
+/**
+ * TheMealDB API base URL (free demo key).
+ */
+export const THEMEALDB_API_BASE_URL =
+  'https://www.themealdb.com/api/json/v1/1'
+
+/**
+ * How long TheMealDB category lists stay fresh in TanStack Query.
+ */
+export const THEMEALDB_FILTER_STALE_TIME_MS = 24 * 60 * 60 * 1000
+
+/**
+ * How long TheMealDB meal details stay fresh in TanStack Query.
+ */
+export const THEMEALDB_LOOKUP_STALE_TIME_MS = 24 * 60 * 60 * 1000
+
+/**
+ * Request timeout for TheMealDB calls.
+ */
+export const THEMEALDB_TIMEOUT_MS = 12_000
+
+/**
+ * TanStack Query key root for TheMealDB category filters.
+ */
+export const THEMEALDB_FILTER_QUERY_KEY = ['themealdb', 'filter'] as const
+
+export const THEMEALDB_LOOKUP_QUERY_KEY = ['themealdb', 'lookup'] as const
+
+/**
+ * TanStack Query key root for recommendation picks.
+ */
+export const RECOMMENDATIONS_QUERY_KEY = ['recommendations'] as const

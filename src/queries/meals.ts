@@ -10,6 +10,7 @@ import {
   deleteUserMeal,
   duplicateUserMeal,
   fetchDailyEntriesForDate,
+  fetchDailyEntriesInRange,
   fetchUserMeal,
   fetchUserMeals,
   formatLocalDate,
@@ -20,6 +21,7 @@ import type {
   ManualMealInput,
   MealWithIngredients,
 } from '@/types'
+import { listRecentLocalDates } from '@/utils/dashboard'
 
 /**
  * Loads and caches the current user's saved meals.
@@ -116,6 +118,9 @@ export function useSaveManualMealMutation() {
 
         void queryClient.invalidateQueries({
           queryKey: [...DAILY_ENTRIES_QUERY_KEY, variables.userId, today],
+        })
+        void queryClient.invalidateQueries({
+          queryKey: [...DAILY_ENTRIES_QUERY_KEY, variables.userId, 'week'],
         })
       }
     },
@@ -231,6 +236,54 @@ export function useAddMealToTodayMutation() {
       void queryClient.invalidateQueries({
         queryKey: [...DAILY_ENTRIES_QUERY_KEY, variables.userId, today],
       })
+      void queryClient.invalidateQueries({
+        queryKey: [...DAILY_ENTRIES_QUERY_KEY, variables.userId, 'week'],
+      })
+    },
+  })
+}
+
+/**
+ * Loads diary entries for the last N local calendar days.
+ */
+export function useWeekDailyEntriesQuery(
+  userId: MaybeRefOrGetter<string | undefined>,
+  dayCount: MaybeRefOrGetter<number>,
+  enabled: MaybeRefOrGetter<boolean> = true,
+) {
+  const dates = computed(() => listRecentLocalDates(toValue(dayCount)))
+  const fromDate = computed(() => dates.value[0] ?? '')
+  const toDate = computed(() => dates.value[dates.value.length - 1] ?? '')
+
+  return useQuery({
+    queryKey: computed(() => [
+      ...DAILY_ENTRIES_QUERY_KEY,
+      toValue(userId) ?? 'anonymous',
+      'week',
+      fromDate.value,
+      toDate.value,
+    ]),
+    enabled: computed(
+      () => Boolean(toValue(userId) && fromDate.value && toValue(enabled)),
+    ),
+    queryFn: async (): Promise<DailyEntryWithMeal[]> => {
+      const id = toValue(userId)
+
+      if (!id || !fromDate.value || !toDate.value) {
+        return []
+      }
+
+      const result = await fetchDailyEntriesInRange(
+        id,
+        fromDate.value,
+        toDate.value,
+      )
+
+      if (!result.ok) {
+        throw new Error(result.code)
+      }
+
+      return result.data
     },
   })
 }

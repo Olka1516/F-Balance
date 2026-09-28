@@ -4,10 +4,10 @@ export type RateLimitDecision =
   | { ok: true; cachedCalories: number | null }
   | { ok: false; code: 'unauthorized' | 'cooldown' | 'rateLimited' | 'dailyLimit' }
 
-const COOLDOWN_MS = 12_000
-const MAX_PER_HOUR = 10
-const MAX_PER_DAY = 40
-const CACHE_TTL_MS = 24 * 60 * 60 * 1000
+const COOLDOWN_MS = 20_000
+const MAX_PER_HOUR = 6
+const MAX_PER_DAY = 24
+const CACHE_TTL_MS = 48 * 60 * 60 * 1000
 
 /**
  * Creates a user-scoped Supabase client from the request Authorization header.

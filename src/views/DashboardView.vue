@@ -150,7 +150,7 @@
         </template>
 
         <DashboardMacrosChart
-          v-else
+          v-else-if="chartTab === 'macros'"
           :protein="summary.consumed.protein"
           :fat="summary.consumed.fat"
           :carbs="summary.consumed.carbs"
@@ -169,6 +169,27 @@
           :no-target-label="t('dashboard.chart.macrosNoTarget')"
           :ariaLabel="t('dashboard.chart.macrosAria')"
         />
+
+        <template v-else>
+          <AppLoader v-if="weekLoading" />
+          <p
+            v-else-if="weekError"
+            class="app-page__message app-page__message--error"
+            role="alert"
+          >
+            {{ weekError }}
+          </p>
+          <DashboardWeekChart
+            v-else
+            :points="weekPoints"
+            :labels="weekLabels"
+            :target="summary.targetCalories"
+            :consumed-label="t('dashboard.chart.consumed')"
+            :target-label="t('dashboard.chart.target')"
+            :unit-label="t('dashboard.summary.kcal')"
+            :ariaLabel="t('dashboard.chart.weekAria')"
+          />
+        </template>
       </section>
 
       <section class="dashboard-page__section">
@@ -251,22 +272,33 @@ import AppLoader from '@/components/common/AppLoader.vue'
 import AppPageShell from '@/components/common/AppPageShell.vue'
 import DashboardMacrosChart from '@/components/dashboard/DashboardMacrosChart.vue'
 import DashboardProgressChart from '@/components/dashboard/DashboardProgressChart.vue'
+import DashboardWeekChart from '@/components/dashboard/DashboardWeekChart.vue'
 import { useAppNavigation } from '@/composables/useAppNavigation'
 import { useAuth } from '@/composables/useAuth'
+import { useLocale } from '@/composables/useLocale'
 import {
   DASHBOARD_CHART_TAB_DEFAULT,
   DASHBOARD_CHART_TABS,
+  DASHBOARD_WEEK_DAYS,
   type DashboardChartTab,
 } from '@/constants/dashboard'
 import { MEAL_TYPES } from '@/constants/meals'
-import { useTodayDailyEntriesQuery } from '@/queries/meals'
+import {
+  useTodayDailyEntriesQuery,
+  useWeekDailyEntriesQuery,
+} from '@/queries/meals'
 import { useProfileQuery } from '@/queries/profile'
-import { buildDashboardDaySummary } from '@/utils/dashboard'
+import {
+  buildDashboardDaySummary,
+  buildWeekCaloriePoints,
+  listRecentLocalDates,
+} from '@/utils/dashboard'
 import { resolveMealErrorI18nKey } from '@/utils/mealErrors'
 import { roundNutrition } from '@/utils/macros'
 import '@/styles/views/dashboard.css'
 
 const { t } = useI18n()
+const { currentLocale } = useLocale()
 const { goToAddMeal } = useAppNavigation()
 const { user } = useAuth()
 const userId = computed(() => user.value?.id)
@@ -274,6 +306,14 @@ const chartTab = ref<DashboardChartTab>(DASHBOARD_CHART_TAB_DEFAULT)
 
 const profileQuery = useProfileQuery(userId)
 const entriesQuery = useTodayDailyEntriesQuery(userId)
+const weekEnabled = computed(
+  () => Boolean(userId.value) && chartTab.value === 'week',
+)
+const weekQuery = useWeekDailyEntriesQuery(
+  userId,
+  DASHBOARD_WEEK_DAYS,
+  weekEnabled,
+)
 
 const isLoading = computed(
   () =>
@@ -281,8 +321,35 @@ const isLoading = computed(
     (entriesQuery.isPending.value && !entriesQuery.isFetched.value),
 )
 
+const weekLoading = computed(
+  () =>
+    chartTab.value === 'week' &&
+    weekQuery.isPending.value &&
+    !weekQuery.isFetched.value,
+)
+
 const loadError = computed(() => {
   const error = profileQuery.error.value ?? entriesQuery.error.value
+
+  if (!error) {
+    return ''
+  }
+
+  const code = String(error.message)
+
+  if (
+    code === 'tableMissing' ||
+    code === 'permissionDenied' ||
+    code === 'notFound'
+  ) {
+    return t(resolveMealErrorI18nKey(code))
+  }
+
+  return t('dashboard.errors.load')
+})
+
+const weekError = computed(() => {
+  const error = weekQuery.error.value
 
   if (!error) {
     return ''
@@ -307,6 +374,16 @@ const summary = computed(() =>
     MEAL_TYPES,
     profileQuery.data.value?.dailyCalories ?? null,
   ),
+)
+
+const weekDates = computed(() => listRecentLocalDates(DASHBOARD_WEEK_DAYS))
+
+const weekPoints = computed(() =>
+  buildWeekCaloriePoints(weekQuery.data.value ?? [], weekDates.value),
+)
+
+const weekLabels = computed(() =>
+  weekDates.value.map((date) => formatWeekdayLabel(date)),
 )
 
 const macroTargets = computed(() => ({
@@ -367,5 +444,14 @@ function formatMacroValue(value: number, target: number | null): string {
 
 function isMacroOver(value: number, target: number | null): boolean {
   return target != null && value > target
+}
+
+function formatWeekdayLabel(dateKey: string): string {
+  const [year, month, day] = dateKey.split('-').map(Number)
+  const date = new Date(year ?? 0, (month ?? 1) - 1, day ?? 1)
+
+  return new Intl.DateTimeFormat(currentLocale.value, {
+    weekday: 'short',
+  }).format(date)
 }
 </script>

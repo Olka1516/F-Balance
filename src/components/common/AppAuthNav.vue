@@ -20,6 +20,12 @@
     </RouterLink>
     <RouterLink
       class="app-auth-nav__link"
+      :to="{ name: ROUTE_NAMES.recommendations }"
+    >
+      {{ t('common.nav.recommendations') }}
+    </RouterLink>
+    <RouterLink
+      class="app-auth-nav__link"
       :to="{ name: ROUTE_NAMES.profile }"
     >
       {{ t('common.nav.profile') }}

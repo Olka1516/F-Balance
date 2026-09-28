@@ -11,7 +11,7 @@ export const AI_ANALYZE_PHOTO_FN = 'analyze-photo'
 /**
  * Client cooldown between AI analyzes in milliseconds.
  */
-export const AI_CLIENT_COOLDOWN_MS = 12_000
+export const AI_CLIENT_COOLDOWN_MS = 20_000
 
 /**
  * localStorage key for the last AI request timestamp.
@@ -40,22 +40,22 @@ export const AI_PHOTO_ALLOWED_MIME = [
 /**
  * Maximum original photo file size before compression (bytes).
  */
-export const AI_PHOTO_MAX_INPUT_BYTES = 8 * 1024 * 1024
+export const AI_PHOTO_MAX_INPUT_BYTES = 5 * 1024 * 1024
 
 /**
  * Maximum longest image side after downscale.
  */
-export const AI_PHOTO_MAX_DIMENSION = 1280
+export const AI_PHOTO_MAX_DIMENSION = 1024
 
 /**
  * JPEG quality used when compressing photos for AI.
  */
-export const AI_PHOTO_JPEG_QUALITY = 0.72
+export const AI_PHOTO_JPEG_QUALITY = 0.65
 
 /**
  * Maximum compressed payload size sent to the Edge Function (bytes).
  */
-export const AI_PHOTO_MAX_OUTPUT_BYTES = 1_200_000
+export const AI_PHOTO_MAX_OUTPUT_BYTES = 800_000
 
 /**
  * Default meal name when AI estimate has no description.

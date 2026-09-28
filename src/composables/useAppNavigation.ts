@@ -60,6 +60,13 @@ export function useAppNavigation() {
   }
 
   /**
+   * Opens the recommendations screen.
+   */
+  function goToRecommendations(): void {
+    router.push({ name: ROUTE_NAMES.recommendations })
+  }
+
+  /**
    * Opens the profile screen.
    */
   function goToProfile(): void {
@@ -74,6 +81,7 @@ export function useAppNavigation() {
     goToDashboard,
     goToAddMeal,
     goToMyMeals,
+    goToRecommendations,
     goToProfile,
   }
 }
