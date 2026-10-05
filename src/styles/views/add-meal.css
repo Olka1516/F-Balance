@@ -40,6 +40,14 @@
   overflow-wrap: anywhere;
 }
 
+.add-meal-page__notice--warning {
+  background: color-mix(in srgb, var(--color-accent) 14%, var(--color-surface));
+  border: 1px solid color-mix(in srgb, var(--color-accent) 40%, var(--color-border));
+  border-radius: var(--radius-sm);
+  color: var(--color-text);
+  padding: var(--space-sm) var(--space-md);
+}
+
 @media (min-width: 28rem) {
   .add-meal-page__tab {
     font-size: 0.875rem;

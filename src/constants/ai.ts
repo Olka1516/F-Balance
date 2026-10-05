@@ -29,6 +29,11 @@ export const AI_TEXT_MIN_LENGTH = 3
 export const AI_TEXT_MAX_LENGTH = 500
 
 /**
+ * Calories at or below this with empty macros count as “no food found”.
+ */
+export const AI_EMPTY_CALORIES_MAX = 5
+
+/**
  * Allowed photo MIME types for AI analysis.
  */
 export const AI_PHOTO_ALLOWED_MIME = [

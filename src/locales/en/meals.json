@@ -32,6 +32,7 @@
     "analyze": "Analyze",
     "analyzing": "Analyzing…",
     "applied": "Estimate applied ({calories} kcal + macros). Review and edit before saving.",
+    "emptyResult": "No food recognized — calories and macros are 0. Try another description/photo or enter values manually.",
     "errors": {
       "unauthorized": "Sign in again to use AI analysis.",
       "cooldown": "Wait about 20 seconds before another analysis.",

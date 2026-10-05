@@ -23,12 +23,13 @@ export type AiActionResult =
  */
 export async function analyzeFoodText(
   description: string,
+  locale: string,
 ): Promise<AiActionResult> {
   if (getAiCooldownRemainingMs() > 0) {
     return { ok: false, code: 'cooldown' }
   }
 
-  return invokeAiFunction(AI_ANALYZE_TEXT_FN, { description })
+  return invokeAiFunction(AI_ANALYZE_TEXT_FN, { description, locale })
 }
 
 /**
@@ -37,6 +38,7 @@ export async function analyzeFoodText(
 export async function analyzeFoodPhoto(payload: {
   imageBase64: string
   mimeType: string
+  locale: string
 }): Promise<AiActionResult> {
   if (getAiCooldownRemainingMs() > 0) {
     return { ok: false, code: 'cooldown' }

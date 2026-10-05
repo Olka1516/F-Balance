@@ -116,6 +116,7 @@ import { APP_BUTTON_VARIANT } from '@/constants/ui'
 import { analyzeFoodPhoto, analyzeFoodText } from '@/services/ai'
 import type { AiNutritionEstimate } from '@/types'
 import { resolveAiErrorI18nKey } from '@/utils/aiErrors'
+import { emptyAiEstimate, isEmptyAiEstimate } from '@/utils/aiEstimate'
 import { compressImageForAi } from '@/utils/aiImage'
 import '@/styles/components/meal-ai-panel.css'
 
@@ -123,7 +124,7 @@ const emit = defineEmits<{
   estimated: [payload: AiNutritionEstimate]
 }>()
 
-const { t } = useI18n()
+const { t, locale } = useI18n()
 const mode = ref<'text' | 'photo'>('text')
 const description = ref('')
 const photoFile = ref<File | null>(null)
@@ -187,11 +188,21 @@ async function onAnalyze(): Promise<void> {
   isAnalyzing.value = true
 
   try {
+    const activeLocale = String(locale.value)
+
     if (mode.value === 'text') {
-      const result = await analyzeFoodText(description.value.trim())
+      const result = await analyzeFoodText(
+        description.value.trim(),
+        activeLocale,
+      )
 
       if (!result.ok) {
         errorMessage.value = t(resolveAiErrorI18nKey(result.code))
+        return
+      }
+
+      if (isEmptyAiEstimate(result.data)) {
+        emit('estimated', emptyAiEstimate(result.data.cached))
         return
       }
 
@@ -216,10 +227,16 @@ async function onAnalyze(): Promise<void> {
     const result = await analyzeFoodPhoto({
       imageBase64: compressed.base64,
       mimeType: compressed.mimeType,
+      locale: activeLocale,
     })
 
     if (!result.ok) {
       errorMessage.value = t(resolveAiErrorI18nKey(result.code))
+      return
+    }
+
+    if (isEmptyAiEstimate(result.data)) {
+      emit('estimated', emptyAiEstimate(result.data.cached))
       return
     }
 

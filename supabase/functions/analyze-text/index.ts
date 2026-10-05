@@ -36,7 +36,7 @@ Deno.serve(async (req) => {
     return jsonResponse({ error: 'unauthorized' }, 401)
   }
 
-  let body: { description?: unknown }
+  let body: { description?: unknown; locale?: unknown }
 
   try {
     body = await req.json()
@@ -45,12 +45,13 @@ Deno.serve(async (req) => {
   }
 
   const description = String(body.description ?? '').trim()
+  const locale = normalizeLocale(body.locale)
 
   if (description.length < TEXT_MIN || description.length > TEXT_MAX) {
     return jsonResponse({ error: 'invalidDescription' }, 400)
   }
 
-  const inputHash = await sha256Hex(`text:${description.toLowerCase()}`)
+  const inputHash = await sha256Hex(`text:${locale}:${description.toLowerCase()}`)
   const limit = await checkAiRateLimit(client, userId, inputHash)
 
   if (!limit.ok) {
@@ -61,7 +62,10 @@ Deno.serve(async (req) => {
     return jsonResponse({ ...limit.cachedEstimate, cached: true })
   }
 
-  const estimate = await estimateNutritionWithGemini({ text: description })
+  const estimate = await estimateNutritionWithGemini({
+    text: description,
+    locale,
+  })
 
   if (!estimate.ok) {
     return jsonResponse({ error: estimate.code }, 502)
@@ -209,6 +213,7 @@ async function estimateNutritionWithGemini(input: {
   text?: string
   imageBase64?: string
   mimeType?: string
+  locale: string
 }): Promise<{ ok: true; data: NutritionEstimate } | { ok: false; code: string }> {
   const apiKey = Deno.env.get('GEMINI_API_KEY')?.trim()
 
@@ -312,8 +317,10 @@ async function callGeminiModel(
     text?: string
     imageBase64?: string
     mimeType?: string
+    locale: string
   },
 ): Promise<{ ok: true; data: NutritionEstimate } | { ok: false; code: string }> {
+  const languageName = localeLanguageName(input.locale)
   const parts: Array<Record<string, unknown>> = [
     {
       text:
@@ -321,7 +328,14 @@ async function callGeminiModel(
         'Reply with JSON only in this exact shape: ' +
         '{"name":"short dish name","calories":number,"protein":number,"fat":number,"carbs":number}. ' +
         'Values are estimates for the whole visible/described portion. ' +
-        'protein/fat/carbs are grams. No markdown, no extra keys.',
+        'protein/fat/carbs are grams. ' +
+        `The "name" MUST be written in ${languageName}` +
+        (input.locale === 'uk'
+          ? ' using Ukrainian Cyrillic letters (not English). '
+          : '. ') +
+        'If the input is not identifiable edible food, or nutrition is negligible, ' +
+        'return {"name":null,"calories":0,"protein":0,"fat":0,"carbs":0}. ' +
+        'No markdown, no extra keys.',
     },
   ]
 
@@ -388,6 +402,24 @@ async function callGeminiModel(
   return { ok: true, data: estimate }
 }
 
+function normalizeLocale(value: unknown): string {
+  const locale = String(value ?? '').trim().toLowerCase()
+
+  if (locale === 'uk' || locale === 'en') {
+    return locale
+  }
+
+  return 'uk'
+}
+
+function localeLanguageName(locale: string): string {
+  if (locale === 'uk') {
+    return 'Ukrainian'
+  }
+
+  return 'English'
+}
+
 function parseNutritionJson(raw: string): NutritionEstimate | null {
   const trimmed = raw
     .trim()
@@ -432,6 +464,16 @@ function normalizeEstimate(
 
   if (!Number.isFinite(calories) || calories < 0) {
     return null
+  }
+
+  if (calories === 0 && (protein ?? 0) === 0 && (fat ?? 0) === 0 && (carbs ?? 0) === 0) {
+    return {
+      name: null,
+      calories: 0,
+      protein: 0,
+      fat: 0,
+      carbs: 0,
+    }
   }
 
   if (protein == null || fat == null || carbs == null || !name) {

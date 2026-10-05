@@ -38,7 +38,12 @@
       />
 
       <template v-else>
-        <p v-if="entryNotice" class="add-meal-page__notice" role="status">
+        <p
+          v-if="entryNotice"
+          class="add-meal-page__notice"
+          :class="{ 'add-meal-page__notice--warning': entryNoticeIsWarning }"
+          role="status"
+        >
           {{ entryNotice }}
         </p>
 
@@ -105,6 +110,7 @@ import {
 import { useMealQuery, useSaveManualMealMutation } from '@/queries/meals'
 import type { AiNutritionEstimate, FoodSearchHit, FoodSource } from '@/types'
 import { resolveMealErrorI18nKey } from '@/utils/mealErrors'
+import { isEmptyAiEstimate } from '@/utils/aiEstimate'
 import {
   aiEstimateToFormValues,
   createEmptyMealForm,
@@ -136,6 +142,7 @@ const mealFormRef = ref<{ validate: () => Promise<boolean> } | null>(null)
 const formError = ref('')
 const formSuccess = ref('')
 const entryNotice = ref('')
+const entryNoticeIsWarning = ref(false)
 const isSaving = ref(false)
 const activeTab = ref<AddMealEntryTab>(ADD_MEAL_ENTRY_TAB_DEFAULT)
 const foodSource = ref<FoodSource>(FOOD_SOURCE_MANUAL)
@@ -181,23 +188,44 @@ function onSelectSearchHit(hit: FoodSearchHit): void {
   foodSource.value = FOOD_SOURCE_OPEN_FOOD_FACTS
   activeTab.value = 'manual'
   formError.value = ''
+  entryNoticeIsWarning.value = !hit.isComplete
   entryNotice.value = hit.isComplete
     ? t('meals.search.applied')
     : t('meals.search.appliedIncomplete')
 }
 
 function onAiEstimated(payload: AiNutritionEstimate): void {
+  const empty = isEmptyAiEstimate(payload)
+  const estimate = empty
+    ? {
+        calories: 0,
+        protein: 0,
+        fat: 0,
+        carbs: 0,
+        name: null,
+      }
+    : payload
+
   form.value = aiEstimateToFormValues({
-    calories: payload.calories,
-    protein: payload.protein,
-    fat: payload.fat,
-    carbs: payload.carbs,
+    calories: estimate.calories,
+    protein: estimate.protein,
+    fat: estimate.fat,
+    carbs: estimate.carbs,
     mealType: form.value.mealType,
-    name: payload.name,
+    name: estimate.name,
   })
   foodSource.value = FOOD_SOURCE_AI
   activeTab.value = 'manual'
   formError.value = ''
+
+  if (empty) {
+    form.value.name = ''
+    entryNoticeIsWarning.value = true
+    entryNotice.value = t('meals.ai.emptyResult')
+    return
+  }
+
+  entryNoticeIsWarning.value = false
   entryNotice.value = t('meals.ai.applied', {
     calories: payload.calories,
   })
