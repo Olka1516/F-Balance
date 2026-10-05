@@ -26,7 +26,7 @@
 .profile-form__chips {
   display: grid;
   gap: var(--space-sm);
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
 .profile-form__chips--wrap {
@@ -76,11 +76,14 @@
 }
 
 .profile-form__section-head {
-  align-items: center;
+  align-items: stretch;
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: column;
   gap: var(--space-sm);
-  justify-content: space-between;
+}
+
+.profile-form__section-head .app-button {
+  width: 100%;
 }
 
 .profile-form__hint {
@@ -97,6 +100,21 @@
 }
 
 @media (min-width: 28rem) {
+  .profile-form__section-head {
+    align-items: center;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-between;
+  }
+
+  .profile-form__section-head .app-button {
+    width: auto;
+  }
+
+  .profile-form__chips {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
   .profile-form__grid {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }

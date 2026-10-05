@@ -65,7 +65,7 @@ export function createEmptyMealForm(): MealFormValues {
 }
 
 /**
- * Fills meal form fields from an Open Food Facts hit (values per selected grams).
+ * Fills meal form fields from an Open Food Facts hit (nutrition per 100 g).
  */
 export function foodSearchHitToFormValues(
   hit: FoodSearchHit,
@@ -86,6 +86,7 @@ export function foodSearchHitToFormValues(
 
 /**
  * Builds editable form values from an AI nutrition estimate.
+ * Converts the portion estimate into per-100 g densities using amountGrams.
  */
 export function aiEstimateToFormValues(input: {
   calories: number
@@ -96,14 +97,25 @@ export function aiEstimateToFormValues(input: {
   name?: string | null
   amountGrams?: number
 }): MealFormValues {
+  const amountGrams = input.amountGrams ?? FOOD_SEARCH_DEFAULT_AMOUNT_G
+  const perHundred = macrosToPerHundred(
+    {
+      calories: input.calories,
+      protein: input.protein ?? 0,
+      fat: input.fat ?? 0,
+      carbs: input.carbs ?? 0,
+    },
+    amountGrams,
+  )
+
   return {
     name: (input.name ?? '').trim() || AI_ESTIMATE_DEFAULT_NAME,
     mealType: input.mealType || MEAL_TYPE_DEFAULT,
-    amount: String(input.amountGrams ?? FOOD_SEARCH_DEFAULT_AMOUNT_G),
-    calories: String(input.calories),
-    protein: String(input.protein ?? 0),
-    fat: String(input.fat ?? 0),
-    carbs: String(input.carbs ?? 0),
+    amount: String(amountGrams),
+    calories: String(perHundred.calories),
+    protein: String(perHundred.protein),
+    fat: String(perHundred.fat),
+    carbs: String(perHundred.carbs),
   }
 }
 
@@ -115,41 +127,41 @@ export function isMealType(value: string): value is MealType {
 }
 
 /**
- * Maps a meal with a single ingredient into editable form values.
+ * Maps a meal with a single ingredient into editable form values (per 100 g).
  */
 export function mealToFormValues(meal: MealWithIngredients): MealFormValues {
   const ingredient = meal.ingredients[0]
   const amount = ingredient?.amount ?? meal.totalWeight
-  const portion = ingredient
-    ? macrosForAmount(
+  const perHundred = ingredient
+    ? {
+        calories: ingredient.food.calories,
+        protein: ingredient.food.protein,
+        fat: ingredient.food.fat,
+        carbs: ingredient.food.carbs,
+      }
+    : macrosToPerHundred(
         {
-          calories: ingredient.food.calories,
-          protein: ingredient.food.protein,
-          fat: ingredient.food.fat,
-          carbs: ingredient.food.carbs,
+          calories: meal.calories,
+          protein: meal.protein,
+          fat: meal.fat,
+          carbs: meal.carbs,
         },
         amount,
       )
-    : {
-        calories: meal.calories,
-        protein: meal.protein,
-        fat: meal.fat,
-        carbs: meal.carbs,
-      }
 
   return {
     name: meal.name,
     mealType: meal.mealType,
     amount: String(amount),
-    calories: String(portion.calories),
-    protein: String(portion.protein),
-    fat: String(portion.fat),
-    carbs: String(portion.carbs),
+    calories: String(perHundred.calories),
+    protein: String(perHundred.protein),
+    fat: String(perHundred.fat),
+    carbs: String(perHundred.carbs),
   }
 }
 
 /**
- * Parses validated form strings into a manual meal input.
+ * Parses validated form strings into a manual meal input (nutrition per 100 g).
  */
 export function formValuesToManualMealInput(
   values: MealFormValues,
@@ -187,17 +199,15 @@ export function formValuesToManualMealInput(
 
 /**
  * Builds per-100g food macros and meal totals from a manual input.
+ * Input nutrition is already per 100 g; totals scale by amountGrams.
  */
 export function buildManualMealNutrition(input: ManualMealInput) {
-  const perHundred = macrosToPerHundred(
-    {
-      calories: input.calories,
-      protein: input.protein,
-      fat: input.fat,
-      carbs: input.carbs,
-    },
-    input.amountGrams,
-  )
+  const perHundred = {
+    calories: input.calories,
+    protein: input.protein,
+    fat: input.fat,
+    carbs: input.carbs,
+  }
   const totals = macrosForAmount(perHundred, input.amountGrams)
 
   return {

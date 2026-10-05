@@ -13,13 +13,11 @@
         </button>
       </div>
 
-      <div class="landing-top-bar__logo-slot">
-        <div class="landing-top-bar__logo">
-          <span class="landing-top-bar__logo-mark" aria-hidden="true">F</span>
-          <span class="landing-top-bar__logo-name">{{
-            t('common.appName')
-          }}</span>
+      <div class="landing-top-bar__brand">
+        <div class="landing-top-bar__logo" aria-hidden="true">
+          <span class="landing-top-bar__logo-mark">F</span>
         </div>
+        <span class="landing-top-bar__brand-name">{{ t('common.appName') }}</span>
       </div>
 
       <div class="landing-top-bar__group landing-top-bar__group--end">

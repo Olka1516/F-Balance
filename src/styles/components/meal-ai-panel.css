@@ -17,29 +17,30 @@
 
 .meal-ai-panel__modes {
   background: color-mix(in srgb, var(--color-border) 28%, var(--color-surface));
-  border-radius: var(--radius-full);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
   display: grid;
-  gap: 0.2rem;
+  gap: 0;
   grid-template-columns: 1fr 1fr;
-  padding: 0.2rem;
+  padding: 0;
 }
 
 .meal-ai-panel__mode {
   background: transparent;
   border: none;
-  border-radius: var(--radius-full);
+  border-radius: 0;
   color: var(--color-text-muted);
   cursor: pointer;
   font: inherit;
   font-size: 0.8125rem;
-  font-weight: 700;
+  font-weight: 600;
   min-height: var(--touch-target-min);
   padding: var(--space-sm) var(--space-md);
 }
 
 .meal-ai-panel__mode--active {
   background: var(--color-surface);
-  box-shadow: var(--shadow-sm);
+  box-shadow: inset 0 -2px 0 var(--color-primary);
   color: var(--color-primary);
 }
 
@@ -72,11 +73,26 @@
   outline-offset: 2px;
 }
 
+.meal-ai-panel__photo-actions {
+  display: grid;
+  gap: var(--space-sm);
+  grid-template-columns: 1fr;
+}
+
 .meal-ai-panel__file {
   color: var(--color-text-muted);
   font: inherit;
   font-size: 0.875rem;
   max-width: 100%;
+  width: 100%;
+}
+
+.meal-ai-panel__file--hidden {
+  height: 0;
+  opacity: 0;
+  overflow: hidden;
+  position: absolute;
+  width: 0;
 }
 
 .meal-ai-panel__file-name {
@@ -87,7 +103,12 @@
 }
 
 .meal-ai-panel .app-button {
-  border-radius: var(--radius-lg);
-  font-weight: 700;
+  font-weight: 600;
   width: 100%;
+}
+
+@media (min-width: 28rem) {
+  .meal-ai-panel__photo-actions {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }

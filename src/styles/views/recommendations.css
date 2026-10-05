@@ -20,9 +20,9 @@
 }
 
 .recommendations-page__tabs {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
   gap: var(--space-sm);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   margin-bottom: var(--space-md);
 }
 
@@ -36,7 +36,8 @@
   font-size: 0.8125rem;
   font-weight: 600;
   min-height: var(--touch-target-min);
-  padding: 0.5rem 0.95rem;
+  padding: 0.5rem 0.75rem;
+  text-align: center;
 }
 
 .recommendations-page__tab--active {
@@ -64,6 +65,17 @@
   font-size: 0.8125rem;
   line-height: 1.4;
   margin: var(--space-lg) 0 0;
+}
+
+@media (min-width: 28rem) {
+  .recommendations-page__tabs {
+    display: flex;
+    flex-wrap: wrap;
+  }
+
+  .recommendations-page__tab {
+    padding: 0.5rem 0.95rem;
+  }
 }
 
 @media (min-width: 40rem) {

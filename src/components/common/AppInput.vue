@@ -11,11 +11,15 @@
       <input
         :id="inputId"
         class="app-input__field"
-        :class="{ 'app-input__field--error': hasError }"
+        :class="{
+          'app-input__field--error': hasError,
+          'app-input__field--readonly': readonly,
+        }"
         :type="type ?? APP_INPUT_DEFAULT_TYPE"
         :value="modelValue"
         :autocomplete="autocomplete"
         :placeholder="placeholder"
+        :readonly="readonly"
         :aria-invalid="hasError"
         :aria-describedby="hasError ? `${inputId}-error` : undefined"
         @input="
@@ -65,10 +69,12 @@ const props = withDefaults(
     placeholder?: string
     variant?: AppInputVariant
     icon?: AppInputIcon
+    readonly?: boolean
   }>(),
   {
     variant: APP_INPUT_DEFAULT_VARIANT,
     icon: APP_INPUT_DEFAULT_ICON,
+    readonly: false,
   },
 )
 

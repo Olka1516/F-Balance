@@ -1,3 +1,9 @@
+import {
+  MACRO_KCAL_CARBS,
+  MACRO_KCAL_FAT,
+  MACRO_KCAL_PROTEIN,
+} from '@/constants/dashboard'
+
 /**
  * Macronutrient totals used across meals and daily progress.
  */
@@ -13,6 +19,21 @@ export type MacroTotals = {
  */
 export function roundNutrition(value: number): number {
   return Math.round(value * 100) / 100
+}
+
+/**
+ * Estimates calories from protein, fat, and carbs using Atwater factors.
+ */
+export function caloriesFromMacros(
+  protein: number,
+  fat: number,
+  carbs: number,
+): number {
+  return roundNutrition(
+    protein * MACRO_KCAL_PROTEIN +
+      fat * MACRO_KCAL_FAT +
+      carbs * MACRO_KCAL_CARBS,
+  )
 }
 
 /**

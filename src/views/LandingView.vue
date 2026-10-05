@@ -12,26 +12,26 @@
             }}</span>
           </h1>
           <p class="landing-page__lead">{{ t('common.landing.tagline') }}</p>
-
-          <div class="landing-page__actions">
-            <button
-              type="button"
-              class="landing-page__pill-btn landing-page__pill-btn--dark"
-              @click="goToRegister"
-            >
-              {{ t('common.landing.cta') }}
-            </button>
-            <button
-              type="button"
-              class="landing-page__pill-btn landing-page__pill-btn--dark"
-              @click="goToLogin"
-            >
-              {{ t('common.landing.loginAction') }}
-            </button>
-          </div>
         </div>
 
         <LandingHeroVisual />
+
+        <div class="landing-page__actions">
+          <button
+            type="button"
+            class="landing-page__pill-btn landing-page__pill-btn--dark"
+            @click="goToRegister"
+          >
+            {{ t('common.landing.cta') }}
+          </button>
+          <button
+            type="button"
+            class="landing-page__pill-btn landing-page__pill-btn--ghost"
+            @click="goToLogin"
+          >
+            {{ t('common.landing.loginAction') }}
+          </button>
+        </div>
       </section>
     </main>
   </div>

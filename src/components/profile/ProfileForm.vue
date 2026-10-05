@@ -185,7 +185,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, reactive } from 'vue'
+import { computed, reactive, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRegle } from '@regle/core'
 import { withMessage } from '@regle/rules'
@@ -219,6 +219,7 @@ import {
 } from '@/constants/ui'
 import type { ProfileFormValues } from '@/types'
 import { suggestMacroTargets } from '@/utils/macroTargets'
+import { caloriesFromMacros } from '@/utils/macros'
 import {
   isUserGoal,
   parseOptionalNumber,
@@ -284,6 +285,43 @@ const canSuggestMacros = computed(() => {
     calories <= PROFILE_DAILY_CALORIES_MAX
   )
 })
+
+watch(
+  () =>
+    [
+      form.value.dailyProtein,
+      form.value.dailyFat,
+      form.value.dailyCarbs,
+    ] as const,
+  ([protein, fat, carbs]) => {
+    if (!protein.trim() && !fat.trim() && !carbs.trim()) {
+      return
+    }
+
+    if (!protein.trim() || !fat.trim() || !carbs.trim()) {
+      return
+    }
+
+    const proteinGrams = parseOptionalNumber(protein)
+    const fatGrams = parseOptionalNumber(fat)
+    const carbsGrams = parseOptionalNumber(carbs)
+
+    if (
+      proteinGrams == null ||
+      fatGrams == null ||
+      carbsGrams == null ||
+      proteinGrams < 0 ||
+      fatGrams < 0 ||
+      carbsGrams < 0
+    ) {
+      return
+    }
+
+    form.value.dailyCalories = String(
+      caloriesFromMacros(proteinGrams, fatGrams, carbsGrams),
+    )
+  },
+)
 
 const { r$ } = useRegle(form, {
   weight: {

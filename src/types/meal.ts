@@ -27,6 +27,7 @@ export type MealWithIngredients = Meal & {
 
 /**
  * Manual meal form values as strings for inputs.
+ * Nutrition fields are per 100 g; amount is the eaten portion in grams.
  */
 export type MealFormValues = {
   name: string
@@ -40,6 +41,7 @@ export type MealFormValues = {
 
 /**
  * Parsed manual meal payload ready for persistence.
+ * Nutrition fields are densities per 100 g; amountGrams is the eaten portion.
  */
 export type ManualMealInput = {
   name: string

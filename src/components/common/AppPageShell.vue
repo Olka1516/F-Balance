@@ -1,21 +1,17 @@
 <template>
   <main class="app-page">
-    <div class="app-page__atmosphere" aria-hidden="true">
-      <div class="app-page__orb app-page__orb--primary" />
-      <div class="app-page__orb app-page__orb--accent" />
-      <div class="app-page__mesh" />
-    </div>
-
     <div class="app-page__shell">
-      <AppAuthNav v-if="showNav" />
+      <AppBurgerNav v-if="showNav" />
 
       <section
         class="app-page__card"
         :class="{ 'app-page__card--wide': wide }"
       >
-        <p class="app-page__season">
-          {{ t(`common.seasons.${season}`) }}
-        </p>
+        <div class="app-page__meta">
+          <p class="app-page__season">
+            {{ t(`common.seasons.${season}`) }}
+          </p>
+        </div>
 
         <header class="app-page__header">
           <div class="app-page__heading">
@@ -40,7 +36,7 @@
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n'
 import { storeToRefs } from 'pinia'
-import AppAuthNav from '@/components/common/AppAuthNav.vue'
+import AppBurgerNav from '@/components/common/AppBurgerNav.vue'
 import { useThemeStore } from '@/stores/theme'
 import '@/styles/components/app-page-shell.css'
 

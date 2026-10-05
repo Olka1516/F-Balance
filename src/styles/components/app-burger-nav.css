@@ -1,0 +1,155 @@
+.app-burger-nav {
+  margin: 0 auto var(--space-md);
+  max-width: 40rem;
+  width: 100%;
+}
+
+.app-burger-nav__bar {
+  align-items: center;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  display: grid;
+  gap: var(--space-sm);
+  grid-template-columns: auto 1fr auto;
+  min-height: 3rem;
+  padding: 0.35rem 0.5rem;
+}
+
+.app-burger-nav__toggle,
+.app-burger-nav__close {
+  align-items: center;
+  background: transparent;
+  border: 1px solid transparent;
+  color: var(--color-text);
+  cursor: pointer;
+  display: inline-flex;
+  height: var(--touch-target-min);
+  justify-content: center;
+  padding: 0;
+  width: var(--touch-target-min);
+}
+
+.app-burger-nav__toggle:hover,
+.app-burger-nav__close:hover {
+  border-color: var(--color-border);
+  color: var(--color-primary);
+}
+
+.app-burger-nav__toggle:focus-visible,
+.app-burger-nav__close:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 1px;
+}
+
+.app-burger-nav__toggle-icon,
+.app-burger-nav__close-icon {
+  display: block;
+  height: 1.25rem;
+  width: 1.25rem;
+}
+
+.app-burger-nav__toggle-icon > svg,
+.app-burger-nav__close-icon > svg {
+  display: block;
+  height: 100%;
+  width: 100%;
+}
+
+.app-burger-nav__brand {
+  color: var(--color-text);
+  font-size: 0.9375rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  margin: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.app-burger-nav__backdrop {
+  background: color-mix(in srgb, var(--color-text) 45%, transparent);
+  inset: 0;
+  position: fixed;
+  z-index: 50;
+}
+
+.app-burger-nav__drawer {
+  background: var(--color-surface);
+  border-right: 1px solid var(--color-border);
+  bottom: 0;
+  box-shadow: var(--shadow-md);
+  display: flex;
+  flex-direction: column;
+  left: 0;
+  max-width: 18rem;
+  padding:
+    max(var(--space-md), env(safe-area-inset-top))
+    var(--space-md)
+    max(var(--space-md), env(safe-area-inset-bottom));
+  position: fixed;
+  top: 0;
+  transform: translateX(-105%);
+  transition: transform 0.2s ease;
+  width: min(18rem, 86vw);
+  z-index: 60;
+}
+
+.app-burger-nav__drawer--open {
+  transform: translateX(0);
+}
+
+.app-burger-nav__drawer-head {
+  align-items: center;
+  border-bottom: 1px solid var(--color-border);
+  display: flex;
+  gap: var(--space-sm);
+  justify-content: space-between;
+  margin-bottom: var(--space-md);
+  padding-bottom: var(--space-sm);
+}
+
+.app-burger-nav__drawer-title {
+  font-size: 0.875rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+.app-burger-nav__list {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.app-burger-nav__link {
+  border-bottom: 1px solid var(--color-border);
+  color: var(--color-text);
+  display: block;
+  font-size: 0.9375rem;
+  font-weight: 500;
+  min-height: var(--touch-target-min);
+  padding: 0.85rem 0.25rem;
+  text-decoration: none;
+}
+
+.app-burger-nav__link:hover {
+  color: var(--color-primary);
+}
+
+.app-burger-nav__link.router-link-active {
+  color: var(--color-primary);
+  font-weight: 600;
+}
+
+.app-burger-nav__link:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+@media (min-width: 48rem) {
+  .app-burger-nav {
+    max-width: 48rem;
+  }
+}

@@ -38,12 +38,42 @@
     </template>
 
     <template v-else>
-      <label class="meal-ai-panel__label" for="meal-ai-photo">
+      <p class="meal-ai-panel__label" id="meal-ai-photo-label">
         {{ t('meals.ai.photoLabel') }}
-      </label>
+      </p>
+      <div
+        class="meal-ai-panel__photo-actions"
+        role="group"
+        :aria-labelledby="'meal-ai-photo-label'"
+      >
+        <AppButton
+          type="button"
+          :variant="APP_BUTTON_VARIANT.secondary"
+          :disabled="isAnalyzing"
+          @click="openCameraPicker"
+        >
+          {{ t('meals.ai.takePhoto') }}
+        </AppButton>
+        <AppButton
+          type="button"
+          :variant="APP_BUTTON_VARIANT.secondary"
+          :disabled="isAnalyzing"
+          @click="openGalleryPicker"
+        >
+          {{ t('meals.ai.chooseGallery') }}
+        </AppButton>
+      </div>
       <input
-        id="meal-ai-photo"
-        class="meal-ai-panel__file"
+        ref="cameraInput"
+        class="meal-ai-panel__file meal-ai-panel__file--hidden"
+        type="file"
+        accept="image/*"
+        capture="environment"
+        @change="onPhotoChange"
+      />
+      <input
+        ref="galleryInput"
+        class="meal-ai-panel__file meal-ai-panel__file--hidden"
         type="file"
         accept="image/jpeg,image/png,image/webp"
         @change="onPhotoChange"
@@ -82,6 +112,7 @@ import {
   AI_TEXT_MAX_LENGTH,
   AI_TEXT_MIN_LENGTH,
 } from '@/constants/ai'
+import { APP_BUTTON_VARIANT } from '@/constants/ui'
 import { analyzeFoodPhoto, analyzeFoodText } from '@/services/ai'
 import type { AiNutritionEstimate } from '@/types'
 import { resolveAiErrorI18nKey } from '@/utils/aiErrors'
@@ -99,6 +130,8 @@ const photoFile = ref<File | null>(null)
 const photoName = ref('')
 const isAnalyzing = ref(false)
 const errorMessage = ref('')
+const cameraInput = ref<HTMLInputElement | null>(null)
+const galleryInput = ref<HTMLInputElement | null>(null)
 
 const canAnalyze = computed(() => {
   if (mode.value === 'text') {
@@ -108,6 +141,16 @@ const canAnalyze = computed(() => {
 
   return Boolean(photoFile.value)
 })
+
+function openCameraPicker(): void {
+  errorMessage.value = ''
+  cameraInput.value?.click()
+}
+
+function openGalleryPicker(): void {
+  errorMessage.value = ''
+  galleryInput.value?.click()
+}
 
 function onPhotoChange(event: Event): void {
   errorMessage.value = ''
@@ -120,10 +163,13 @@ function onPhotoChange(event: Event): void {
     return
   }
 
-  if (
-    !(AI_PHOTO_ALLOWED_MIME as readonly string[]).includes(file.type) ||
-    file.size > AI_PHOTO_MAX_INPUT_BYTES
-  ) {
+const mimeOk =
+    !file.type ||
+    file.type === 'image/jpg' ||
+    (AI_PHOTO_ALLOWED_MIME as readonly string[]).includes(file.type) ||
+    /^image\//.test(file.type)
+
+  if (!mimeOk || file.size > AI_PHOTO_MAX_INPUT_BYTES) {
     photoFile.value = null
     photoName.value = ''
     errorMessage.value = t('meals.ai.errors.invalidImage')
@@ -132,7 +178,8 @@ function onPhotoChange(event: Event): void {
   }
 
   photoFile.value = file
-  photoName.value = file.name
+  photoName.value = file.name || t('meals.ai.capturedPhotoName')
+  input.value = ''
 }
 
 async function onAnalyze(): Promise<void> {

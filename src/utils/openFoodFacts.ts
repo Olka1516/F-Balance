@@ -18,8 +18,8 @@ export function mapOpenFoodFactsProduct(
   product: OffProduct,
 ): FoodSearchHit | null {
   const id = String(product.code ?? '').trim()
-  const name = String(
-    product.product_name?.trim() || product.product_name_en?.trim() || '',
+  const name = decodeHtmlEntities(
+    String(product.product_name?.trim() || product.product_name_en?.trim() || ''),
   )
 
   if (!id || !name) {
@@ -41,9 +41,12 @@ export function mapOpenFoodFactsProduct(
     'carbohydrates_100g',
     'carbohydrates',
   ])
-  const brand = String(product.brands ?? '')
-    .split(',')[0]
-    ?.trim() || null
+  const brand =
+    decodeHtmlEntities(
+      String(product.brands ?? '')
+        .split(',')[0]
+        ?.trim() || '',
+    ) || null
 
   return {
     id,
@@ -91,4 +94,14 @@ function readNutrient(
   }
 
   return null
+}
+
+function decodeHtmlEntities(value: string): string {
+  if (!value || !value.includes('&')) {
+    return value
+  }
+
+  const textarea = document.createElement('textarea')
+  textarea.innerHTML = value
+  return textarea.value
 }

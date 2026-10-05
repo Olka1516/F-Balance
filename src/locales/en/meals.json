@@ -26,6 +26,9 @@
     "descriptionLabel": "Describe the food",
     "descriptionPlaceholder": "e.g. bowl of oatmeal with banana and honey",
     "photoLabel": "Food photo",
+    "takePhoto": "Take photo",
+    "chooseGallery": "Choose from gallery",
+    "capturedPhotoName": "Captured photo",
     "analyze": "Analyze",
     "analyzing": "Analyzing…",
     "applied": "Estimate applied ({calories} kcal + macros). Review and edit before saving.",
@@ -51,8 +54,8 @@
     "emptyMessage": "Try another name, or switch to Manual and enter macros yourself.",
     "macros": "{calories} kcal · P {protein} · F {fat} · C {carbs} / 100 g",
     "incomplete": "Incomplete macros — edit manually after selecting",
-    "applied": "Product applied. Review the values, then save.",
-    "appliedIncomplete": "Some macros are missing. Fill them in manually, then save.",
+    "applied": "Product applied (macros per 100 g). Set how much you ate, then save.",
+    "appliedIncomplete": "Some per-100 g macros are missing. Fill them in, set portion weight, then save.",
     "errors": {
       "rateLimited": "Too many searches. Try again later.",
       "unavailable": "Product search is unavailable. Enter the meal manually.",
@@ -78,18 +81,22 @@
   "fields": {
     "name": "Name",
     "mealType": "Meal type",
-    "amount": "Weight (g)",
-    "calories": "Calories",
-    "protein": "Protein (g)",
-    "fat": "Fat (g)",
-    "carbs": "Carbs (g)"
+    "amount": "Eaten (g)",
+    "amountHint": "How much you ate. Daily totals scale from the per-100 g values using this weight.",
+    "per100Title": "Per 100 g",
+    "calories": "Calories / 100 g",
+    "caloriesFromMacrosHint": "Calories per 100 g update automatically from protein ×4 + fat ×9 + carbs ×4.",
+    "protein": "Protein (g / 100 g)",
+    "fat": "Fat (g / 100 g)",
+    "carbs": "Carbs (g / 100 g)",
+    "portionSummary": "For {amount} g: {calories} kcal · P {protein} · F {fat} · C {carbs}"
   },
   "validation": {
     "required": "This field is required",
     "nameMax": "At most {max} characters",
-    "amountRange": "Weight must be between {min} and {max} g",
-    "caloriesRange": "Calories must be between {min} and {max}",
-    "macroRange": "Value must be between {min} and {max} g"
+    "amountRange": "Eaten amount must be between {min} and {max} g",
+    "caloriesRange": "Calories per 100 g must be between {min} and {max}",
+    "macroRange": "Per-100 g value must be between {min} and {max} g"
   },
   "errors": {
     "tableMissing": "Meal tables are missing in Supabase. Run the SQL in supabase/migrations.",

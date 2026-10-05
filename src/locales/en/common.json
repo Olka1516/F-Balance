@@ -39,7 +39,7 @@
     "success": "Profile saved",
     "loadError": "Could not load your profile",
     "suggestMacros": "Suggest from calories",
-    "macrosHint": "Guidance only — edit freely. Based on your calorie target and goal.",
+    "macrosHint": "Guidance only — edit freely. Calories recalculate from macros (P×4 + F×9 + C×4). You can also suggest macros from a calorie target.",
     "sections": {
       "goal": "Your goal",
       "activity": "Activity",
@@ -96,6 +96,9 @@
   },
   "nav": {
     "label": "Main navigation",
+    "menuTitle": "Menu",
+    "menuOpen": "Open menu",
+    "menuClose": "Close menu",
     "dashboard": "Dashboard",
     "meals": "My Meals",
     "addMeal": "Add Food",

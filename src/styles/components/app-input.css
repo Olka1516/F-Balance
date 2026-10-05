@@ -35,6 +35,12 @@
   border-color: var(--color-error);
 }
 
+.app-input__field--readonly {
+  background: color-mix(in srgb, var(--color-border) 22%, var(--color-surface));
+  color: var(--color-text);
+  cursor: default;
+}
+
 .app-input__icon {
   align-items: center;
   color: var(--color-text-muted);
@@ -53,6 +59,7 @@
   color: var(--color-error);
   font-size: 0.875rem;
   margin: 0;
+  overflow-wrap: anywhere;
 }
 
 .app-input--underline .app-input__label {
