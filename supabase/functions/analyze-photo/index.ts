@@ -124,6 +124,7 @@ type NutritionEstimate = {
   protein: number | null
   fat: number | null
   carbs: number | null
+  amountGrams: number | null
 }
 
 async function checkAiRateLimit(
@@ -334,15 +335,16 @@ async function callGeminiModel(
       text:
         'Analyze the food portion from the description or photo. ' +
         'Reply with JSON only in this exact shape: ' +
-        '{"name":"short dish name","calories":number,"protein":number,"fat":number,"carbs":number}. ' +
+        '{"name":"short dish name","calories":number,"protein":number,"fat":number,"carbs":number,"amountGrams":number}. ' +
         'Values are estimates for the whole visible/described portion. ' +
-        'protein/fat/carbs are grams. ' +
+        'protein/fat/carbs are grams for that portion. ' +
+        'amountGrams is the estimated edible weight of that portion in grams. ' +
         `The "name" MUST be written in ${languageName}` +
         (input.locale === 'uk'
           ? ' using Ukrainian Cyrillic letters (not English). '
           : '. ') +
         'If the input is not identifiable edible food, or nutrition is negligible, ' +
-        'return {"name":null,"calories":0,"protein":0,"fat":0,"carbs":0}. ' +
+        'return {"name":null,"calories":0,"protein":0,"fat":0,"carbs":0,"amountGrams":0}. ' +
         'No markdown, no extra keys.',
     },
   ]
@@ -449,6 +451,7 @@ function parseNutritionJson(raw: string): NutritionEstimate | null {
       protein: optionalMacro(parsed.protein),
       fat: optionalMacro(parsed.fat),
       carbs: optionalMacro(parsed.carbs),
+      amountGrams: optionalAmountGrams(parsed.amountGrams),
     }
   } catch {
     return null
@@ -468,6 +471,7 @@ function normalizeEstimate(
   const protein = optionalMacro(parsed.protein)
   const fat = optionalMacro(parsed.fat)
   const carbs = optionalMacro(parsed.carbs)
+  const amountGrams = optionalAmountGrams(parsed.amountGrams)
   const name = optionalString(parsed.name)
 
   if (!Number.isFinite(calories) || calories < 0) {
@@ -481,6 +485,7 @@ function normalizeEstimate(
       protein: 0,
       fat: 0,
       carbs: 0,
+      amountGrams: null,
     }
   }
 
@@ -494,6 +499,7 @@ function normalizeEstimate(
     protein,
     fat,
     carbs,
+    amountGrams,
   }
 }
 
@@ -518,4 +524,14 @@ function optionalMacro(value: unknown): number | null {
   }
 
   return Math.round(parsed * 100) / 100
+}
+
+function optionalAmountGrams(value: unknown): number | null {
+  const parsed = optionalMacro(value)
+
+  if (parsed == null || parsed <= 0 || parsed > 5000) {
+    return null
+  }
+
+  return Math.round(parsed)
 }

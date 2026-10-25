@@ -1,4 +1,9 @@
-import { useMutation, useQuery, useQueryClient } from '@tanstack/vue-query'
+import {
+  keepPreviousData,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from '@tanstack/vue-query'
 import { computed, type MaybeRefOrGetter, toValue } from 'vue'
 import {
   DAILY_ENTRIES_QUERY_KEY,
@@ -182,28 +187,29 @@ export function useDuplicateMealMutation() {
 }
 
 /**
- * Loads today's diary entries for the dashboard.
+ * Loads diary entries for one local calendar day.
  */
-export function useTodayDailyEntriesQuery(
+export function useDailyEntriesForDateQuery(
   userId: MaybeRefOrGetter<string | undefined>,
+  date: MaybeRefOrGetter<string>,
 ) {
-  const today = formatLocalDate(new Date())
-
   return useQuery({
     queryKey: computed(() => [
       ...DAILY_ENTRIES_QUERY_KEY,
       toValue(userId) ?? 'anonymous',
-      today,
+      toValue(date),
     ]),
-    enabled: computed(() => Boolean(toValue(userId))),
+    enabled: computed(() => Boolean(toValue(userId) && toValue(date))),
+    placeholderData: keepPreviousData,
     queryFn: async (): Promise<DailyEntryWithMeal[]> => {
       const id = toValue(userId)
+      const day = toValue(date)
 
-      if (!id) {
+      if (!id || !day) {
         return []
       }
 
-      const result = await fetchDailyEntriesForDate(id, today)
+      const result = await fetchDailyEntriesForDate(id, day)
 
       if (!result.ok) {
         throw new Error(result.code)
@@ -212,6 +218,15 @@ export function useTodayDailyEntriesQuery(
       return result.data
     },
   })
+}
+
+/**
+ * Loads today's diary entries for the dashboard.
+ */
+export function useTodayDailyEntriesQuery(
+  userId: MaybeRefOrGetter<string | undefined>,
+) {
+  return useDailyEntriesForDateQuery(userId, formatLocalDate(new Date()))
 }
 
 /**

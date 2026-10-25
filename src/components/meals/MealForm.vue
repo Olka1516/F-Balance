@@ -1,5 +1,9 @@
 <template>
   <div class="meal-form">
+    <p v-if="portionSummary" class="meal-form__portion" role="status">
+      {{ portionSummary }}
+    </p>
+
     <AppInput
       v-model="form.name"
       :label="t('meals.fields.name')"
@@ -32,57 +36,55 @@
       v-model="form.amount"
       :label="t('meals.fields.amount')"
       :type="APP_INPUT_TYPE.number"
+      :min="0"
       :error="fieldErrors.amount"
     />
-    <p class="meal-form__hint">{{ t('meals.fields.amountHint') }}</p>
 
-    <section class="meal-form__section" aria-labelledby="meal-form-per100">
-      <h2 id="meal-form-per100" class="meal-form__section-title">
-        {{ t('meals.fields.per100Title') }}
-      </h2>
+    <section class="meal-form__nutrition" aria-labelledby="meal-form-nutrition">
+      <div class="meal-form__nutrition-head">
+        <h2 id="meal-form-nutrition" class="meal-form__section-title">
+          {{ t('meals.fields.per100Title') }}
+        </h2>
+        <p class="meal-form__nutrition-note">
+          {{ t('meals.fields.caloriesFromMacrosHint') }}
+        </p>
+      </div>
 
-      <div class="meal-form__grid">
+      <div class="meal-form__nutrition-grid">
         <AppInput
           v-model="form.calories"
+          class="meal-form__nutrition-kcal"
           :label="t('meals.fields.calories')"
           :type="APP_INPUT_TYPE.number"
+          :min="0"
           :error="fieldErrors.calories"
           readonly
         />
-      </div>
-      <p class="meal-form__hint">
-        {{ t('meals.fields.caloriesFromMacrosHint') }}
-      </p>
-
-      <div class="meal-form__grid meal-form__grid--macros">
-        <AppInput
-          v-model="form.protein"
-          :label="t('meals.fields.protein')"
-          :type="APP_INPUT_TYPE.number"
-          :error="fieldErrors.protein"
-        />
-        <AppInput
-          v-model="form.fat"
-          :label="t('meals.fields.fat')"
-          :type="APP_INPUT_TYPE.number"
-          :error="fieldErrors.fat"
-        />
-        <AppInput
-          v-model="form.carbs"
-          :label="t('meals.fields.carbs')"
-          :type="APP_INPUT_TYPE.number"
-          :error="fieldErrors.carbs"
-        />
+        <div class="meal-form__macros-row">
+          <AppInput
+            v-model="form.protein"
+            :label="t('meals.fields.protein')"
+            :type="APP_INPUT_TYPE.number"
+            :min="0"
+            :error="fieldErrors.protein"
+          />
+          <AppInput
+            v-model="form.fat"
+            :label="t('meals.fields.fat')"
+            :type="APP_INPUT_TYPE.number"
+            :min="0"
+            :error="fieldErrors.fat"
+          />
+          <AppInput
+            v-model="form.carbs"
+            :label="t('meals.fields.carbs')"
+            :type="APP_INPUT_TYPE.number"
+            :min="0"
+            :error="fieldErrors.carbs"
+          />
+        </div>
       </div>
     </section>
-
-    <p
-      v-if="portionSummary"
-      class="meal-form__portion"
-      role="status"
-    >
-      {{ portionSummary }}
-    </p>
   </div>
 </template>
 

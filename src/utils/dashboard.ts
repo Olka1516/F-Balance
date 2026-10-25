@@ -129,6 +129,26 @@ export type DashboardWeekDayPoint = {
 }
 
 /**
+ * Parses a YYYY-MM-DD key into a local Date at midnight.
+ */
+export function parseLocalDateKey(dateKey: string): Date {
+  const [year, month, day] = dateKey.split('-').map(Number)
+
+  return new Date(year ?? 0, (month ?? 1) - 1, day ?? 1)
+}
+
+/**
+ * Formats a local Date as YYYY-MM-DD.
+ */
+export function formatLocalDateKey(date: Date): string {
+  const year = date.getFullYear()
+  const month = String(date.getMonth() + 1).padStart(2, '0')
+  const day = String(date.getDate()).padStart(2, '0')
+
+  return `${year}-${month}-${day}`
+}
+
+/**
  * Builds inclusive local calendar dates ending at `endDate` (YYYY-MM-DD).
  */
 export function listRecentLocalDates(
@@ -143,13 +163,42 @@ export function listRecentLocalDates(
       endDate.getMonth(),
       endDate.getDate() - offset,
     )
-    const year = day.getFullYear()
-    const month = String(day.getMonth() + 1).padStart(2, '0')
-    const date = String(day.getDate()).padStart(2, '0')
-    dates.push(`${year}-${month}-${date}`)
+    dates.push(formatLocalDateKey(day))
   }
 
   return dates
+}
+
+/**
+ * Builds Monday–Sunday local dates for the week that contains `dateKey`.
+ */
+export function listWeekLocalDates(dateKey: string): string[] {
+  const anchor = parseLocalDateKey(dateKey)
+  const weekday = anchor.getDay()
+  const mondayOffset = weekday === 0 ? -6 : 1 - weekday
+  const monday = new Date(
+    anchor.getFullYear(),
+    anchor.getMonth(),
+    anchor.getDate() + mondayOffset,
+  )
+  const sunday = new Date(
+    monday.getFullYear(),
+    monday.getMonth(),
+    monday.getDate() + 6,
+  )
+
+  return listRecentLocalDates(7, sunday)
+}
+
+/**
+ * Shifts a YYYY-MM-DD key by a number of calendar days.
+ */
+export function shiftLocalDateKey(dateKey: string, dayDelta: number): string {
+  const date = parseLocalDateKey(dateKey)
+
+  date.setDate(date.getDate() + dayDelta)
+
+  return formatLocalDateKey(date)
 }
 
 /**

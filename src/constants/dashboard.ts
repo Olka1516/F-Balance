@@ -1,4 +1,25 @@
 /**
+ * SVG calorie ring viewBox size.
+ */
+export const DASHBOARD_RING_VIEWBOX_SIZE = 120
+
+/**
+ * SVG calorie ring radius.
+ */
+export const DASHBOARD_RING_RADIUS = 48
+
+/**
+ * SVG calorie ring stroke width.
+ */
+export const DASHBOARD_RING_STROKE_WIDTH = 10
+
+/**
+ * SVG calorie ring circumference for the progress stroke.
+ */
+export const DASHBOARD_RING_CIRCUMFERENCE =
+  2 * Math.PI * DASHBOARD_RING_RADIUS
+
+/**
  * Chart canvas height for the dashboard progress bar chart.
  */
 export const DASHBOARD_CHART_HEIGHT_REM = 12

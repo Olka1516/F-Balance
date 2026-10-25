@@ -4,6 +4,7 @@ import { createApp } from 'vue'
 import App from './App.vue'
 import { i18n } from './locales'
 import { router } from './router'
+import { registerServiceWorker } from '@/utils/registerServiceWorker'
 
 const app = createApp(App)
 const queryClient = new QueryClient({
@@ -21,3 +22,4 @@ app.use(VueQueryPlugin, { queryClient })
 app.use(router)
 app.use(i18n)
 app.mount('#app')
+registerServiceWorker()

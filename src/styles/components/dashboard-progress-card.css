@@ -1,0 +1,193 @@
+.dashboard-progress-card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+  padding: var(--space-md);
+}
+
+.dashboard-progress-card__title {
+  color: var(--color-text);
+  font-size: 1.05rem;
+  font-weight: 700;
+  margin: 0;
+}
+
+.dashboard-progress-card__top {
+  align-items: center;
+  display: grid;
+  gap: var(--space-md);
+  grid-template-columns: auto 1fr;
+}
+
+.dashboard-progress-card__ring {
+  height: 7.5rem;
+  position: relative;
+  width: 7.5rem;
+}
+
+.dashboard-progress-card__ring-svg {
+  display: block;
+  height: 100%;
+  width: 100%;
+}
+
+.dashboard-progress-card__ring-track {
+  stroke: color-mix(in srgb, var(--color-border) 85%, var(--color-surface));
+}
+
+.dashboard-progress-card__ring-progress {
+  stroke: var(--color-primary);
+  stroke-linecap: round;
+  transition: stroke-dashoffset 0.35s ease;
+}
+
+.dashboard-progress-card__ring-progress--over {
+  stroke: var(--color-error);
+}
+
+.dashboard-progress-card__ring-label {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  inset: 0;
+  justify-content: center;
+  pointer-events: none;
+  position: absolute;
+  text-align: center;
+}
+
+.dashboard-progress-card__ring-caption {
+  color: var(--color-text-muted);
+  font-size: 0.625rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.dashboard-progress-card__ring-value {
+  color: var(--color-text);
+  font-family: var(--font-display);
+  font-size: 1.55rem;
+  letter-spacing: 0.02em;
+  line-height: 1;
+}
+
+.dashboard-progress-card__ring-value--over {
+  color: var(--color-error);
+}
+
+.dashboard-progress-card__ring-unit {
+  color: var(--color-text-muted);
+  font-size: 0.6875rem;
+  font-weight: 600;
+}
+
+.dashboard-progress-card__intake {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  min-width: 0;
+}
+
+.dashboard-progress-card__intake-label {
+  color: var(--color-text-muted);
+  font-size: 0.75rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+.dashboard-progress-card__intake-value {
+  color: var(--color-text);
+  font-size: 1.35rem;
+  font-weight: 700;
+  line-height: 1.15;
+  margin: 0;
+}
+
+.dashboard-progress-card__intake-value span {
+  color: var(--color-text-muted);
+  font-size: 0.8125rem;
+  font-weight: 600;
+}
+
+.dashboard-progress-card__intake-target {
+  color: var(--color-text-muted);
+  font-size: 0.75rem;
+  line-height: 1.35;
+  margin: 0;
+}
+
+.dashboard-progress-card__macros {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.dashboard-progress-card__macro-head {
+  align-items: baseline;
+  display: flex;
+  gap: var(--space-sm);
+  justify-content: space-between;
+  margin-bottom: 0.3rem;
+}
+
+.dashboard-progress-card__macro-name {
+  color: var(--color-text);
+  font-size: 0.8125rem;
+  font-weight: 600;
+}
+
+.dashboard-progress-card__macro-value {
+  color: var(--color-text-muted);
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.dashboard-progress-card__macro--over .dashboard-progress-card__macro-value {
+  color: var(--color-error);
+}
+
+.dashboard-progress-card__macro-track {
+  background: color-mix(in srgb, var(--color-border) 70%, var(--color-surface));
+  border-radius: var(--radius-full);
+  height: 0.45rem;
+  overflow: hidden;
+}
+
+.dashboard-progress-card__macro-fill {
+  border-radius: inherit;
+  display: block;
+  height: 100%;
+  max-width: 100%;
+  transition: width 0.3s ease;
+}
+
+.dashboard-progress-card__macro-fill--protein {
+  background: var(--color-macro-protein);
+}
+
+.dashboard-progress-card__macro-fill--fat {
+  background: var(--color-macro-fat);
+}
+
+.dashboard-progress-card__macro-fill--carbs {
+  background: var(--color-macro-carbs);
+}
+
+@media (max-width: 22rem) {
+  .dashboard-progress-card__top {
+    grid-template-columns: 1fr;
+    justify-items: center;
+    text-align: center;
+  }
+
+  .dashboard-progress-card__intake {
+    align-items: center;
+  }
+}

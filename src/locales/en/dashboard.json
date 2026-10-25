@@ -1,7 +1,16 @@
 {
   "title": "Today",
-  "subtitle": "Your daily calorie target, macros, and meals logged for today.",
+  "subtitle": "Daily calorie target, macros, and meals.",
   "addFood": "Add food",
+  "dayStrip": {
+    "aria": "Day picker",
+    "prevWeek": "Previous week",
+    "nextWeek": "Next week"
+  },
+  "progress": {
+    "title": "Today’s progress",
+    "ringAria": "Remaining calories for the selected day"
+  },
   "summary": {
     "target": "Target",
     "consumed": "Eaten",
@@ -11,7 +20,7 @@
     "noTarget": "Set a daily target in Profile"
   },
   "macros": {
-    "title": "Macros today",
+    "title": "Macros",
     "protein": "Protein",
     "fat": "Fat",
     "carbs": "Carbs",
@@ -40,14 +49,16 @@
     "macrosNoTarget": "Set macro targets in Profile to compare"
   },
   "meals": {
-    "title": "Today’s meals",
+    "title": "Meals",
     "emptyTitle": "Nothing logged yet",
     "emptyMessage": "Add a meal or pick one from My Meals to see it here.",
+    "edit": "Edit meal",
     "macros": "{calories} kcal · P {protein} · F {fat} · C {carbs}",
+    "macrosShort": "P {protein} · F {fat} · C {carbs}",
     "servings": "×{count}"
   },
   "errors": {
-    "load": "Could not load today’s progress. Try again"
+    "load": "Could not load progress. Try again"
   },
   "recommendations": {
     "title": "Recommendations",

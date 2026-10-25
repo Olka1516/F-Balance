@@ -1,15 +1,7 @@
 <template>
   <AppPageShell wide>
     <template #title>
-      {{ t('dashboard.title') }}
-    </template>
-    <template #intro>
-      {{ t('dashboard.subtitle') }}
-    </template>
-    <template #actions>
-      <AppButton type="button" @click="goToAddMeal()">
-        {{ t('dashboard.addFood') }}
-      </AppButton>
+      {{ pageTitle }}
     </template>
 
     <AppLoader v-if="isLoading" />
@@ -23,179 +15,50 @@
     </p>
 
     <template v-else>
-      <section class="dashboard-page__stats" :aria-label="t('dashboard.title')">
-        <div class="dashboard-page__stat">
-          <p class="dashboard-page__stat-label">
-            {{ t('dashboard.summary.target') }}
-          </p>
-          <p class="dashboard-page__stat-value">
-            {{ targetDisplay }}
-          </p>
-          <p class="dashboard-page__stat-unit">
-            {{ t('dashboard.summary.kcal') }}
-          </p>
-        </div>
-        <div class="dashboard-page__stat">
-          <p class="dashboard-page__stat-label">
-            {{ t('dashboard.summary.consumed') }}
-          </p>
-          <p class="dashboard-page__stat-value">
-            {{ formatNumber(summary.consumed.calories) }}
-          </p>
-          <p class="dashboard-page__stat-unit">
-            {{ t('dashboard.summary.kcal') }}
-          </p>
-        </div>
-        <div
-          class="dashboard-page__stat"
-          :class="{ 'dashboard-page__stat--over': isOverTarget }"
-        >
-          <p class="dashboard-page__stat-label">
-            {{
-              isOverTarget
-                ? t('dashboard.summary.over')
-                : t('dashboard.summary.remaining')
-            }}
-          </p>
-          <p class="dashboard-page__stat-value">
-            {{ remainingDisplay }}
-          </p>
-          <p class="dashboard-page__stat-unit">
-            {{ t('dashboard.summary.kcal') }}
-          </p>
-        </div>
-      </section>
+      <DashboardDayStrip
+        v-model="selectedDate"
+        :aria-label="t('dashboard.dayStrip.aria')"
+        :prev-label="t('dashboard.dayStrip.prevWeek')"
+        :next-label="t('dashboard.dayStrip.nextWeek')"
+      />
 
-      <p v-if="summary.targetCalories == null" class="dashboard-page__hint">
-        {{ t('dashboard.summary.noTarget') }}
-      </p>
+      <DashboardProgressCard
+        :title="t('dashboard.progress.title')"
+        :target-calories="summary.targetCalories"
+        :consumed-calories="summary.consumed.calories"
+        :protein="summary.consumed.protein"
+        :fat="summary.consumed.fat"
+        :carbs="summary.consumed.carbs"
+        :target-protein="macroTargets.protein"
+        :target-fat="macroTargets.fat"
+        :target-carbs="macroTargets.carbs"
+        :remaining-label="t('dashboard.summary.remaining')"
+        :over-label="t('dashboard.summary.over')"
+        :eaten-label="t('dashboard.summary.consumed')"
+        :target-label="t('dashboard.summary.target')"
+        :no-target-label="t('dashboard.summary.noTarget')"
+        :unit-label="t('dashboard.summary.kcal')"
+        :protein-label="t('dashboard.macros.protein')"
+        :fat-label="t('dashboard.macros.fat')"
+        :carbs-label="t('dashboard.macros.carbs')"
+        :grams-label="formatMacroGrams"
+        :of-target-label="formatMacroOfTarget"
+        :ring-aria-label="t('dashboard.progress.ringAria')"
+      />
 
       <section class="dashboard-page__section">
-        <h2 class="dashboard-page__section-title">
-          {{ t('dashboard.macros.title') }}
-        </h2>
-        <div class="dashboard-page__macros">
-          <div
-            class="dashboard-page__macro"
-            :class="{ 'dashboard-page__macro--over': isMacroOver(summary.consumed.protein, macroTargets.protein) }"
-          >
-            <p class="dashboard-page__macro-label">
-              {{ t('dashboard.macros.protein') }}
-            </p>
-            <p class="dashboard-page__macro-value">
-              {{ formatMacroValue(summary.consumed.protein, macroTargets.protein) }}
-            </p>
-          </div>
-          <div
-            class="dashboard-page__macro"
-            :class="{ 'dashboard-page__macro--over': isMacroOver(summary.consumed.fat, macroTargets.fat) }"
-          >
-            <p class="dashboard-page__macro-label">
-              {{ t('dashboard.macros.fat') }}
-            </p>
-            <p class="dashboard-page__macro-value">
-              {{ formatMacroValue(summary.consumed.fat, macroTargets.fat) }}
-            </p>
-          </div>
-          <div
-            class="dashboard-page__macro"
-            :class="{ 'dashboard-page__macro--over': isMacroOver(summary.consumed.carbs, macroTargets.carbs) }"
-          >
-            <p class="dashboard-page__macro-label">
-              {{ t('dashboard.macros.carbs') }}
-            </p>
-            <p class="dashboard-page__macro-value">
-              {{ formatMacroValue(summary.consumed.carbs, macroTargets.carbs) }}
-            </p>
-          </div>
-        </div>
-        <p v-if="!hasMacroTargets" class="dashboard-page__hint">
-          {{ t('dashboard.macros.noTarget') }}
-        </p>
-      </section>
-
-      <section class="dashboard-page__section">
-        <h2 class="dashboard-page__section-title">
-          {{ t('dashboard.chart.title') }}
-        </h2>
-
-        <div class="dashboard-page__chart-tabs" role="tablist">
+        <div class="dashboard-page__section-head">
+          <h2 class="dashboard-page__section-title">
+            {{ t('dashboard.meals.title') }}
+          </h2>
           <button
-            v-for="tab in DASHBOARD_CHART_TABS"
-            :key="tab"
             type="button"
-            role="tab"
-            class="dashboard-page__chart-tab"
-            :class="{ 'dashboard-page__chart-tab--active': chartTab === tab }"
-            :aria-selected="chartTab === tab"
-            @click="chartTab = tab"
+            class="dashboard-page__section-action"
+            @click="goToAddMeal()"
           >
-            {{ t(`dashboard.chart.tabs.${tab}`) }}
+            +
           </button>
         </div>
-
-        <template v-if="chartTab === 'calories'">
-          <DashboardProgressChart
-            v-if="summary.targetCalories != null"
-            :target="summary.targetCalories"
-            :consumed="summary.consumed.calories"
-            :target-label="t('dashboard.chart.target')"
-            :consumed-label="t('dashboard.chart.consumed')"
-            :unit-label="t('dashboard.summary.kcal')"
-            :ariaLabel="t('dashboard.chart.aria')"
-          />
-          <p v-else class="dashboard-page__hint">
-            {{ t('dashboard.summary.noTarget') }}
-          </p>
-        </template>
-
-        <DashboardMacrosChart
-          v-else-if="chartTab === 'macros'"
-          :protein="summary.consumed.protein"
-          :fat="summary.consumed.fat"
-          :carbs="summary.consumed.carbs"
-          :target-protein="macroTargets.protein"
-          :target-fat="macroTargets.fat"
-          :target-carbs="macroTargets.carbs"
-          :protein-label="t('dashboard.macros.protein')"
-          :fat-label="t('dashboard.macros.fat')"
-          :carbs-label="t('dashboard.macros.carbs')"
-          :grams-label="formatMacroGrams"
-          :of-target-label="formatMacroOfTarget"
-          :kcal-label="t('dashboard.summary.kcal')"
-          :empty-label="t('dashboard.chart.macrosEmpty')"
-          :within-label="t('dashboard.chart.macrosWithin')"
-          :over-label="t('dashboard.chart.macrosOver')"
-          :no-target-label="t('dashboard.chart.macrosNoTarget')"
-          :ariaLabel="t('dashboard.chart.macrosAria')"
-        />
-
-        <template v-else>
-          <AppLoader v-if="weekLoading" />
-          <p
-            v-else-if="weekError"
-            class="app-page__message app-page__message--error"
-            role="alert"
-          >
-            {{ weekError }}
-          </p>
-          <DashboardWeekChart
-            v-else
-            :points="weekPoints"
-            :labels="weekLabels"
-            :target="summary.targetCalories"
-            :consumed-label="t('dashboard.chart.consumed')"
-            :target-label="t('dashboard.chart.target')"
-            :unit-label="t('dashboard.summary.kcal')"
-            :ariaLabel="t('dashboard.chart.weekAria')"
-          />
-        </template>
-      </section>
-
-      <section class="dashboard-page__section">
-        <h2 class="dashboard-page__section-title">
-          {{ t('dashboard.meals.title') }}
-        </h2>
 
         <AppEmptyState
           v-if="summary.entryCount === 0"
@@ -209,12 +72,9 @@
 
         <ul v-else class="dashboard-page__groups">
           <li
-            v-for="group in summary.groups"
+            v-for="group in visibleGroups"
             :key="group.mealType"
             class="dashboard-page__group"
-            :class="{
-              'dashboard-page__group--empty': group.items.length === 0,
-            }"
           >
             <div class="dashboard-page__group-head">
               <h3 class="dashboard-page__group-title">
@@ -225,35 +85,50 @@
                 {{ t('dashboard.summary.kcal') }}
               </p>
             </div>
-            <ul v-if="group.items.length > 0" class="dashboard-page__items">
+            <ul class="dashboard-page__items">
               <li
                 v-for="item in group.items"
                 :key="item.entryId"
                 class="dashboard-page__item"
               >
-                <div class="dashboard-page__item-top">
+                <div class="dashboard-page__item-body">
                   <h4 class="dashboard-page__item-name">{{ item.name }}</h4>
-                  <p
-                    v-if="item.servings !== 1"
-                    class="dashboard-page__item-servings"
-                  >
+                  <p class="dashboard-page__item-macros">
                     {{
-                      t('dashboard.meals.servings', {
-                        count: formatNumber(item.servings),
+                      t('dashboard.meals.macrosShort', {
+                        protein: formatNumber(item.protein),
+                        fat: formatNumber(item.fat),
+                        carbs: formatNumber(item.carbs),
                       })
                     }}
+                    <span v-if="item.servings !== 1">
+                      ·
+                      {{
+                        t('dashboard.meals.servings', {
+                          count: formatNumber(item.servings),
+                        })
+                      }}
+                    </span>
                   </p>
                 </div>
-                <p class="dashboard-page__item-macros">
-                  {{
-                    t('dashboard.meals.macros', {
-                      calories: formatNumber(item.calories),
-                      protein: formatNumber(item.protein),
-                      fat: formatNumber(item.fat),
-                      carbs: formatNumber(item.carbs),
-                    })
-                  }}
-                </p>
+                <div class="dashboard-page__item-aside">
+                  <p class="dashboard-page__item-kcal">
+                    {{ formatNumber(item.calories) }}
+                    {{ t('dashboard.summary.kcal') }}
+                  </p>
+                  <button
+                    type="button"
+                    class="dashboard-page__item-edit"
+                    :aria-label="t('dashboard.meals.edit')"
+                    @click="goToAddMeal(item.mealId)"
+                  >
+                    <span
+                      class="dashboard-page__item-edit-icon"
+                      aria-hidden="true"
+                      v-html="iconEdit"
+                    />
+                  </button>
+                </div>
               </li>
             </ul>
           </li>
@@ -266,35 +141,27 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
+import iconEdit from '@/assets/icons/edit.svg?raw'
 import AppButton from '@/components/common/AppButton.vue'
 import AppEmptyState from '@/components/common/AppEmptyState.vue'
 import AppLoader from '@/components/common/AppLoader.vue'
 import AppPageShell from '@/components/common/AppPageShell.vue'
-import DashboardMacrosChart from '@/components/dashboard/DashboardMacrosChart.vue'
-import DashboardProgressChart from '@/components/dashboard/DashboardProgressChart.vue'
-import DashboardWeekChart from '@/components/dashboard/DashboardWeekChart.vue'
+import DashboardDayStrip from '@/components/dashboard/DashboardDayStrip.vue'
+import DashboardProgressCard from '@/components/dashboard/DashboardProgressCard.vue'
 import { useAppNavigation } from '@/composables/useAppNavigation'
 import { useAuth } from '@/composables/useAuth'
 import { useLocale } from '@/composables/useLocale'
-import {
-  DASHBOARD_CHART_TAB_DEFAULT,
-  DASHBOARD_CHART_TABS,
-  DASHBOARD_WEEK_DAYS,
-  type DashboardChartTab,
-} from '@/constants/dashboard'
 import { MEAL_TYPES } from '@/constants/meals'
-import {
-  useTodayDailyEntriesQuery,
-  useWeekDailyEntriesQuery,
-} from '@/queries/meals'
+import { useDailyEntriesForDateQuery } from '@/queries/meals'
 import { useProfileQuery } from '@/queries/profile'
 import {
   buildDashboardDaySummary,
-  buildWeekCaloriePoints,
-  listRecentLocalDates,
+  formatLocalDateKey,
+  parseLocalDateKey,
 } from '@/utils/dashboard'
 import { resolveMealErrorI18nKey } from '@/utils/mealErrors'
 import { roundNutrition } from '@/utils/macros'
+import { formatLocalDate } from '@/services/meals'
 import '@/styles/views/dashboard.css'
 
 const { t } = useI18n()
@@ -302,54 +169,25 @@ const { currentLocale } = useLocale()
 const { goToAddMeal } = useAppNavigation()
 const { user } = useAuth()
 const userId = computed(() => user.value?.id)
-const chartTab = ref<DashboardChartTab>(DASHBOARD_CHART_TAB_DEFAULT)
+const selectedDate = ref(formatLocalDate(new Date()))
+const todayKey = formatLocalDateKey(new Date())
 
 const profileQuery = useProfileQuery(userId)
-const entriesQuery = useTodayDailyEntriesQuery(userId)
-const weekEnabled = computed(
-  () => Boolean(userId.value) && chartTab.value === 'week',
-)
-const weekQuery = useWeekDailyEntriesQuery(
-  userId,
-  DASHBOARD_WEEK_DAYS,
-  weekEnabled,
-)
+const entriesQuery = useDailyEntriesForDateQuery(userId, selectedDate)
 
-const isLoading = computed(
-  () =>
-    (profileQuery.isPending.value && !profileQuery.isFetched.value) ||
-    (entriesQuery.isPending.value && !entriesQuery.isFetched.value),
-)
+const isLoading = computed(() => {
+  const profileBooting =
+    profileQuery.isPending.value && !profileQuery.isFetched.value
+  const entriesBooting =
+    entriesQuery.isPending.value &&
+    !entriesQuery.isFetched.value &&
+    !entriesQuery.isPlaceholderData.value
 
-const weekLoading = computed(
-  () =>
-    chartTab.value === 'week' &&
-    weekQuery.isPending.value &&
-    !weekQuery.isFetched.value,
-)
+  return profileBooting || entriesBooting
+})
 
 const loadError = computed(() => {
   const error = profileQuery.error.value ?? entriesQuery.error.value
-
-  if (!error) {
-    return ''
-  }
-
-  const code = String(error.message)
-
-  if (
-    code === 'tableMissing' ||
-    code === 'permissionDenied' ||
-    code === 'notFound'
-  ) {
-    return t(resolveMealErrorI18nKey(code))
-  }
-
-  return t('dashboard.errors.load')
-})
-
-const weekError = computed(() => {
-  const error = weekQuery.error.value
 
   if (!error) {
     return ''
@@ -376,14 +214,8 @@ const summary = computed(() =>
   ),
 )
 
-const weekDates = computed(() => listRecentLocalDates(DASHBOARD_WEEK_DAYS))
-
-const weekPoints = computed(() =>
-  buildWeekCaloriePoints(weekQuery.data.value ?? [], weekDates.value),
-)
-
-const weekLabels = computed(() =>
-  weekDates.value.map((date) => formatWeekdayLabel(date)),
+const visibleGroups = computed(() =>
+  summary.value.groups.filter((group) => group.items.length > 0),
 )
 
 const macroTargets = computed(() => ({
@@ -392,31 +224,18 @@ const macroTargets = computed(() => ({
   carbs: profileQuery.data.value?.dailyCarbs ?? null,
 }))
 
-const hasMacroTargets = computed(
-  () =>
-    macroTargets.value.protein != null ||
-    macroTargets.value.fat != null ||
-    macroTargets.value.carbs != null,
-)
-
-const isOverTarget = computed(
-  () => summary.value.remaining != null && summary.value.remaining < 0,
-)
-
-const targetDisplay = computed(() => {
-  if (summary.value.targetCalories == null) {
-    return '—'
+const pageTitle = computed(() => {
+  if (selectedDate.value === todayKey) {
+    return t('dashboard.title')
   }
 
-  return formatNumber(summary.value.targetCalories)
-})
+  const date = parseLocalDateKey(selectedDate.value)
 
-const remainingDisplay = computed(() => {
-  if (summary.value.remaining == null) {
-    return '—'
-  }
-
-  return formatNumber(Math.abs(summary.value.remaining))
+  return new Intl.DateTimeFormat(currentLocale.value, {
+    weekday: 'short',
+    day: 'numeric',
+    month: 'short',
+  }).format(date)
 })
 
 function formatNumber(value: number): string {
@@ -432,26 +251,5 @@ function formatMacroOfTarget(value: number, target: number): string {
     value: formatNumber(value),
     target: formatNumber(target),
   })
-}
-
-function formatMacroValue(value: number, target: number | null): string {
-  if (target == null) {
-    return formatMacroGrams(value)
-  }
-
-  return formatMacroOfTarget(value, target)
-}
-
-function isMacroOver(value: number, target: number | null): boolean {
-  return target != null && value > target
-}
-
-function formatWeekdayLabel(dateKey: string): string {
-  const [year, month, day] = dateKey.split('-').map(Number)
-  const date = new Date(year ?? 0, (month ?? 1) - 1, day ?? 1)
-
-  return new Intl.DateTimeFormat(currentLocale.value, {
-    weekday: 'short',
-  }).format(date)
 }
 </script>

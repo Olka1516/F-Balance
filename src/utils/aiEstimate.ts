@@ -24,6 +24,7 @@ export function emptyAiEstimate(
     protein: 0,
     fat: 0,
     carbs: 0,
+    amountGrams: null,
     cached,
   }
 }

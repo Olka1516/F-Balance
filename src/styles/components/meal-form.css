@@ -12,28 +12,28 @@
 
 .meal-form__section-title {
   color: var(--color-text);
-  font-size: 0.875rem;
-  font-weight: 500;
+  font-size: 0.8125rem;
+  font-weight: 600;
   margin: 0;
 }
 
 .meal-form__chips {
   display: grid;
-  gap: var(--space-sm);
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-xs);
+  grid-template-columns: repeat(4, minmax(0, 1fr));
 }
 
 .meal-form__chip {
   background: var(--color-surface);
   border: 1px solid var(--color-border);
-  border-radius: var(--radius-lg);
+  border-radius: var(--radius-sm);
   color: var(--color-text);
   cursor: pointer;
   font: inherit;
-  font-size: 0.8125rem;
+  font-size: 0.6875rem;
   font-weight: 600;
-  min-height: var(--touch-target-min);
-  padding: var(--space-sm);
+  min-height: 2.5rem;
+  padding: 0.35rem 0.15rem;
   transition:
     background-color 0.15s ease,
     border-color 0.15s ease,
@@ -51,22 +51,9 @@
   outline-offset: 2px;
 }
 
-.meal-form__grid {
-  display: grid;
-  gap: var(--space-md);
-  grid-template-columns: 1fr;
-}
-
 .meal-form__error {
   color: var(--color-error);
-  font-size: 0.875rem;
-  margin: 0;
-}
-
-.meal-form__hint {
-  color: var(--color-text-muted);
   font-size: 0.8125rem;
-  line-height: 1.4;
   margin: 0;
 }
 
@@ -76,22 +63,87 @@
   border-radius: var(--radius-sm);
   color: var(--color-text);
   font-size: 0.875rem;
-  font-weight: 600;
-  line-height: 1.4;
+  font-weight: 700;
+  line-height: 1.35;
   margin: 0;
   padding: var(--space-sm) var(--space-md);
 }
 
-@media (min-width: 28rem) {
-  .meal-form__chips {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
+.meal-form__nutrition {
+  background: color-mix(in srgb, var(--color-border) 18%, var(--color-surface));
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  padding: var(--space-sm);
+}
+
+.meal-form__nutrition-head {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.meal-form__nutrition-note {
+  color: var(--color-text-muted);
+  font-size: 0.6875rem;
+  line-height: 1.35;
+  margin: 0;
+}
+
+.meal-form__nutrition-grid {
+  align-items: start;
+  display: grid;
+  gap: var(--space-xs);
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 2.4fr);
+}
+
+.meal-form__macros-row {
+  align-items: start;
+  display: grid;
+  gap: var(--space-xs);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  min-width: 0;
+}
+
+.meal-form__nutrition-grid .app-input,
+.meal-form__macros-row .app-input {
+  min-width: 0;
+}
+
+.meal-form__nutrition-grid .app-input__label,
+.meal-form__macros-row .app-input__label {
+  font-size: 0.75rem;
+  line-height: 1.2;
+  min-height: 1.2em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.meal-form__nutrition-grid .app-input__field,
+.meal-form__macros-row .app-input__field {
+  padding-inline: 0.4rem;
+  text-align: center;
+}
+
+@media (min-width: 22rem) {
+  .meal-form__chip {
+    font-size: 0.75rem;
+    padding-inline: 0.25rem;
   }
 
-  .meal-form__grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+  .meal-form__nutrition-grid {
+    gap: var(--space-sm);
   }
 
-  .meal-form__grid--macros {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+  .meal-form__macros-row {
+    gap: var(--space-sm);
+  }
+
+  .meal-form__nutrition-grid .app-input__field,
+  .meal-form__macros-row .app-input__field {
+    padding-inline: var(--space-sm);
   }
 }

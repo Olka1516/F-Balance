@@ -1,0 +1,106 @@
+.dashboard-day-strip {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.dashboard-day-strip__month-row {
+  align-items: center;
+  display: flex;
+  gap: var(--space-sm);
+  justify-content: space-between;
+}
+
+.dashboard-day-strip__month {
+  color: var(--color-text);
+  font-size: 0.9375rem;
+  font-weight: 700;
+  margin: 0;
+  text-transform: capitalize;
+}
+
+.dashboard-day-strip__nav {
+  display: flex;
+  gap: var(--space-xs);
+}
+
+.dashboard-day-strip__nav-btn {
+  align-items: center;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  color: var(--color-text);
+  cursor: pointer;
+  display: inline-flex;
+  font-size: 1.25rem;
+  height: 2.25rem;
+  justify-content: center;
+  line-height: 1;
+  min-width: 2.25rem;
+  padding: 0;
+}
+
+.dashboard-day-strip__nav-btn:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+.dashboard-day-strip__days {
+  display: grid;
+  gap: var(--space-xs);
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+}
+
+.dashboard-day-strip__day {
+  align-items: center;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: var(--radius-md);
+  color: var(--color-text-muted);
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  min-height: 3.5rem;
+  padding: var(--space-xs) 0.15rem;
+}
+
+.dashboard-day-strip__weekday {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.dashboard-day-strip__date {
+  align-items: center;
+  border-radius: 50%;
+  display: inline-flex;
+  font-size: 0.9375rem;
+  font-weight: 700;
+  height: 1.85rem;
+  justify-content: center;
+  width: 1.85rem;
+}
+
+.dashboard-day-strip__day--active {
+  background: color-mix(in srgb, var(--color-primary) 12%, var(--color-surface));
+  border-color: color-mix(in srgb, var(--color-primary) 35%, var(--color-border));
+  color: var(--color-text);
+}
+
+.dashboard-day-strip__day--active .dashboard-day-strip__date {
+  background: var(--color-primary);
+  color: var(--color-surface);
+}
+
+.dashboard-day-strip__day--today:not(.dashboard-day-strip__day--active)
+  .dashboard-day-strip__date {
+  box-shadow: inset 0 0 0 1.5px var(--color-primary);
+  color: var(--color-primary);
+}
+
+.dashboard-day-strip__day:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}

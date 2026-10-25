@@ -7,6 +7,7 @@ export type AiNutritionEstimate = {
   protein: number | null
   fat: number | null
   carbs: number | null
+  amountGrams: number | null
   cached: boolean
 }
 

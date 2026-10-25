@@ -109,6 +109,7 @@ function parseEstimatePayload(data: unknown): AiNutritionEstimate | null {
     protein: optionalNumber(payload.protein),
     fat: optionalNumber(payload.fat),
     carbs: optionalNumber(payload.carbs),
+    amountGrams: optionalAmountGrams(payload.amountGrams),
     cached: Boolean(payload.cached),
   }
 }
@@ -134,6 +135,16 @@ function optionalNumber(value: unknown): number | null {
   }
 
   return Math.round(parsed * 100) / 100
+}
+
+function optionalAmountGrams(value: unknown): number | null {
+  const parsed = optionalNumber(value)
+
+  if (parsed == null || parsed <= 0 || parsed > 5000) {
+    return null
+  }
+
+  return Math.round(parsed)
 }
 
 function mapReadyCode(code: string): AiServiceErrorCode {

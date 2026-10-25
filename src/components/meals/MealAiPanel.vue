@@ -9,7 +9,7 @@
         type="button"
         class="meal-ai-panel__mode"
         :class="{ 'meal-ai-panel__mode--active': mode === 'text' }"
-        @click="mode = 'text'"
+        @click="switchMode('text')"
       >
         {{ t('meals.ai.modes.text') }}
       </button>
@@ -17,16 +17,57 @@
         type="button"
         class="meal-ai-panel__mode"
         :class="{ 'meal-ai-panel__mode--active': mode === 'photo' }"
-        @click="mode = 'photo'"
+        @click="switchMode('photo')"
       >
         {{ t('meals.ai.modes.photo') }}
       </button>
     </div>
 
     <template v-if="mode === 'text'">
-      <label class="meal-ai-panel__label" for="meal-ai-description">
-        {{ t('meals.ai.descriptionLabel') }}
-      </label>
+      <div class="meal-ai-panel__text-head">
+        <label class="meal-ai-panel__label" for="meal-ai-description">
+          {{ t('meals.ai.descriptionLabel') }}
+        </label>
+        <div class="meal-ai-panel__text-actions">
+          <button
+            v-if="description.trim()"
+            type="button"
+            class="meal-ai-panel__clear"
+            :aria-label="t('meals.ai.clearDescription')"
+            :disabled="isAnalyzing"
+            @click="clearDescription"
+          >
+            <span
+              class="meal-ai-panel__clear-icon"
+              aria-hidden="true"
+              v-html="iconClose"
+            />
+          </button>
+          <button
+            v-if="speechSupported"
+            type="button"
+            class="meal-ai-panel__mic"
+            :class="{ 'meal-ai-panel__mic--active': isListening }"
+            :aria-pressed="isListening"
+            :aria-label="
+              isListening ? t('meals.ai.voice.stop') : t('meals.ai.voice.start')
+            "
+            :disabled="isAnalyzing"
+            @click="toggleListening"
+          >
+            <span
+              class="meal-ai-panel__mic-icon"
+              aria-hidden="true"
+              v-html="iconMic"
+            />
+            <span>{{
+              isListening
+                ? t('meals.ai.voice.listening')
+                : t('meals.ai.voice.start')
+            }}</span>
+          </button>
+        </div>
+      </div>
       <textarea
         id="meal-ai-description"
         v-model="description"
@@ -35,6 +76,9 @@
         :placeholder="t('meals.ai.descriptionPlaceholder')"
         :maxlength="AI_TEXT_MAX_LENGTH"
       />
+      <p v-if="speechError" class="meal-ai-panel__voice-error" role="status">
+        {{ speechError }}
+      </p>
     </template>
 
     <template v-else>
@@ -92,6 +136,7 @@
     </p>
 
     <AppButton
+      v-if="mode === 'text'"
       type="button"
       :loading="isAnalyzing"
       :disabled="isAnalyzing || !canAnalyze"
@@ -99,13 +144,18 @@
     >
       {{ isAnalyzing ? t('meals.ai.analyzing') : t('meals.ai.analyze') }}
     </AppButton>
+    <p v-else-if="isAnalyzing" class="meal-ai-panel__analyzing" role="status">
+      {{ t('meals.ai.analyzing') }}
+    </p>
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { computed, nextTick, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import AppButton from '@/components/common/AppButton.vue'
+import iconClose from '@/assets/icons/close.svg?raw'
+import iconMic from '@/assets/icons/mic.svg?raw'
 import {
   AI_PHOTO_ALLOWED_MIME,
   AI_PHOTO_MAX_INPUT_BYTES,
@@ -113,6 +163,7 @@ import {
   AI_TEXT_MIN_LENGTH,
 } from '@/constants/ai'
 import { APP_BUTTON_VARIANT } from '@/constants/ui'
+import { useSpeechToText } from '@/composables/useSpeechToText'
 import { analyzeFoodPhoto, analyzeFoodText } from '@/services/ai'
 import type { AiNutritionEstimate } from '@/types'
 import { resolveAiErrorI18nKey } from '@/utils/aiErrors'
@@ -134,6 +185,20 @@ const errorMessage = ref('')
 const cameraInput = ref<HTMLInputElement | null>(null)
 const galleryInput = ref<HTMLInputElement | null>(null)
 
+const {
+  isListening,
+  isSupported: speechSupported,
+  errorCode: speechErrorCode,
+  toggleListening,
+  stopListening,
+} = useSpeechToText({
+  lang: locale,
+  getBaseText: () => description.value,
+  onDraft: (text) => {
+    description.value = text
+  },
+})
+
 const canAnalyze = computed(() => {
   if (mode.value === 'text') {
     const length = description.value.trim().length
@@ -142,6 +207,26 @@ const canAnalyze = computed(() => {
 
   return Boolean(photoFile.value)
 })
+
+const speechError = computed(() => {
+  if (!speechErrorCode.value) {
+    return ''
+  }
+
+  return t(`meals.ai.voice.errors.${speechErrorCode.value}`)
+})
+
+function switchMode(next: 'text' | 'photo'): void {
+  stopListening()
+  mode.value = next
+  errorMessage.value = ''
+}
+
+function clearDescription(): void {
+  stopListening()
+  description.value = ''
+  errorMessage.value = ''
+}
 
 function openCameraPicker(): void {
   errorMessage.value = ''
@@ -164,7 +249,7 @@ function onPhotoChange(event: Event): void {
     return
   }
 
-const mimeOk =
+  const mimeOk =
     !file.type ||
     file.type === 'image/jpg' ||
     (AI_PHOTO_ALLOWED_MIME as readonly string[]).includes(file.type) ||
@@ -181,10 +266,19 @@ const mimeOk =
   photoFile.value = file
   photoName.value = file.name || t('meals.ai.capturedPhotoName')
   input.value = ''
+
+  void nextTick(() => {
+    void onAnalyze()
+  })
 }
 
 async function onAnalyze(): Promise<void> {
+  if (isAnalyzing.value) {
+    return
+  }
+
   errorMessage.value = ''
+  stopListening()
   isAnalyzing.value = true
 
   try {

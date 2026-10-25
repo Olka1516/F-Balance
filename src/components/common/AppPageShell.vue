@@ -7,21 +7,18 @@
         class="app-page__card"
         :class="{ 'app-page__card--wide': wide }"
       >
-        <div class="app-page__meta">
-          <p class="app-page__season">
-            {{ t(`common.seasons.${season}`) }}
-          </p>
-        </div>
-
         <header class="app-page__header">
-          <div class="app-page__heading">
+          <div class="app-page__heading-row">
             <h1 class="app-page__title">
               <slot name="title" />
             </h1>
-            <p v-if="$slots.intro" class="app-page__intro">
-              <slot name="intro" />
+            <p class="app-page__season">
+              {{ t(`common.seasons.${season}`) }}
             </p>
           </div>
+          <p v-if="$slots.intro" class="app-page__intro">
+            <slot name="intro" />
+          </p>
           <div v-if="$slots.actions" class="app-page__header-actions">
             <slot name="actions" />
           </div>

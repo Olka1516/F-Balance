@@ -20,11 +20,11 @@
         :autocomplete="autocomplete"
         :placeholder="placeholder"
         :readonly="readonly"
+        :min="resolvedMin"
+        :inputmode="isNumberType ? 'decimal' : undefined"
         :aria-invalid="hasError"
         :aria-describedby="hasError ? `${inputId}-error` : undefined"
-        @input="
-          emit('update:modelValue', ($event.target as HTMLInputElement).value)
-        "
+        @input="onInput"
       />
       <span
         v-if="hasIcon && iconMarkup"
@@ -53,6 +53,7 @@ import {
   APP_INPUT_DEFAULT_TYPE,
   APP_INPUT_DEFAULT_VARIANT,
   APP_INPUT_ICON,
+  APP_INPUT_TYPE,
   type AppInputIcon,
   type AppInputType,
   type AppInputVariant,
@@ -70,6 +71,7 @@ const props = withDefaults(
     variant?: AppInputVariant
     icon?: AppInputIcon
     readonly?: boolean
+    min?: number | string
   }>(),
   {
     variant: APP_INPUT_DEFAULT_VARIANT,
@@ -85,6 +87,16 @@ const emit = defineEmits<{
 const inputId = useId()
 const hasError = computed(() => Boolean(props.error))
 const hasIcon = computed(() => props.icon !== APP_INPUT_ICON.none)
+const isNumberType = computed(
+  () => (props.type ?? APP_INPUT_DEFAULT_TYPE) === APP_INPUT_TYPE.number,
+)
+const resolvedMin = computed(() => {
+  if (props.min != null) {
+    return props.min
+  }
+
+  return isNumberType.value ? 0 : undefined
+})
 const iconMarkup = computed(() => {
   if (props.icon === APP_INPUT_ICON.email) {
     return iconEmail
@@ -96,4 +108,29 @@ const iconMarkup = computed(() => {
 
   return ''
 })
+
+function onInput(event: Event): void {
+  const target = event.target as HTMLInputElement
+  let value = target.value
+
+  if (isNumberType.value) {
+    value = value.replace(/[^\d.,]/g, '').replace(/,/g, '.')
+
+    if (value.startsWith('.')) {
+      value = `0${value}`
+    }
+
+    const minValue = Number(resolvedMin.value ?? 0)
+
+    if (Number.isFinite(minValue) && value !== '' && Number(value) < minValue) {
+      value = String(minValue)
+    }
+
+    if (target.value !== value) {
+      target.value = value
+    }
+  }
+
+  emit('update:modelValue', value)
+}
 </script>

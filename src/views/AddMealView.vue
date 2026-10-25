@@ -203,6 +203,7 @@ function onAiEstimated(payload: AiNutritionEstimate): void {
         fat: 0,
         carbs: 0,
         name: null,
+        amountGrams: null,
       }
     : payload
 
@@ -213,6 +214,7 @@ function onAiEstimated(payload: AiNutritionEstimate): void {
     carbs: estimate.carbs,
     mealType: form.value.mealType,
     name: estimate.name,
+    amountGrams: estimate.amountGrams ?? undefined,
   })
   foodSource.value = FOOD_SOURCE_AI
   activeTab.value = 'manual'
@@ -227,7 +229,11 @@ function onAiEstimated(payload: AiNutritionEstimate): void {
 
   entryNoticeIsWarning.value = false
   entryNotice.value = t('meals.ai.applied', {
+    amount: form.value.amount,
     calories: payload.calories,
+    protein: payload.protein ?? 0,
+    fat: payload.fat ?? 0,
+    carbs: payload.carbs ?? 0,
   })
 }
 
