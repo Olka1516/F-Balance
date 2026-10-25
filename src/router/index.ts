@@ -98,6 +98,14 @@ router.beforeEach(async (to) => {
     return { name: ROUTE_NAMES.login }
   }
 
+  if (
+    isAuthenticated.value &&
+    user.value?.id &&
+    routeName === ROUTE_NAMES.landing
+  ) {
+    return { name: await resolvePostAuthRoute(user.value.id) }
+  }
+
   if (guestOnly && isAuthenticated.value && user.value?.id) {
     return { name: await resolvePostAuthRoute(user.value.id) }
   }
@@ -122,8 +130,8 @@ router.beforeEach(async (to) => {
   ) {
     const destination = await resolvePostAuthRoute(user.value.id)
 
-    if (destination === ROUTE_NAMES.dashboard) {
-      return { name: ROUTE_NAMES.dashboard }
+    if (destination === ROUTE_NAMES.addMeal) {
+      return { name: ROUTE_NAMES.addMeal }
     }
   }
 

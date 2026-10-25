@@ -156,7 +156,7 @@ async function saveProfile(
       ),
     })
 
-    await router.push({ name: ROUTE_NAMES.dashboard })
+    await router.push({ name: ROUTE_NAMES.addMeal })
   } catch (error) {
     formError.value = mapProfileErrorMessage(
       error instanceof Error ? error.message : 'unknown',

@@ -162,7 +162,7 @@ async function onSubmit(): Promise<void> {
 
     const nextRoute = result.user?.id
       ? await resolvePostAuthRoute(result.user.id)
-      : ROUTE_NAMES.dashboard
+      : ROUTE_NAMES.addMeal
 
     await router.push({ name: nextRoute })
   } finally {

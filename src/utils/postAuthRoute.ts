@@ -2,7 +2,7 @@ import { ROUTE_NAMES, type RouteName } from '@/constants/routes'
 import { fetchUserProfile } from '@/services/profile'
 
 /**
- * Picks dashboard or onboarding after auth based on profile completion.
+ * Picks add-meal or onboarding after auth based on profile completion.
  */
 export async function resolvePostAuthRoute(userId: string): Promise<RouteName> {
   const result = await fetchUserProfile(userId)
@@ -11,7 +11,7 @@ export async function resolvePostAuthRoute(userId: string): Promise<RouteName> {
     return ROUTE_NAMES.onboarding
   }
 
-  return ROUTE_NAMES.dashboard
+  return ROUTE_NAMES.addMeal
 }
 
 /**

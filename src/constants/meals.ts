@@ -46,7 +46,7 @@ export type AddMealEntryTab = (typeof ADD_MEAL_ENTRY_TABS)[number]
 /**
  * Default Add Food tab for new meals.
  */
-export const ADD_MEAL_ENTRY_TAB_DEFAULT: AddMealEntryTab = 'search'
+export const ADD_MEAL_ENTRY_TAB_DEFAULT: AddMealEntryTab = 'ai'
 
 /**
  * Minimum grams for a meal amount.
