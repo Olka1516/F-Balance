@@ -17,7 +17,7 @@
     <template v-else>
       <DashboardDayStrip
         v-model="selectedDate"
-        :aria-label="t('dashboard.dayStrip.aria')"
+        :label="t('dashboard.dayStrip.aria')"
         :prev-label="t('dashboard.dayStrip.prevWeek')"
         :next-label="t('dashboard.dayStrip.nextWeek')"
       />

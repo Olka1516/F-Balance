@@ -1,5 +1,5 @@
 <template>
-  <section class="dashboard-day-strip" :aria-label="ariaLabel">
+  <section class="dashboard-day-strip" :aria-label="label">
     <div class="dashboard-day-strip__month-row">
       <p class="dashboard-day-strip__month">{{ monthLabel }}</p>
       <div class="dashboard-day-strip__nav">
@@ -22,7 +22,7 @@
       </div>
     </div>
 
-    <div class="dashboard-day-strip__days" role="listbox" :aria-label="ariaLabel">
+    <div class="dashboard-day-strip__days" role="listbox" :aria-label="label">
       <button
         v-for="day in days"
         :key="day.key"
@@ -56,7 +56,7 @@ import '@/styles/components/dashboard-day-strip.css'
 
 const props = defineProps<{
   modelValue: string
-  ariaLabel: string
+  label: string
   prevLabel: string
   nextLabel: string
 }>()
