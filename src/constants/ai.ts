@@ -11,7 +11,7 @@ export const AI_ANALYZE_PHOTO_FN = 'analyze-photo'
 /**
  * Client cooldown between AI analyzes in milliseconds.
  */
-export const AI_CLIENT_COOLDOWN_MS = 20_000
+export const AI_CLIENT_COOLDOWN_MS = 5_000
 
 /**
  * localStorage key for the last AI request timestamp.

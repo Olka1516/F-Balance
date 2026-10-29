@@ -4,9 +4,9 @@ export type RateLimitDecision =
   | { ok: true; cachedCalories: number | null }
   | { ok: false; code: 'unauthorized' | 'cooldown' | 'rateLimited' | 'dailyLimit' }
 
-const COOLDOWN_MS = 20_000
-const MAX_PER_HOUR = 6
-const MAX_PER_DAY = 24
+const COOLDOWN_MS = 5_000
+const MAX_PER_HOUR = 30
+const MAX_PER_DAY = 100
 const CACHE_TTL_MS = 48 * 60 * 60 * 1000
 
 /**

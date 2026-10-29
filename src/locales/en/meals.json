@@ -46,7 +46,7 @@
     },
     "errors": {
       "unauthorized": "Sign in again to use AI analysis.",
-      "cooldown": "Wait about 20 seconds before another analysis.",
+      "cooldown": "Wait a few seconds before another analysis.",
       "rateLimited": "AI limit reached for now. Wait a bit and try again.",
       "dailyLimit": "Daily AI limit reached. Use Search or Manual instead.",
       "invalidDescription": "Enter a short food description first.",

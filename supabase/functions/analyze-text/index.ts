@@ -10,9 +10,10 @@ const corsHeaders: Record<string, string> = {
 
 const TEXT_MIN = 3
 const TEXT_MAX = 500
-const COOLDOWN_MS = 20_000
-const MAX_PER_HOUR = 6
-const MAX_PER_DAY = 24
+const GEMINI_TIMEOUT_MS = 20_000
+const COOLDOWN_MS = 5_000
+const MAX_PER_HOUR = 30
+const MAX_PER_DAY = 100
 const CACHE_TTL_MS = 48 * 60 * 60 * 1000
 
 Deno.serve(async (req) => {
@@ -224,14 +225,17 @@ async function estimateNutritionWithGemini(input: {
 
   const preferred = [
     Deno.env.get('GEMINI_MODEL')?.trim() || '',
-    'gemini-2.5-flash',
-    'gemini-2.0-flash',
+    'gemini-flash-lite-latest',
+    'gemini-flash-latest',
   ].filter((value, index, list) => value && list.indexOf(value) === index)
 
   let lastCode = 'modelUnavailable'
 
   for (const model of preferred) {
-    const result = await callGeminiModel(apiKey, model, input)
+    const result = await callGeminiModel(apiKey, model, input).catch((error) => {
+      console.error('gemini request error', model, String(error))
+      return { ok: false as const, code: 'upstreamFailed' }
+    })
 
     if (result.ok) {
       return result
@@ -247,69 +251,27 @@ async function estimateNutritionWithGemini(input: {
     }
   }
 
-  const discovered = await listGeminiModels(apiKey)
+  const discovered = (await listGeminiModels(apiKey))
+    .filter((model) => !preferred.includes(model))
+    .sort((a, b) => Number(b.includes('lite')) - Number(a.includes('lite')))
+    .slice(0, 3)
 
   for (const model of discovered) {
-    if (preferred.includes(model)) {
-      continue
-    }
-
-    const result = await callGeminiModel(apiKey, model, input)
+    const result = await callGeminiModel(apiKey, model, input).catch((error) => {
+      console.error('gemini request error', model, String(error))
+      return { ok: false as const, code: 'upstreamFailed' }
+    })
 
     if (result.ok) {
       return result
     }
 
     lastCode = result.code
-
-    if (
-      result.code === 'misconfigured' ||
-      result.code === 'upstreamLimited'
-    ) {
-      return result
-    }
   }
 
   return { ok: false, code: lastCode }
 }
 
-async function listGeminiModels(apiKey: string): Promise<string[]> {
-  try {
-    const response = await fetch(
-      'https://generativelanguage.googleapis.com/v1beta/models?pageSize=100',
-      {
-        headers: {
-          'x-goog-api-key': apiKey,
-        },
-      },
-    )
-
-    if (!response.ok) {
-      return []
-    }
-
-    const payload = (await response.json()) as {
-      models?: Array<{
-        name?: string
-        supportedGenerationMethods?: string[]
-      }>
-    }
-
-    return (payload.models ?? [])
-      .filter((model) =>
-        (model.supportedGenerationMethods ?? []).includes('generateContent'),
-      )
-      .map((model) => String(model.name ?? '').replace(/^models\//, ''))
-      .filter((name) =>
-        name.includes('flash') &&
-        !name.includes('embed') &&
-        !name.includes('tts') &&
-        !name.includes('image'),
-      )
-  } catch {
-    return []
-  }
-}
 
 async function callGeminiModel(
   apiKey: string,
@@ -362,11 +324,14 @@ async function callGeminiModel(
         'Content-Type': 'application/json',
         'x-goog-api-key': apiKey,
       },
+      signal: AbortSignal.timeout(GEMINI_TIMEOUT_MS),
       body: JSON.stringify({
         contents: [{ role: 'user', parts }],
         generationConfig: {
           temperature: 0.2,
           maxOutputTokens: 1024,
+          responseMimeType: 'application/json',
+          ...(!model.includes('2.0') ? { thinkingConfig: { thinkingBudget: 0 } } : {}),
         },
       }),
     },
@@ -381,10 +346,12 @@ async function callGeminiModel(
   }
 
   if (response.status === 404) {
+    console.error('gemini model not found', model)
     return { ok: false, code: 'modelUnavailable' }
   }
 
   if (!response.ok) {
+    console.error('gemini failed', model, response.status, (await response.text()).slice(0, 500))
     return { ok: false, code: 'upstreamFailed' }
   }
 
@@ -398,10 +365,49 @@ async function callGeminiModel(
   const estimate = parseNutritionJson(rawText)
 
   if (!estimate) {
+    console.error('gemini invalid result', model, rawText.slice(0, 500))
     return { ok: false, code: 'invalidAiResult' }
   }
 
   return { ok: true, data: estimate }
+}
+
+async function listGeminiModels(apiKey: string): Promise<string[]> {
+  try {
+    const response = await fetch(
+      'https://generativelanguage.googleapis.com/v1beta/models?pageSize=100',
+      {
+        headers: {
+          'x-goog-api-key': apiKey,
+        },
+      },
+    )
+
+    if (!response.ok) {
+      return []
+    }
+
+    const payload = (await response.json()) as {
+      models?: Array<{
+        name?: string
+        supportedGenerationMethods?: string[]
+      }>
+    }
+
+    return (payload.models ?? [])
+      .filter((model) =>
+        (model.supportedGenerationMethods ?? []).includes('generateContent'),
+      )
+      .map((model) => String(model.name ?? '').replace(/^models\//, ''))
+      .filter((name) =>
+        name.includes('flash') &&
+        !name.includes('embed') &&
+        !name.includes('tts') &&
+        !name.includes('image'),
+      )
+  } catch {
+    return []
+  }
 }
 
 function normalizeLocale(value: unknown): string {
