@@ -47,7 +47,11 @@
           {{ entryNotice }}
         </p>
 
-        <MealForm ref="mealFormRef" v-model="form" />
+        <MealForm
+          ref="mealFormRef"
+          v-model="form"
+          :scale-with-amount="isEditMode || foodSource !== FOOD_SOURCE_MANUAL"
+        />
 
         <p
           v-if="formError"

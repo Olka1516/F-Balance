@@ -15,7 +15,12 @@ import type {
   MealFormValues,
   MealWithIngredients,
 } from '@/types'
-import { macrosForAmount, macrosToPerHundred } from '@/utils/macros'
+import {
+  fromPerHundredGrams,
+  macrosForAmount,
+  macrosToPerHundred,
+  roundNutrition,
+} from '@/utils/macros'
 
 type FoodRow = {
   id: string
@@ -65,7 +70,8 @@ export function createEmptyMealForm(): MealFormValues {
 }
 
 /**
- * Fills meal form fields from an Open Food Facts hit (nutrition per 100 g).
+ * Fills meal form fields from an Open Food Facts hit.
+ * The hit is per 100 g; the form holds values for the eaten portion.
  */
 export function foodSearchHitToFormValues(
   hit: FoodSearchHit,
@@ -76,17 +82,15 @@ export function foodSearchHitToFormValues(
     name: hit.brand ? `${hit.name} (${hit.brand})` : hit.name,
     mealType: mealType || MEAL_TYPE_DEFAULT,
     amount: String(amountGrams),
-    calories:
-      hit.caloriesPer100g == null ? '' : String(hit.caloriesPer100g),
-    protein: hit.proteinPer100g == null ? '' : String(hit.proteinPer100g),
-    fat: hit.fatPer100g == null ? '' : String(hit.fatPer100g),
-    carbs: hit.carbsPer100g == null ? '' : String(hit.carbsPer100g),
+    calories: portionString(hit.caloriesPer100g, amountGrams),
+    protein: portionString(hit.proteinPer100g, amountGrams),
+    fat: portionString(hit.fatPer100g, amountGrams),
+    carbs: portionString(hit.carbsPer100g, amountGrams),
   }
 }
 
 /**
- * Builds editable form values from an AI nutrition estimate.
- * Converts the portion estimate into per-100 g densities using amountGrams.
+ * Builds editable form values from an AI nutrition estimate (already for the whole portion).
  */
 export function aiEstimateToFormValues(input: {
   calories: number
@@ -98,24 +102,15 @@ export function aiEstimateToFormValues(input: {
   amountGrams?: number
 }): MealFormValues {
   const amountGrams = input.amountGrams ?? FOOD_SEARCH_DEFAULT_AMOUNT_G
-  const perHundred = macrosToPerHundred(
-    {
-      calories: input.calories,
-      protein: input.protein ?? 0,
-      fat: input.fat ?? 0,
-      carbs: input.carbs ?? 0,
-    },
-    amountGrams,
-  )
 
   return {
     name: (input.name ?? '').trim() || AI_ESTIMATE_DEFAULT_NAME,
     mealType: input.mealType || MEAL_TYPE_DEFAULT,
     amount: String(amountGrams),
-    calories: String(perHundred.calories),
-    protein: String(perHundred.protein),
-    fat: String(perHundred.fat),
-    carbs: String(perHundred.carbs),
+    calories: String(roundNutrition(input.calories)),
+    protein: String(roundNutrition(input.protein ?? 0)),
+    fat: String(roundNutrition(input.fat ?? 0)),
+    carbs: String(roundNutrition(input.carbs ?? 0)),
   }
 }
 
@@ -127,7 +122,7 @@ export function isMealType(value: string): value is MealType {
 }
 
 /**
- * Maps a meal with a single ingredient into editable form values (per 100 g).
+ * Maps a meal with a single ingredient into editable portion values.
  */
 export function mealToFormValues(meal: MealWithIngredients): MealFormValues {
   const ingredient = meal.ingredients[0]
@@ -149,19 +144,22 @@ export function mealToFormValues(meal: MealWithIngredients): MealFormValues {
         amount,
       )
 
+  const portion = macrosForAmount(perHundred, amount)
+
   return {
     name: meal.name,
     mealType: meal.mealType,
     amount: String(amount),
-    calories: String(perHundred.calories),
-    protein: String(perHundred.protein),
-    fat: String(perHundred.fat),
-    carbs: String(perHundred.carbs),
+    calories: String(portion.calories),
+    protein: String(portion.protein),
+    fat: String(portion.fat),
+    carbs: String(portion.carbs),
   }
 }
 
 /**
- * Parses validated form strings into a manual meal input (nutrition per 100 g).
+ * Parses validated portion values into a manual meal input.
+ * Empty macros count as 0; nutrition is converted to per-100 g for storage.
  */
 export function formValuesToManualMealInput(
   values: MealFormValues,
@@ -172,15 +170,16 @@ export function formValuesToManualMealInput(
   }
 
   const amountGrams = Number(values.amount)
-  const calories = Number(values.calories)
-  const protein = Number(values.protein)
-  const fat = Number(values.fat)
-  const carbs = Number(values.carbs)
+  const portion = {
+    calories: Number(values.calories),
+    protein: Number(values.protein || 0),
+    fat: Number(values.fat || 0),
+    carbs: Number(values.carbs || 0),
+  }
 
   if (
-    ![amountGrams, calories, protein, fat, carbs].every((value) =>
-      Number.isFinite(value),
-    )
+    !(amountGrams > 0) ||
+    !Object.values(portion).every((value) => Number.isFinite(value))
   ) {
     return null
   }
@@ -189,10 +188,7 @@ export function formValuesToManualMealInput(
     name: values.name.trim(),
     mealType: values.mealType,
     amountGrams,
-    calories,
-    protein,
-    fat,
-    carbs,
+    ...macrosToPerHundred(portion, amountGrams),
     source,
   }
 }
@@ -296,4 +292,31 @@ export function mapMealWithIngredientsRow(
  */
 export function buildDuplicatedMealName(name: string, copyLabel: string): string {
   return `${name} (${copyLabel})`
+}
+
+function portionString(perHundred: number | null, amountGrams: number): string {
+  return perHundred == null ? '' : String(fromPerHundredGrams(perHundred, amountGrams))
+}
+
+/**
+ * Rescales portion nutrition strings when the eaten grams change, keeping the same density.
+ */
+export function rescalePortionValues(
+  values: MealFormValues,
+  fromGrams: number,
+  toGrams: number,
+): Pick<MealFormValues, 'calories' | 'protein' | 'fat' | 'carbs'> {
+  const scale = (value: string) => {
+    const parsed = Number(value)
+    return value.trim() && Number.isFinite(parsed)
+      ? String(roundNutrition((parsed * toGrams) / fromGrams))
+      : value
+  }
+
+  return {
+    calories: scale(values.calories),
+    protein: scale(values.protein),
+    fat: scale(values.fat),
+    carbs: scale(values.carbs),
+  }
 }

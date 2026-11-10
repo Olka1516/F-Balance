@@ -8,18 +8,18 @@
       <button
         type="button"
         class="meal-ai-panel__mode"
-        :class="{ 'meal-ai-panel__mode--active': mode === 'text' }"
-        @click="switchMode('text')"
-      >
-        {{ t('meals.ai.modes.text') }}
-      </button>
-      <button
-        type="button"
-        class="meal-ai-panel__mode"
         :class="{ 'meal-ai-panel__mode--active': mode === 'photo' }"
         @click="switchMode('photo')"
       >
         {{ t('meals.ai.modes.photo') }}
+      </button>
+      <button
+        type="button"
+        class="meal-ai-panel__mode"
+        :class="{ 'meal-ai-panel__mode--active': mode === 'text' }"
+        @click="switchMode('text')"
+      >
+        {{ t('meals.ai.modes.text') }}
       </button>
     </div>
 
@@ -122,9 +122,23 @@
         accept="image/jpeg,image/png,image/webp"
         @change="onPhotoChange"
       />
-      <p v-if="photoName" class="meal-ai-panel__file-name">
-        {{ photoName }}
-      </p>
+      <template v-if="preparedPhoto">
+        <p class="meal-ai-panel__file-name">
+          {{ photoName }}
+        </p>
+        <p class="meal-ai-panel__hint">{{ t('meals.ai.photoReady') }}</p>
+        <label class="meal-ai-panel__label" for="meal-ai-clarification">
+          {{ t('meals.ai.clarificationLabel') }}
+        </label>
+        <input
+          id="meal-ai-clarification"
+          v-model="clarification"
+          class="meal-ai-panel__input"
+          type="text"
+          :maxlength="AI_CLARIFICATION_MAX_LENGTH"
+          :placeholder="t('meals.ai.clarificationPlaceholder')"
+        />
+      </template>
     </template>
 
     <p
@@ -147,16 +161,34 @@
     <p v-else-if="isAnalyzing" class="meal-ai-panel__analyzing" role="status">
       {{ t('meals.ai.analyzing') }}
     </p>
+    <div v-else-if="preparedPhoto" class="meal-ai-panel__retry">
+      <AppButton type="button" :disabled="cooldownSeconds > 0" @click="onAnalyze">
+        {{
+          cooldownSeconds > 0
+            ? t('meals.ai.retryIn', { seconds: cooldownSeconds })
+            : t('meals.ai.retry')
+        }}
+      </AppButton>
+      <button
+        v-if="errorMessage"
+        type="button"
+        class="app-page__link-action"
+        @click="switchMode('text')"
+      >
+        {{ t('meals.ai.describeInstead') }}
+      </button>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed, nextTick, ref } from 'vue'
+import { computed, nextTick, onUnmounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import AppButton from '@/components/common/AppButton.vue'
 import iconClose from '@/assets/icons/close.svg?raw'
 import iconMic from '@/assets/icons/mic.svg?raw'
 import {
+  AI_CLARIFICATION_MAX_LENGTH,
   AI_PHOTO_ALLOWED_MIME,
   AI_PHOTO_MAX_INPUT_BYTES,
   AI_TEXT_MAX_LENGTH,
@@ -168,6 +200,7 @@ import { analyzeFoodPhoto, analyzeFoodText } from '@/services/ai'
 import type { AiNutritionEstimate } from '@/types'
 import { resolveAiErrorI18nKey } from '@/utils/aiErrors'
 import { emptyAiEstimate, isEmptyAiEstimate } from '@/utils/aiEstimate'
+import { getAiCooldownRemainingMs } from '@/utils/aiCooldown'
 import { compressImageForAi } from '@/utils/aiImage'
 import '@/styles/components/meal-ai-panel.css'
 
@@ -176,10 +209,28 @@ const emit = defineEmits<{
 }>()
 
 const { t, locale } = useI18n()
-const mode = ref<'text' | 'photo'>('text')
+const mode = ref<'text' | 'photo'>('photo')
 const description = ref('')
-const photoFile = ref<File | null>(null)
 const photoName = ref('')
+const preparedPhoto = ref<{ base64: string; mimeType: string } | null>(null)
+const clarification = ref('')
+const cooldownSeconds = ref(0)
+let cooldownTimer: ReturnType<typeof setInterval> | undefined
+
+onUnmounted(() => clearInterval(cooldownTimer))
+
+function startCooldownCountdown(): void {
+  clearInterval(cooldownTimer)
+  const tick = () => {
+    cooldownSeconds.value = Math.ceil(getAiCooldownRemainingMs() / 1000)
+
+    if (cooldownSeconds.value <= 0) {
+      clearInterval(cooldownTimer)
+    }
+  }
+  tick()
+  cooldownTimer = setInterval(tick, 250)
+}
 const isAnalyzing = ref(false)
 const errorMessage = ref('')
 const cameraInput = ref<HTMLInputElement | null>(null)
@@ -205,7 +256,7 @@ const canAnalyze = computed(() => {
     return length >= AI_TEXT_MIN_LENGTH && length <= AI_TEXT_MAX_LENGTH
   }
 
-  return Boolean(photoFile.value)
+  return Boolean(preparedPhoto.value)
 })
 
 const speechError = computed(() => {
@@ -238,14 +289,12 @@ function openGalleryPicker(): void {
   galleryInput.value?.click()
 }
 
-function onPhotoChange(event: Event): void {
+async function onPhotoChange(event: Event): Promise<void> {
   errorMessage.value = ''
   const input = event.target as HTMLInputElement
   const file = input.files?.[0] ?? null
 
   if (!file) {
-    photoFile.value = null
-    photoName.value = ''
     return
   }
 
@@ -256,20 +305,27 @@ function onPhotoChange(event: Event): void {
     /^image\//.test(file.type)
 
   if (!mimeOk || file.size > AI_PHOTO_MAX_INPUT_BYTES) {
-    photoFile.value = null
-    photoName.value = ''
     errorMessage.value = t('meals.ai.errors.invalidImage')
     input.value = ''
     return
   }
 
-  photoFile.value = file
-  photoName.value = file.name || t('meals.ai.capturedPhotoName')
   input.value = ''
+  isAnalyzing.value = true
 
-  void nextTick(() => {
-    void onAnalyze()
-  })
+  try {
+    preparedPhoto.value = await compressImageForAi(file)
+    photoName.value = file.name || t('meals.ai.capturedPhotoName')
+    clarification.value = ''
+  } catch (error) {
+    isAnalyzing.value = false
+    errorMessage.value = t(resolveAiErrorI18nKey(error instanceof Error ? error.message : 'unknown'))
+    return
+  }
+
+  isAnalyzing.value = false
+  await nextTick()
+  await onAnalyze()
 }
 
 async function onAnalyze(): Promise<void> {
@@ -310,18 +366,18 @@ async function onAnalyze(): Promise<void> {
       return
     }
 
-    const file = photoFile.value
+    const photo = preparedPhoto.value
 
-    if (!file) {
+    if (!photo) {
       errorMessage.value = t('meals.ai.errors.invalidImage')
       return
     }
 
-    const compressed = await compressImageForAi(file)
     const result = await analyzeFoodPhoto({
-      imageBase64: compressed.base64,
-      mimeType: compressed.mimeType,
+      imageBase64: photo.base64,
+      mimeType: photo.mimeType,
       locale: activeLocale,
+      clarification: clarification.value.trim() || undefined,
     })
 
     if (!result.ok) {
@@ -340,6 +396,10 @@ async function onAnalyze(): Promise<void> {
     errorMessage.value = t(resolveAiErrorI18nKey(code))
   } finally {
     isAnalyzing.value = false
+
+    if (errorMessage.value) {
+      startCooldownCountdown()
+    }
   }
 }
 </script>

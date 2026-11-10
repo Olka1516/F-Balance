@@ -175,11 +175,11 @@ Do phases in order. Each phase ends with Step D from `AGENTS.md` and a docs upda
 67. Progress (`/progress`): 7-day calories chart, average kcal and macros, days within ±10 % of target, logged days. Weight trend needs weight history — deferred. Charts read colours via `useThemeColors` (no hex literals); unused macro/progress charts removed.
 68. Remove the visible season label (seasonal theme may stay, silently).
 
-## Phase 14 — Logging flow (requests 3, 8, 9)
+## Phase 14 — Logging flow (requests 3, 8, 9) ✅ done
 
 69. Rename the "AI" tab to **"Photo or description"** (`uk`: «Фото або опис»). No "AI" word in navigation; a small "estimate" note stays on the result.
-70. Add screen order: Photo/description → Search (Open Food Facts) → Saved meals → Manual.
-71. Result card shows a dish with editable ingredients (name, grams, kcal). User edits **grams of the portion**, never per-100 g values. Per-100 g is stored internally and derived automatically.
+70. Add screen order: Photo/description (photo first) → Search → Manual. Saved meals join in Phase 15.
+71. The form holds **portion** values (grams + kcal of what was eaten). Per-100 g is derived only on save (`formValuesToManualMealInput`). For AI / search / edit, changing grams rescales kcal and macros. Per-ingredient breakdown of a dish is deferred.
 72. Manual entry: name + portion (g or "1 serving") + total kcal; macros optional and collapsed by default.
 73. On photo analysis error: keep the compressed photo in memory, show **Retry** (same photo, no re-upload) and **Describe instead**. Retry respects cooldown with a visible countdown.
 74. Optional clarification text after a photo ("without sauce", "half portion") sent with the retry.

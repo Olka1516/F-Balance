@@ -19,6 +19,11 @@ export const AI_CLIENT_COOLDOWN_MS = 3_000
 export const AI_CLIENT_COOLDOWN_STORAGE_KEY = 'f-balance.ai.lastRequestAt'
 
 /**
+ * Maximum length of the optional clarification sent with a photo.
+ */
+export const AI_CLARIFICATION_MAX_LENGTH = 200
+
+/**
  * Minimum AI text description length.
  */
 export const AI_TEXT_MIN_LENGTH = 3

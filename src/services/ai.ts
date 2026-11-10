@@ -39,6 +39,7 @@ export async function analyzeFoodPhoto(payload: {
   imageBase64: string
   mimeType: string
   locale: string
+  clarification?: string
 }): Promise<AiActionResult> {
   if (getAiCooldownRemainingMs() > 0) {
     return { ok: false, code: 'cooldown' }

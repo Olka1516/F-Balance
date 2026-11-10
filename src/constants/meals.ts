@@ -36,7 +36,7 @@ export const FOOD_SEARCH_DEFAULT_AMOUNT_G = 100
 /**
  * Add Food entry modes: search API, AI estimate, or manual macros.
  */
-export const ADD_MEAL_ENTRY_TABS = ['search', 'ai', 'manual'] as const
+export const ADD_MEAL_ENTRY_TABS = ['ai', 'search', 'manual'] as const
 
 /**
  * Add Food entry tab identifier.

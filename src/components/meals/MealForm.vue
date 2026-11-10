@@ -1,9 +1,5 @@
 <template>
   <div class="meal-form">
-    <p v-if="portionSummary" class="meal-form__portion" role="status">
-      {{ portionSummary }}
-    </p>
-
     <AppInput
       v-model="form.name"
       :label="t('meals.fields.name')"
@@ -32,64 +28,81 @@
       </p>
     </section>
 
-    <AppInput
-      v-model="form.amount"
-      :label="t('meals.fields.amount')"
-      :type="APP_INPUT_TYPE.number"
-      :min="0"
-      :error="fieldErrors.amount"
-    />
+    <div class="meal-form__portion-row">
+      <AppInput
+        v-model="form.amount"
+        :label="t('meals.fields.amount')"
+        :type="APP_INPUT_TYPE.number"
+        :min="0"
+        :error="fieldErrors.amount"
+      />
+      <AppInput
+        v-model="form.calories"
+        :label="t('meals.fields.calories')"
+        :type="APP_INPUT_TYPE.number"
+        :min="0"
+        :error="fieldErrors.calories"
+        :readonly="hasAllMacros"
+      />
+    </div>
+    <p v-if="scaleWithAmount" class="meal-form__hint">
+      {{ t('meals.fields.scaleHint') }}
+    </p>
+    <p v-if="per100Calories != null" class="meal-form__hint">
+      {{ t('meals.fields.per100Hint', { calories: per100Calories }) }}
+    </p>
 
-    <section class="meal-form__nutrition" aria-labelledby="meal-form-nutrition">
+    <button
+      type="button"
+      class="meal-form__toggle"
+      :aria-expanded="showMacros"
+      @click="showMacros = !showMacros"
+    >
+      {{ showMacros ? t('meals.fields.macrosHide') : t('meals.fields.macrosToggle') }}
+    </button>
+
+    <section
+      v-if="showMacros"
+      class="meal-form__nutrition"
+      aria-labelledby="meal-form-nutrition"
+    >
       <div class="meal-form__nutrition-head">
         <h2 id="meal-form-nutrition" class="meal-form__section-title">
-          {{ t('meals.fields.per100Title') }}
+          {{ t('meals.fields.macrosTitle') }}
         </h2>
         <p class="meal-form__nutrition-note">
           {{ t('meals.fields.caloriesFromMacrosHint') }}
         </p>
       </div>
-
-      <div class="meal-form__nutrition-grid">
+      <div class="meal-form__macros-row">
         <AppInput
-          v-model="form.calories"
-          class="meal-form__nutrition-kcal"
-          :label="t('meals.fields.calories')"
+          v-model="form.protein"
+          :label="t('meals.fields.protein')"
           :type="APP_INPUT_TYPE.number"
           :min="0"
-          :error="fieldErrors.calories"
-          readonly
+          :error="fieldErrors.protein"
         />
-        <div class="meal-form__macros-row">
-          <AppInput
-            v-model="form.protein"
-            :label="t('meals.fields.protein')"
-            :type="APP_INPUT_TYPE.number"
-            :min="0"
-            :error="fieldErrors.protein"
-          />
-          <AppInput
-            v-model="form.fat"
-            :label="t('meals.fields.fat')"
-            :type="APP_INPUT_TYPE.number"
-            :min="0"
-            :error="fieldErrors.fat"
-          />
-          <AppInput
-            v-model="form.carbs"
-            :label="t('meals.fields.carbs')"
-            :type="APP_INPUT_TYPE.number"
-            :min="0"
-            :error="fieldErrors.carbs"
-          />
-        </div>
+        <AppInput
+          v-model="form.fat"
+          :label="t('meals.fields.fat')"
+          :type="APP_INPUT_TYPE.number"
+          :min="0"
+          :error="fieldErrors.fat"
+        />
+        <AppInput
+          v-model="form.carbs"
+          :label="t('meals.fields.carbs')"
+          :type="APP_INPUT_TYPE.number"
+          :min="0"
+          :error="fieldErrors.carbs"
+        />
       </div>
     </section>
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed, reactive, watch } from 'vue'
+import { computed, reactive, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRegle } from '@regle/core'
 import { maxLength, minLength, required, withMessage } from '@regle/rules'
@@ -107,8 +120,8 @@ import {
 } from '@/constants/meals'
 import { APP_INPUT_TYPE } from '@/constants/ui'
 import type { MealFormValues } from '@/types'
-import { isMealType } from '@/utils/mealForm'
-import { caloriesFromMacros, macrosForAmount } from '@/utils/macros'
+import { isMealType, rescalePortionValues } from '@/utils/mealForm'
+import { caloriesFromMacros, toPerHundredGrams } from '@/utils/macros'
 import '@/styles/components/meal-form.css'
 
 const form = defineModel<MealFormValues>({ required: true })
@@ -116,6 +129,14 @@ const form = defineModel<MealFormValues>({ required: true })
 const { t } = useI18n()
 
 const fieldErrors = reactive<Partial<Record<keyof MealFormValues, string>>>({})
+
+function isOptionalNumberInRange(
+  value: string | null | undefined,
+  min: number,
+  max: number,
+): boolean {
+  return value == null || !String(value).trim() || isNumberInRange(value, min, max)
+}
 
 function isNumberInRange(
   value: string | null | undefined,
@@ -147,18 +168,51 @@ function parseMacroGrams(value: string): number | null {
   return parsed
 }
 
+const props = withDefaults(
+  defineProps<{
+    scaleWithAmount?: boolean
+  }>(),
+  { scaleWithAmount: false },
+)
+
+const showMacros = ref(hasAnyMacro())
+
+const hasAllMacros = computed(
+  () =>
+    Boolean(form.value.protein.trim()) &&
+    Boolean(form.value.fat.trim()) &&
+    Boolean(form.value.carbs.trim()),
+)
+
+const per100Calories = computed(() => {
+  const amount = Number(form.value.amount)
+  const calories = Number(form.value.calories)
+
+  if (!form.value.calories.trim() || !(amount > 0) || !Number.isFinite(calories)) {
+    return null
+  }
+
+  return Math.round(toPerHundredGrams(calories, amount))
+})
+
+function hasAnyMacro(): boolean {
+  return [form.value.protein, form.value.fat, form.value.carbs].some(
+    (value) => value.trim() && Number(value) > 0,
+  )
+}
+
 watch(
   () => [form.value.protein, form.value.fat, form.value.carbs] as const,
   ([protein, fat, carbs]) => {
+    if (!hasAllMacros.value) {
+      return
+    }
+
     const proteinGrams = parseMacroGrams(protein)
     const fatGrams = parseMacroGrams(fat)
     const carbsGrams = parseMacroGrams(carbs)
 
-    if (
-      proteinGrams == null ||
-      fatGrams == null ||
-      carbsGrams == null
-    ) {
+    if (proteinGrams == null || fatGrams == null || carbsGrams == null) {
       return
     }
 
@@ -168,42 +222,24 @@ watch(
   },
 )
 
-const portionSummary = computed(() => {
-  const amountGrams = Number(form.value.amount)
-  const protein = parseMacroGrams(form.value.protein)
-  const fat = parseMacroGrams(form.value.fat)
-  const carbs = parseMacroGrams(form.value.carbs)
-  const calories = parseMacroGrams(form.value.calories)
+watch(
+  () => ({ values: form.value, amount: form.value.amount }),
+  (next, previous) => {
+    const toGrams = Number(next.amount)
+    const fromGrams = Number(previous.amount)
 
-  if (
-    !Number.isFinite(amountGrams) ||
-    amountGrams <= 0 ||
-    protein == null ||
-    fat == null ||
-    carbs == null ||
-    calories == null
-  ) {
-    return ''
-  }
+    if (
+      next.values !== previous.values ||
+      !props.scaleWithAmount ||
+      !(toGrams > 0) ||
+      !(fromGrams > 0)
+    ) {
+      return
+    }
 
-  const portion = macrosForAmount(
-    {
-      calories,
-      protein,
-      fat,
-      carbs,
-    },
-    amountGrams,
-  )
-
-  return t('meals.fields.portionSummary', {
-    amount: amountGrams,
-    calories: portion.calories,
-    protein: portion.protein,
-    fat: portion.fat,
-    carbs: portion.carbs,
-  })
-})
+    Object.assign(form.value, rescalePortionValues(form.value, fromGrams, toGrams))
+  },
+)
 
 const { r$ } = useRegle(form, {
   name: {
@@ -246,7 +282,7 @@ const { r$ } = useRegle(form, {
   protein: {
     range: withMessage(
       (value: string | null | undefined) =>
-        isNumberInRange(value, MEAL_MACRO_MIN, MEAL_MACRO_MAX),
+        isOptionalNumberInRange(value, MEAL_MACRO_MIN, MEAL_MACRO_MAX),
       () =>
         t('meals.validation.macroRange', {
           min: MEAL_MACRO_MIN,
@@ -257,7 +293,7 @@ const { r$ } = useRegle(form, {
   fat: {
     range: withMessage(
       (value: string | null | undefined) =>
-        isNumberInRange(value, MEAL_MACRO_MIN, MEAL_MACRO_MAX),
+        isOptionalNumberInRange(value, MEAL_MACRO_MIN, MEAL_MACRO_MAX),
       () =>
         t('meals.validation.macroRange', {
           min: MEAL_MACRO_MIN,
@@ -268,7 +304,7 @@ const { r$ } = useRegle(form, {
   carbs: {
     range: withMessage(
       (value: string | null | undefined) =>
-        isNumberInRange(value, MEAL_MACRO_MIN, MEAL_MACRO_MAX),
+        isOptionalNumberInRange(value, MEAL_MACRO_MIN, MEAL_MACRO_MAX),
       () =>
         t('meals.validation.macroRange', {
           min: MEAL_MACRO_MIN,
@@ -293,6 +329,9 @@ async function validate(): Promise<boolean> {
   fieldErrors.carbs = undefined
 
   if (!valid) {
+    showMacros.value = showMacros.value || Boolean(
+      r$.protein.$errors[0] || r$.fat.$errors[0] || r$.carbs.$errors[0],
+    )
     fieldErrors.name = r$.name.$errors[0]
     fieldErrors.mealType = r$.mealType.$errors[0]
     fieldErrors.amount = r$.amount.$errors[0]

@@ -3,11 +3,11 @@
   "add": {
     "title": "Add Food",
     "editTitle": "Edit meal",
-    "subtitle": "Search, AI, or manual entry — save and add to today.",
+    "subtitle": "Snap a photo, describe it, search, or enter it manually — we will save it and log it for today.",
     "editSubtitle": "Changes apply the next time you add this meal to a day.",
     "tabs": {
+      "ai": "Photo or description",
       "search": "Search",
-      "ai": "AI",
       "manual": "Manual"
     },
     "save": "Save",
@@ -18,7 +18,7 @@
     "updateSuccess": "Meal updated"
   },
   "ai": {
-    "disclaimer": "AI calorie results are an estimate only — not medical advice. Review and edit before saving.",
+    "disclaimer": "This is an estimate. Check the name, grams and calories before saving.",
     "modes": {
       "text": "Text",
       "photo": "Photo"
@@ -56,7 +56,13 @@
       "misconfigured": "AI is not configured on the server yet.",
       "modelUnavailable": "The AI model is not available right now. Try again later or enter calories manually.",
       "unknown": "Could not analyze. Try again or enter calories manually."
-    }
+    },
+    "retry": "Analyze again",
+    "describeInstead": "Describe in text",
+    "clarificationLabel": "Clarification (optional)",
+    "clarificationPlaceholder": "E.g. no sauce, half portion",
+    "photoReady": "Photo kept — you can analyze it again or add a clarification.",
+    "retryIn": "Retry in {seconds} s"
   },
   "search": {
     "queryLabel": "Product search",
@@ -93,22 +99,25 @@
   "fields": {
     "name": "Name",
     "mealType": "Meal type",
-    "amount": "Eaten, g",
+    "amount": "Portion, g",
     "amountHint": "How much you ate.",
-    "per100Title": "Per 100 g",
-    "calories": "kcal",
-    "caloriesFromMacrosHint": "kcal = P×4 + F×9 + C×4",
+    "calories": "Portion calories, kcal",
+    "caloriesFromMacrosHint": "If you enter macros, calories are calculated automatically: P×4 + F×9 + C×4.",
     "protein": "P",
     "fat": "F",
     "carbs": "C",
-    "portionSummary": "Portion {amount} g · {calories} kcal · P {protein} · F {fat} · C {carbs}"
+    "macrosToggle": "Add protein, fat, carbs",
+    "macrosHide": "Hide macros",
+    "macrosTitle": "Portion macros, g",
+    "per100Hint": "That is ≈ {calories} kcal per 100 g",
+    "scaleHint": "Change the grams and calories and macros update."
   },
   "validation": {
     "required": "This field is required",
     "nameMax": "At most {max} characters",
     "amountRange": "Eaten amount must be between {min} and {max} g",
-    "caloriesRange": "Calories per 100 g must be between {min} and {max}",
-    "macroRange": "Per-100 g value must be between {min} and {max} g"
+    "caloriesRange": "Calories from {min} to {max}",
+    "macroRange": "Value from {min} to {max} g"
   },
   "errors": {
     "tableMissing": "Meal tables are missing in Supabase. Run the SQL in supabase/migrations.",
