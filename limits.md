@@ -9,7 +9,7 @@
 | Сервіс          | Якщо недоступний / ліміт вичерпано                                                      |
 | --------------- | --------------------------------------------------------------------------------------- |
 | Open Food Facts | Користувач вводить калорії/КБЖУ вручну                                                  |
-| Gemini AI       | AI-аналіз недоступний, manual entry залишається робочим                                 |
+| Claude AI       | AI-аналіз недоступний, manual entry залишається робочим                                 |
 
 Другий принцип: **економність за замовчуванням**, навіть якщо поточних лімітів вистачає із запасом для 2 користувачів. Це закладається в архітектуру одразу, а не «на потім».
 
@@ -34,13 +34,13 @@
 
 ---
 
-## 3. Gemini API (AI-оцінка калорій)
+## 3. Claude API (AI-оцінка калорій)
 
-Провайдер: Google Gemini (free tier), модель `gemini-flash-lite-latest`, змінюється секретом `GEMINI_MODEL`. Код провайдера ізольований у `_shared/nutrition.ts` — перехід на Claude (платний API) зачіпає один файл.
+Провайдер: Anthropic Claude, модель `claude-haiku-5-5` (фото + текст, платний API за фактичним використанням через Anthropic Console). Змінюється секретом `ANTHROPIC_MODEL`. Код провайдера ізольований у `_shared/nutrition.ts`.
 
 **Ключ:**
 
-- `GEMINI_API_KEY` зберігається **тільки** в секретах Supabase: `npx supabase secrets set GEMINI_API_KEY=...`
+- `ANTHROPIC_API_KEY` зберігається **тільки** в секретах Supabase: `npx supabase secrets set ANTHROPIC_API_KEY=...`
 - Ніколи в `.env`, ніколи з префіксом `VITE_`, ніколи в репозиторії чи клієнтському бандлі
 - Клієнт отримує тільки оцінку або код помилки — без сирих відповідей провайдера
 
@@ -56,7 +56,7 @@
 **Інші заходи:** явна дія користувача; фото стискається на клієнті й не зберігається; користувач редагує оцінку перед збереженням; без AI працюють пошук і ручне введення.
 
 ```
-Vue → Edge Function (auth → reserve_ai_request → Gemini → complete_ai_request) → Vue
+Vue → Edge Function (auth → reserve_ai_request → Claude → complete_ai_request) → Vue
 ```
 
 ---
@@ -111,7 +111,7 @@ Vue → Edge Function (auth → reserve_ai_request → Gemini → complete_ai_re
 | Сервіс                | Ліміт               | Захист на фронтенді             | Захист на бекенді                     |
 | --------------------- | ------------------- | ------------------------------- | ------------------------------------- |
 | Open Food Facts       | 10–15 req/хв        | debounce, min length, cache     | —                                     |
-| Gemini AI | 60/день/користувач | явна дія, cooldown 3 с, compression, кеш | ключ лише в Supabase secrets |
+| Claude AI | 60/день/користувач | явна дія, cooldown 3 с, compression, кеш | ключ лише в Supabase secrets |
 | Supabase Storage      | 1 GB                | обмеження розміру фото          | не зберігати зайве                    |
 | Supabase DB/Bandwidth | 500 MB / 5 GB       | —                               | RLS, ефективні запити                 |
 

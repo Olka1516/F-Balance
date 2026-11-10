@@ -1,22 +1,23 @@
 # AI Edge Functions
 
-`analyze-text` and `analyze-photo` call **Gemini** through shared code in `_shared/`:
+`analyze-text` and `analyze-photo` call **Claude** (Anthropic, `claude-haiku-5-5`) through shared code in `_shared/`:
 
 | File | Role |
 |---|---|
 | `_shared/http.ts` | CORS, JSON responses, user client, locale, hashing |
 | `_shared/limits.ts` | Payload bounds, provider timeout, default model |
-| `_shared/nutrition.ts` | Provider call (Gemini REST, structured JSON) + validation — the only provider-specific file |
+| `_shared/nutrition.ts` | Provider call (official Anthropic SDK, structured JSON output) + validation — the only provider-specific file |
 | `_shared/analyze.ts` | Pipeline: auth → `reserve_ai_request` → provider → `complete_ai_request` |
 
 ## Secrets (server only)
 
 ```bash
-npx supabase secrets set GEMINI_API_KEY=your_key
-npx supabase secrets set GEMINI_MODEL=gemini-flash-lite-latest   # optional
+npx supabase secrets set ANTHROPIC_API_KEY=your_key
+npx supabase secrets set ANTHROPIC_MODEL=claude-haiku-5-5   # optional
+npx supabase secrets unset GEMINI_API_KEY GEMINI_MODEL       # old provider
 ```
 
-The key never goes into `.env`, the repo, or any `VITE_*` variable, and is sent to Google in a header (not the URL).
+The key never goes into `.env`, the repo, or any `VITE_*` variable. Requests are billed to the Anthropic Console account (add credits there).
 
 ## Limits
 

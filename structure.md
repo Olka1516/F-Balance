@@ -12,7 +12,7 @@ Vue 3 + TypeScript
 ├── vue-i18n         — UA / EN
 ├── Apache ECharts   — аналітика/графіки
 ├── VueUse           — браузерні утиліти
-└── Gemini API       — AI-аналіз (через Edge Function)
+└── Claude API       — AI-аналіз (через Edge Function)
 ```
 
 ---
@@ -82,7 +82,7 @@ Vue 3 + TypeScript
 │   │   ├── supabase.ts
 │   │   ├── openFoodFacts.ts
 │   │   └── (theMealDb.ts прибрано у v2)
-│   │   # ⚠ Gemini НЕ викликається напряму звідси — тільки через Edge Function
+│   │   # ⚠ Claude (Anthropic) НЕ викликається напряму звідси — тільки через Edge Function
 │   │
 │   ├── router/
 │   │   └── index.ts
@@ -105,8 +105,8 @@ Vue 3 + TypeScript
 │
 ├── supabase/
 │   └── functions/
-│       ├── analyze-photo/      # Edge Function → Gemini (фото)
-│       └── analyze-text/       # Edge Function → Gemini (опис)
+│       ├── analyze-photo/      # Edge Function → Claude (Anthropic) (фото)
+│       └── analyze-text/       # Edge Function → Claude (Anthropic) (опис)
 │
 └── ...конфігураційні файли (vite.config, tsconfig, .env.example)
 ```
@@ -149,5 +149,5 @@ AI-логіка навмисно винесена окремо від основ
 - не є критичною залежністю для роботи сайту.
 
 ```
-Vue → "Analyze" (дія користувача) → Supabase Edge Function → Gemini API → результат (ккал) → Vue
+Vue → "Analyze" (дія користувача) → Supabase Edge Function → Claude API → результат (ккал) → Vue
 ```

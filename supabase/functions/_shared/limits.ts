@@ -9,7 +9,8 @@ export const AI_LIMITS = {
   photoMaxBase64Chars: 1_100_000,
   photoAllowedMime: ['image/jpeg', 'image/png', 'image/webp'] as const,
   providerTimeoutMs: 30_000,
-  maxOutputTokens: 1_024,
+  providerMaxRetries: 1,
+  maxOutputTokens: 4_000,
 } as const
 
 /**
@@ -18,6 +19,6 @@ export const AI_LIMITS = {
 export type AllowedImageMime = (typeof AI_LIMITS.photoAllowedMime)[number]
 
 /**
- * Default Gemini model for nutrition estimates; override with the GEMINI_MODEL secret.
+ * Default Claude model for nutrition estimates; override with the ANTHROPIC_MODEL secret.
  */
-export const DEFAULT_AI_MODEL = 'gemini-flash-lite-latest'
+export const DEFAULT_AI_MODEL = 'claude-haiku-5-5'

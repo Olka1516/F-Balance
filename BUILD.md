@@ -154,8 +154,8 @@ Do phases in order. Each phase ends with Step D from `AGENTS.md` and a docs upda
 
 ## Phase 11 — AI provider: secure & usable limits (request 2) ✅ done
 
-55. Keep Gemini (free tier) inside Edge Functions only; default model `gemini-flash-lite-latest`, override via `GEMINI_MODEL`. Provider code is isolated in `_shared/nutrition.ts`, so switching to Claude later (paid API) touches one file.
-56. Key lives only in Supabase secrets: `supabase secrets set GEMINI_API_KEY=...`. Never in `.env`, never with a `VITE_` prefix, never in the repo or client bundle. `.env.example` documents nothing for it.
+55. AI provider: Claude (`claude-haiku-5-5`) via the official Anthropic SDK inside Edge Functions only (was Gemini free tier until the switch). Override via `ANTHROPIC_MODEL`. Provider code is isolated in `_shared/nutrition.ts`.
+56. Key lives only in Supabase secrets: `supabase secrets set ANTHROPIC_API_KEY=...`. Never in `.env`, never with a `VITE_` prefix, never in the repo or client bundle. `.env.example` documents nothing for it.
 57. Move all shared logic (CORS, user client, rate limit, hashing, provider call) into `supabase/functions/_shared/` and import it; delete inlined copies.
 58. New limits (constants in one place): cooldown 3 s, 20/hour, 60/day per user. Reserve a row in `ai_requests` **before** the provider call (status `pending` → `ok` / `failed`); failed calls do not count toward the daily cap. Concurrent requests are blocked by the reservation.
 59. Cache full estimates (not only calories) by input hash for 48 h.
@@ -196,11 +196,10 @@ Do phases in order. Each phase ends with Step D from `AGENTS.md` and a docs upda
 79. Checked: uk/en key parity and no missing keys; unused keys removed; no `//` comments, no `<style>` in SFCs, no hex in components; build passes. Browser pass (signed in): Today, Saved, Add (all tabs), Progress, Profile in uk and en, mobile 375 px and desktop 1280 px, no console errors. Not exercised end to end: registration of a new account, a real photo analysis + Retry, logging via "+" (would write to the real diary).
 
 ### v2 library map
-No new client libraries. Edge Functions call the Gemini REST API with `fetch` (key in a header, never in the URL). Never: any AI SDK or key in Vue code.
+No new client libraries. Edge Functions use the official Anthropic SDK (`npm:@anthropic-ai/sdk`, server only). Never: any AI SDK or key in Vue code.
 
 
 ### v2 follow-ups (not started)
 
 - Per-ingredient breakdown of an analysed dish; multi-ingredient recipe editor.
 - Weight history for a weight trend on Progress.
-- Optional switch of the AI provider to Claude (paid API; only `_shared/nutrition.ts` changes).
