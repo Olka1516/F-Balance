@@ -54,7 +54,7 @@
       "imageTooLarge": "Photo is still too large after compression. Try another image.",
       "unavailable": "AI analysis is unavailable. Enter calories manually.",
       "misconfigured": "AI is not configured on the server yet.",
-      "modelUnavailable": "No Gemini model is available for this API key. Set GEMINI_MODEL=gemini-2.5-flash and redeploy.",
+      "modelUnavailable": "The AI model is not available right now. Try again later or enter calories manually.",
       "unknown": "Could not analyze. Try again or enter calories manually."
     }
   },

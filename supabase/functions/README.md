@@ -1,44 +1,32 @@
-# AI Edge Functions (Phase 8+)
+# AI Edge Functions
 
-Each function is a **single self-contained** `index.ts` (safe for Dashboard paste/deploy).
+`analyze-text` and `analyze-photo` call **Gemini** through shared code in `_shared/`:
 
-## Limits (Phase 10)
+| File | Role |
+|---|---|
+| `_shared/http.ts` | CORS, JSON responses, user client, locale, hashing |
+| `_shared/limits.ts` | Payload bounds, provider timeout, default model |
+| `_shared/nutrition.ts` | Provider call (Gemini REST, structured JSON) + validation — the only provider-specific file |
+| `_shared/analyze.ts` | Pipeline: auth → `reserve_ai_request` → provider → `complete_ai_request` |
 
-- Cooldown: **20 s** between requests per user
-- Cap: **6 / hour**, **24 / day**
-- Cache: identical input hash reused for **48 h**
-- Photos: compressed on the client; sent as base64 in the request body — **not** stored in Supabase Storage
-
-## Deploy (CLI)
+## Secrets (server only)
 
 ```bash
+npx supabase secrets set GEMINI_API_KEY=your_key
+npx supabase secrets set GEMINI_MODEL=gemini-flash-lite-latest   # optional
+```
+
+The key never goes into `.env`, the repo, or any `VITE_*` variable, and is sent to Google in a header (not the URL).
+
+## Limits
+
+Enforced atomically in SQL (`supabase/migrations/20261110120000_ai_requests_reservation.sql`):
+cooldown 3 s, 20 / hour, 60 / day per user; failed calls do not count; identical input is served from a 48 h cache.
+
+## Deploy (CLI only — functions import `_shared/`)
+
+```bash
+npx supabase db push
 npx supabase functions deploy analyze-text --no-verify-jwt
 npx supabase functions deploy analyze-photo --no-verify-jwt
 ```
-
-## Deploy (Dashboard)
-
-1. Open Edge Functions → function editor for `analyze-photo` / `analyze-text`
-2. Paste the full contents of the matching `index.ts`
-3. Turn **Verify JWT** OFF
-4. Deploy
-
-## Secrets
-
-- `GEMINI_API_KEY` (required)
-- `GEMINI_MODEL` (optional). Recommended: `gemini-2.5-flash`
-
-If analysis returns `modelUnavailable`, set:
-
-```
-GEMINI_MODEL=gemini-2.5-flash
-```
-
-Then redeploy both functions with the latest `index.ts`.
-
-Photos/text return structured estimate: name, calories, protein, fat, carbs.
-User can edit before save. Also run SQL:
-
-- `supabase/migrations/20260321140000_ai_requests.sql`
-- `supabase/migrations/20260321141000_ai_requests_result.sql`
-- `supabase/migrations/20260321143000_storage_meal_photos.sql` (private `meal-photos` bucket; AI must not upload here)

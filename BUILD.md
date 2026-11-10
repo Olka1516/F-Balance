@@ -107,7 +107,7 @@ Sources: `project_TZ.txt`, `structure.md`, `limits.md`, `.cursor/rules/`.
 
 ## Phase 8 — AI calories (post-MVP)
 
-44. Add Edge Functions `analyze-text` and `analyze-photo`. Gemini key only in function env.
+44. Add Edge Functions `analyze-text` and `analyze-photo`. Key only in function secrets (see Phase 11).
 45. Auth check, input validation, per-user rate limit, structured calorie result only.
 46. Client: Analyze button only (never on page load). Show **estimate**. User can edit before save.
 47. Photos: MIME, max size, compress/downscale before send. Do not keep Storage files after analysis unless the user saves them.
@@ -140,6 +140,60 @@ Sources: `project_TZ.txt`, `structure.md`, `limits.md`, `.cursor/rules/`.
 | Phase 3 | `@tanstack/vue-query` |
 | Phase 5 | `echarts` (+ Vue wrapper) |
 | Phase 7 | none required (fetch Open Food Facts) |
-| Phase 8 | none on the client (Gemini in Edge Function) |
+| Phase 8 | none on the client (AI SDK only in Edge Function) |
 
-Never: Zod, VeeValidate, Gemini client SDK in Vue, `service_role` in the app.
+Never: Zod, VeeValidate, any AI SDK in Vue, `service_role` in the app.
+
+---
+
+# v2 — Simplify & redesign (active plan)
+
+Goal: as simple as possible, yet covering the full daily flow. Reference for UX: Micron (App Store) — photo-first logging, meals grouped by time of day, one calorie budget on Home, a separate Progress tab, encouraging tone, no diet wording.
+
+Do phases in order. Each phase ends with Step D from `AGENTS.md` and a docs update.
+
+## Phase 11 — AI provider: secure & usable limits (request 2) ✅ done
+
+55. Keep Gemini (free tier) inside Edge Functions only; default model `gemini-flash-lite-latest`, override via `GEMINI_MODEL`. Provider code is isolated in `_shared/nutrition.ts`, so switching to Claude later (paid API) touches one file.
+56. Key lives only in Supabase secrets: `supabase secrets set GEMINI_API_KEY=...`. Never in `.env`, never with a `VITE_` prefix, never in the repo or client bundle. `.env.example` documents nothing for it.
+57. Move all shared logic (CORS, user client, rate limit, hashing, provider call) into `supabase/functions/_shared/` and import it; delete inlined copies.
+58. New limits (constants in one place): cooldown 3 s, 20/hour, 60/day per user. Reserve a row in `ai_requests` **before** the provider call (status `pending` → `ok` / `failed`); failed calls do not count toward the daily cap. Concurrent requests are blocked by the reservation.
+59. Cache full estimates (not only calories) by input hash for 48 h.
+
+## Phase 12 — Calorie & macro targets (request 5)
+
+60. Profile gets `sex`, `birth_year` (instead of age), `target_weight`, `pace` (slow / normal / fast). Migration + RLS unchanged.
+61. `src/utils/nutritionTargets.ts`: BMR by Mifflin–St Jeor → TDEE via activity factor (1.2 / 1.375 / 1.55 / 1.725 / 1.9) → goal adjustment by pace (lose −10/−15/−20 %, gain +5/+10/+15 %) with a floor (no lower than BMR × 1.0 by default).
+62. Macros: protein 1.6–2.0 g/kg (by goal), fat ≥ 0.8 g/kg, carbs = remainder. Water hint optional.
+63. Onboarding shows the result with a short "how we calculated" explainer; user can override the numbers in Profile. Recalculate when weight/activity changes.
+
+## Phase 13 — Navigation & layout redesign (requests 1, 4, 7)
+
+64. Mobile: bottom tab bar — **Today**, **Add (+)** in the centre, **Progress**, **Profile**. Remove the burger menu.
+65. Desktop (≥ 1024 px): left sidebar with the same items; Today becomes two columns (budget + macros left, meals by time of day right); max content width, no stretched forms.
+66. Today: one calorie ring (eaten / remaining), three macro bars, meals grouped Breakfast / Lunch / Dinner / Snacks with "+" per group, day strip on top.
+67. Progress: weekly calories, weight trend toward target, averages. Charts read colours from theme CSS variables (no hex literals).
+68. Remove the visible season label (seasonal theme may stay, silently).
+
+## Phase 14 — Logging flow (requests 3, 8, 9)
+
+69. Rename the "AI" tab to **"Photo or description"** (`uk`: «Фото або опис»). No "AI" word in navigation; a small "estimate" note stays on the result.
+70. Add screen order: Photo/description → Search (Open Food Facts) → Saved meals → Manual.
+71. Result card shows a dish with editable ingredients (name, grams, kcal). User edits **grams of the portion**, never per-100 g values. Per-100 g is stored internally and derived automatically.
+72. Manual entry: name + portion (g or "1 serving") + total kcal; macros optional and collapsed by default.
+73. On photo analysis error: keep the compressed photo in memory, show **Retry** (same photo, no re-upload) and **Describe instead**. Retry respects cooldown with a visible countdown.
+74. Optional clarification text after a photo ("without sauce", "half portion") sent with the retry.
+
+## Phase 15 — Saved meals & suggestions (requests 6, 7)
+
+75. "My Meals" → **Saved**: tabs Recent / Favourites / My recipes. One tap = add to the selected meal of today. Edit portion inline.
+76. Recipes = list of ingredients with grams; totals recalculate on change.
+77. Drop the separate Recommendations page. Replace with one compact card on Today: "What to eat next" — 2–3 ideas fitting remaining kcal and protein, by time of day, from Saved meals first, TheMealDB as a fallback. Card hides itself on API failure.
+
+## Phase 16 — Polish
+
+78. All new copy in `uk` and `en`; empty / loading / error states; mobile-first then desktop check.
+79. Manual test: register → onboarding with calculated targets → photo log → retry on error → edit grams → save to favourites → re-add in one tap → Progress → desktop layout.
+
+### v2 library map
+No new client libraries. Edge Functions call the Gemini REST API with `fetch` (key in a header, never in the URL). Never: any AI SDK or key in Vue code.
