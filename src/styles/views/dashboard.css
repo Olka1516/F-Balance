@@ -62,7 +62,7 @@
 }
 
 .dashboard-page__group-head {
-  align-items: baseline;
+  align-items: center;
   display: flex;
   gap: var(--space-sm);
   justify-content: space-between;
@@ -200,4 +200,8 @@
     position: sticky;
     top: var(--space-xl);
   }
+}
+
+.dashboard-page__group-head .dashboard-page__group-kcal {
+  margin-left: auto;
 }

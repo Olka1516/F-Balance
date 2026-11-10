@@ -73,7 +73,7 @@ export function buildDashboardDaySummary(
       entryId: entry.id,
       mealId: entry.mealId,
       name: entry.meal.name,
-      mealType: entry.meal.mealType,
+      mealType: entry.mealType ?? entry.meal.mealType,
       servings: entry.amount,
       calories: portion.calories,
       protein: portion.protein,

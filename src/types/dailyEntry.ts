@@ -9,6 +9,7 @@ export type DailyEntry = {
   mealId: string
   date: string
   amount: number
+  mealType: MealType | null
   createdAt: string
 }
 

@@ -184,11 +184,11 @@ Do phases in order. Each phase ends with Step D from `AGENTS.md` and a docs upda
 73. On photo analysis error: keep the compressed photo in memory, show **Retry** (same photo, no re-upload) and **Describe instead**. Retry respects cooldown with a visible countdown.
 74. Optional clarification text after a photo ("without sauce", "half portion") sent with the retry.
 
-## Phase 15 — Saved meals & suggestions (requests 6, 7)
+## Phase 15 — Saved meals & suggestions (requests 6, 7) ✅ done
 
-75. "My Meals" → **Saved**: tabs Recent / Favourites / My recipes. One tap = add to the selected meal of today. Edit portion inline.
-76. Recipes = list of ingredients with grams; totals recalculate on change.
-77. Drop the separate Recommendations page. Replace with one compact card on Today: "What to eat next" — 2–3 ideas fitting remaining kcal and protein, by time of day, from Saved meals first, TheMealDB as a fallback. Card hides itself on API failure.
+75. "My Meals" → **Saved** (`SavedMealsList`, also a tab in Add): Recent (30 days of diary) / Favourites (★, `meals.is_favorite`) / All. One tap "+" adds to the target slot (`daily_entries.meal_type`, from `?mealType=` or time of day). Each Today group has its own "+".
+76. Multi-ingredient recipes — deferred (data model already supports `meal_ingredients`).
+77. Recommendations page and TheMealDB code removed (`/recommendations` redirects to Today). `NextMealCard` on Today: up to 3 saved meals that fit remaining kcal, current slot and favourites first, rotated daily, hidden when nothing fits.
 
 ## Phase 16 — Polish
 

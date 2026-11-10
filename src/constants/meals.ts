@@ -36,7 +36,7 @@ export const FOOD_SEARCH_DEFAULT_AMOUNT_G = 100
 /**
  * Add Food entry modes: search API, AI estimate, or manual macros.
  */
-export const ADD_MEAL_ENTRY_TABS = ['ai', 'search', 'manual'] as const
+export const ADD_MEAL_ENTRY_TABS = ['ai', 'saved', 'search', 'manual'] as const
 
 /**
  * Add Food entry tab identifier.
@@ -102,3 +102,43 @@ export const MEALS_QUERY_KEY = ['meals'] as const
  * TanStack Query key root for daily entries.
  */
 export const DAILY_ENTRIES_QUERY_KEY = ['daily-entries'] as const
+
+/**
+ * Tabs on the Saved meals list.
+ */
+export const SAVED_MEAL_TABS = ['recent', 'favorites', 'all'] as const
+
+/**
+ * Saved meals list tab.
+ */
+export type SavedMealTab = (typeof SAVED_MEAL_TABS)[number]
+
+/**
+ * How many days of diary history feed the Recent tab.
+ */
+export const SAVED_RECENT_DAYS = 30
+
+/**
+ * Maximum ideas shown on the "What to eat next" card.
+ */
+export const NEXT_MEAL_SUGGESTION_COUNT = 3
+
+/**
+ * A saved meal fits when its calories are at most remaining × this factor.
+ */
+export const NEXT_MEAL_REMAINING_HEADROOM = 1.1
+
+/**
+ * Local hour ranges that map clock time to a default meal slot.
+ */
+export const MEAL_TIME_WINDOWS = [
+  { startHour: 5, endHour: 11, mealType: 'breakfast' },
+  { startHour: 11, endHour: 15, mealType: 'lunch' },
+  { startHour: 15, endHour: 17, mealType: 'snack' },
+  { startHour: 17, endHour: 22, mealType: 'dinner' },
+] as const satisfies readonly { startHour: number; endHour: number; mealType: MealType }[]
+
+/**
+ * Meal slot used outside the time windows.
+ */
+export const MEAL_TIME_DEFAULT: MealType = 'snack'

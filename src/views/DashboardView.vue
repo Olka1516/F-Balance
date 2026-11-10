@@ -46,6 +46,12 @@
         :of-target-label="formatMacroOfTarget"
         :ring-aria-label="t('dashboard.progress.ringAria')"
       />
+      <NextMealCard
+        v-if="isToday"
+        :remaining-calories="summary.remaining"
+        :today-meal-ids="todayMealIds"
+        :day-key="selectedDate"
+      />
       </div>
 
       <section class="dashboard-page__section">
@@ -53,28 +59,11 @@
           <h2 class="dashboard-page__section-title">
             {{ t('dashboard.meals.title') }}
           </h2>
-          <button
-            type="button"
-            class="dashboard-page__section-action"
-            @click="goToAddMeal()"
-          >
-            +
-          </button>
         </div>
 
-        <AppEmptyState
-          v-if="summary.entryCount === 0"
-          :title="t('dashboard.meals.emptyTitle')"
-          :message="t('dashboard.meals.emptyMessage')"
-        >
-          <AppButton type="button" @click="goToAddMeal()">
-            {{ t('dashboard.addFood') }}
-          </AppButton>
-        </AppEmptyState>
-
-        <ul v-else class="dashboard-page__groups">
+        <ul class="dashboard-page__groups">
           <li
-            v-for="group in visibleGroups"
+            v-for="group in summary.groups"
             :key="group.mealType"
             class="dashboard-page__group"
           >
@@ -86,8 +75,16 @@
                 {{ formatNumber(group.totals.calories) }}
                 {{ t('dashboard.summary.kcal') }}
               </p>
+              <button
+                type="button"
+                class="dashboard-page__section-action"
+                :aria-label="t('meals.saved.addTo', { meal: t(`meals.${group.mealType}`) })"
+                @click="goToAddMeal(undefined, group.mealType)"
+              >
+                +
+              </button>
             </div>
-            <ul class="dashboard-page__items">
+            <ul v-if="group.items.length" class="dashboard-page__items">
               <li
                 v-for="item in group.items"
                 :key="item.entryId"
@@ -144,12 +141,11 @@
 import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import iconEdit from '@/assets/icons/edit.svg?raw'
-import AppButton from '@/components/common/AppButton.vue'
-import AppEmptyState from '@/components/common/AppEmptyState.vue'
 import AppLoader from '@/components/common/AppLoader.vue'
 import AppPageShell from '@/components/common/AppPageShell.vue'
 import DashboardDayStrip from '@/components/dashboard/DashboardDayStrip.vue'
 import DashboardProgressCard from '@/components/dashboard/DashboardProgressCard.vue'
+import NextMealCard from '@/components/dashboard/NextMealCard.vue'
 import { useAppNavigation } from '@/composables/useAppNavigation'
 import { useAuth } from '@/composables/useAuth'
 import { useLocale } from '@/composables/useLocale'
@@ -216,8 +212,10 @@ const summary = computed(() =>
   ),
 )
 
-const visibleGroups = computed(() =>
-  summary.value.groups.filter((group) => group.items.length > 0),
+const isToday = computed(() => selectedDate.value === todayKey)
+
+const todayMealIds = computed(
+  () => new Set((entriesQuery.data.value ?? []).map((entry) => entry.mealId)),
 )
 
 const macroTargets = computed(() => ({

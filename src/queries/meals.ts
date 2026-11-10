@@ -8,6 +8,7 @@ import { computed, type MaybeRefOrGetter, toValue } from 'vue'
 import {
   DAILY_ENTRIES_QUERY_KEY,
   MEALS_QUERY_KEY,
+  type MealType,
 } from '@/constants/meals'
 import {
   addMealToToday,
@@ -19,6 +20,7 @@ import {
   fetchUserMeal,
   fetchUserMeals,
   formatLocalDate,
+  setMealFavorite,
   updateManualMeal,
 } from '@/services/meals'
 import type {
@@ -236,8 +238,16 @@ export function useAddMealToTodayMutation() {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: async (payload: { userId: string; mealId: string }) => {
-      const result = await addMealToToday(payload.userId, payload.mealId)
+    mutationFn: async (payload: {
+      userId: string
+      mealId: string
+      mealType?: MealType | null
+    }) => {
+      const result = await addMealToToday(
+        payload.userId,
+        payload.mealId,
+        payload.mealType ?? null,
+      )
 
       if (!result.ok) {
         throw new Error(result.code)
@@ -299,6 +309,37 @@ export function useWeekDailyEntriesQuery(
       }
 
       return result.data
+    },
+  })
+}
+
+/**
+ * Toggles a meal's favourite flag with an optimistic cache update.
+ */
+export function useToggleMealFavoriteMutation() {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: async (payload: { userId: string; mealId: string; isFavorite: boolean }) => {
+      const result = await setMealFavorite(payload.userId, payload.mealId, payload.isFavorite)
+
+      if (!result.ok) {
+        throw new Error(result.code)
+      }
+    },
+    onMutate: (variables) => {
+      queryClient.setQueryData<MealWithIngredients[]>(
+        [...MEALS_QUERY_KEY, variables.userId],
+        (meals) =>
+          meals?.map((meal) =>
+            meal.id === variables.mealId ? { ...meal, isFavorite: variables.isFavorite } : meal,
+          ),
+      )
+    },
+    onSettled: (_data, _error, variables) => {
+      void queryClient.invalidateQueries({
+        queryKey: [...MEALS_QUERY_KEY, variables.userId],
+      })
     },
   })
 }

@@ -1,4 +1,5 @@
 import type { SupabaseClient } from '@supabase/supabase-js'
+import { isMealType } from '@/utils/mealForm'
 import {
   DAILY_ENTRY_DEFAULT_SERVINGS,
   type MealType,
@@ -37,6 +38,7 @@ const MEAL_SELECT = `
   protein,
   fat,
   carbs,
+  is_favorite,
   updated_at,
   meal_ingredients (
     id,
@@ -366,6 +368,7 @@ export async function fetchDailyEntriesInRange(
       meal_id,
       entry_date,
       amount,
+      meal_type,
       created_at,
       meals (
         id,
@@ -408,6 +411,7 @@ export async function fetchDailyEntriesInRange(
 export async function addMealToToday(
   userId: string,
   mealId: string,
+  mealType: MealType | null = null,
   date = formatLocalDate(new Date()),
   servings = DAILY_ENTRY_DEFAULT_SERVINGS,
 ): Promise<MealActionResult<DailyEntry>> {
@@ -434,8 +438,9 @@ export async function addMealToToday(
       meal_id: mealId,
       entry_date: date,
       amount: servings,
+      meal_type: mealType,
     })
-    .select('id, user_id, meal_id, entry_date, amount, created_at')
+    .select('id, user_id, meal_id, entry_date, amount, meal_type, created_at')
     .single()
 
   if (error || !data) {
@@ -450,6 +455,7 @@ export async function addMealToToday(
       mealId: data.meal_id,
       date: data.entry_date,
       amount: Number(data.amount),
+      mealType: isMealType(String(data.meal_type ?? '')) ? data.meal_type : null,
       createdAt: data.created_at,
     },
   }
@@ -488,6 +494,7 @@ function mapDailyEntryWithMealRow(row: {
   meal_id: string
   entry_date: string
   amount: number | string
+  meal_type?: string | null
   created_at: string
   meals:
     | {
@@ -524,6 +531,7 @@ function mapDailyEntryWithMealRow(row: {
     mealId: row.meal_id,
     date: row.entry_date,
     amount: Number(row.amount),
+    mealType: row.meal_type && isMealType(row.meal_type) ? row.meal_type : null,
     createdAt: row.created_at,
     meal: {
       id: mealRow.id,
@@ -550,4 +558,31 @@ function mapMealErrorCode(error: { message: string; code?: string }): string {
   }
 
   return mapSupabaseErrorCode(error)
+}
+
+/**
+ * Marks or unmarks a saved meal as favourite.
+ */
+export async function setMealFavorite(
+  userId: string,
+  mealId: string,
+  isFavorite: boolean,
+): Promise<MealActionResult<null>> {
+  const readiness = getSupabaseReadiness()
+
+  if (!readiness.ready) {
+    return createSupabaseFailure(readiness.code)
+  }
+
+  const { error } = await getLiveSupabase()
+    .from('meals')
+    .update({ is_favorite: isFavorite })
+    .eq('id', mealId)
+    .eq('user_id', userId)
+
+  if (error) {
+    return { ok: false, code: mapMealErrorCode(error) }
+  }
+
+  return { ok: true, data: null }
 }

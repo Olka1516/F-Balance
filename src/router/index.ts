@@ -78,9 +78,7 @@ export const router = createRouter({
     },
     {
       path: '/recommendations',
-      name: ROUTE_NAMES.recommendations,
-      component: () => import('@/views/RecommendationsView.vue'),
-      meta: { requiresAuth: true },
+      redirect: { name: ROUTE_NAMES.dashboard },
     },
   ],
 })

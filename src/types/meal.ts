@@ -15,6 +15,7 @@ export type Meal = {
   protein: number
   fat: number
   carbs: number
+  isFavorite: boolean
   updatedAt: string
 }
 

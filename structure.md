@@ -26,7 +26,7 @@ Vue 3 + TypeScript
 - meals (страви користувача)
 - profile
 - nutrition API (Open Food Facts)
-- recipes (TheMealDB)
+- recipes (TheMealDB) — прибрано у v2, див. BUILD.md фаза 15
 - recommendations
 - statistics
 
@@ -81,7 +81,7 @@ Vue 3 + TypeScript
 │   ├── services/                # клієнти для зовнішніх сервісів
 │   │   ├── supabase.ts
 │   │   ├── openFoodFacts.ts
-│   │   └── theMealDb.ts
+│   │   └── (theMealDb.ts прибрано у v2)
 │   │   # ⚠ Gemini НЕ викликається напряму звідси — тільки через Edge Function
 │   │
 │   ├── router/

@@ -27,8 +27,15 @@
         </button>
       </div>
 
+      <SavedMealsList
+        v-if="!isEditMode && activeTab === 'saved'"
+        compact
+        :meal-type="targetMealType"
+        @added="goToDashboard"
+      />
+
       <FoodSearchPanel
-        v-if="!isEditMode && activeTab === 'search'"
+        v-else-if="!isEditMode && activeTab === 'search'"
         @select="onSelectSearchHit"
       />
 
@@ -101,6 +108,7 @@ import AppPageShell from '@/components/common/AppPageShell.vue'
 import FoodSearchPanel from '@/components/meals/FoodSearchPanel.vue'
 import MealAiPanel from '@/components/meals/MealAiPanel.vue'
 import MealForm from '@/components/meals/MealForm.vue'
+import SavedMealsList from '@/components/meals/SavedMealsList.vue'
 import { useAppNavigation } from '@/composables/useAppNavigation'
 import { useAuth } from '@/composables/useAuth'
 import {
@@ -110,6 +118,7 @@ import {
   FOOD_SOURCE_MANUAL,
   FOOD_SOURCE_OPEN_FOOD_FACTS,
   type AddMealEntryTab,
+  type MealType,
 } from '@/constants/meals'
 import { useMealQuery, useSaveManualMealMutation } from '@/queries/meals'
 import type { AiNutritionEstimate, FoodSearchHit, FoodSource } from '@/types'
@@ -120,8 +129,10 @@ import {
   createEmptyMealForm,
   foodSearchHitToFormValues,
   formValuesToManualMealInput,
+  isMealType,
   mealToFormValues,
 } from '@/utils/mealForm'
+import { resolveMealTypeFromHour } from '@/utils/savedMeals'
 import '@/styles/views/add-meal.css'
 
 const { t } = useI18n()
@@ -134,6 +145,12 @@ const mealId = computed(() => {
   return typeof value === 'string' && value ? value : undefined
 })
 const isEditMode = computed(() => Boolean(mealId.value))
+const targetMealType = computed<MealType>(() => {
+  const value = route.query.mealType
+  return typeof value === 'string' && isMealType(value)
+    ? value
+    : resolveMealTypeFromHour(new Date().getHours())
+})
 const saveLabel = computed(() =>
   isEditMode.value ? t('meals.add.save') : t('meals.add.saveAndLog'),
 )
@@ -169,7 +186,7 @@ watch(
     }
 
     if (!mealId.value) {
-      form.value = createEmptyMealForm()
+      form.value = { ...createEmptyMealForm(), mealType: targetMealType.value }
       foodSource.value = FOOD_SOURCE_MANUAL
     }
   },

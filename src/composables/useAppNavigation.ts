@@ -1,4 +1,5 @@
 import { useRouter } from 'vue-router'
+import type { MealType } from '@/constants/meals'
 import { ROUTE_NAMES } from '@/constants/routes'
 
 /**
@@ -43,12 +44,15 @@ export function useAppNavigation() {
   }
 
   /**
-   * Opens the add-food screen, optionally for editing a meal.
+   * Opens the add-food screen, optionally editing a meal or targeting a meal slot.
    */
-  function goToAddMeal(mealId?: string): void {
+  function goToAddMeal(mealId?: string, mealType?: MealType): void {
     router.push({
       name: ROUTE_NAMES.addMeal,
-      query: mealId ? { mealId } : undefined,
+      query: {
+        ...(mealId ? { mealId } : {}),
+        ...(mealType ? { mealType } : {}),
+      },
     })
   }
 
@@ -57,13 +61,6 @@ export function useAppNavigation() {
    */
   function goToMyMeals(): void {
     router.push({ name: ROUTE_NAMES.myMeals })
-  }
-
-  /**
-   * Opens the recommendations screen.
-   */
-  function goToRecommendations(): void {
-    router.push({ name: ROUTE_NAMES.recommendations })
   }
 
   /**
@@ -81,7 +78,6 @@ export function useAppNavigation() {
     goToDashboard,
     goToAddMeal,
     goToMyMeals,
-    goToRecommendations,
     goToProfile,
   }
 }

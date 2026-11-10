@@ -12,7 +12,6 @@ export const ROUTE_NAMES = {
   myMeals: 'my-meals',
   profile: 'profile',
   progress: 'progress',
-  recommendations: 'recommendations',
 } as const
 
 /**
@@ -30,7 +29,6 @@ export const AUTH_REQUIRED_ROUTES: RouteName[] = [
   ROUTE_NAMES.myMeals,
   ROUTE_NAMES.profile,
   ROUTE_NAMES.progress,
-  ROUTE_NAMES.recommendations,
 ]
 
 /**

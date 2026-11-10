@@ -43,6 +43,7 @@ type MealRow = {
   protein: number | string
   fat: number | string
   carbs: number | string
+  is_favorite?: boolean | null
   updated_at: string
 }
 
@@ -246,6 +247,7 @@ export function mapMealRow(row: MealRow): Meal {
     protein: Number(row.protein),
     fat: Number(row.fat),
     carbs: Number(row.carbs),
+    isFavorite: Boolean(row.is_favorite),
     updatedAt: row.updated_at,
   }
 }

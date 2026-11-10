@@ -7,6 +7,7 @@
     "editSubtitle": "Changes apply the next time you add this meal to a day.",
     "tabs": {
       "ai": "Photo or description",
+      "saved": "Saved",
       "search": "Search",
       "manual": "Manual"
     },
@@ -81,8 +82,8 @@
     }
   },
   "myMeals": {
-    "title": "My Meals",
-    "subtitle": "Edit saved meals, duplicate them, or add one to today.",
+    "title": "Saved meals",
+    "subtitle": "Tap “+” to add a meal to {meal} in one tap. ★ marks favourites.",
     "addNew": "New meal",
     "emptyTitle": "No meals yet",
     "emptyMessage": "Add your first manual meal and it will show up here.",
@@ -128,5 +129,32 @@
   "breakfast": "Breakfast",
   "lunch": "Lunch",
   "dinner": "Dinner",
-  "snack": "Snack"
+  "snack": "Snack",
+  "saved": {
+    "tabs": {
+      "recent": "Recent",
+      "favorites": "Favourites",
+      "all": "All"
+    },
+    "meta": "{calories} kcal · {weight} g",
+    "addTo": "Add to {meal}",
+    "added": "Added to {meal}",
+    "favorite": "Add to favourites",
+    "unfavorite": "Remove from favourites",
+    "confirmDelete": "Delete “{name}”? This cannot be undone.",
+    "empty": {
+      "recent": {
+        "title": "Nothing recent yet",
+        "message": "Meals you log will show up here."
+      },
+      "favorites": {
+        "title": "No favourites yet",
+        "message": "Tap the ★ on a meal to find it quickly."
+      },
+      "all": {
+        "title": "No saved meals yet",
+        "message": "Add your first meal and it will appear here."
+      }
+    }
+  }
 }
