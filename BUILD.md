@@ -9,7 +9,7 @@ Sources: `project_TZ.txt`, `structure.md`, `limits.md`, `.cursor/rules/`.
 ## Phase 0 — Scaffold
 
 1. Create a Vite + Vue 3 + TypeScript app in this repo (keep existing docs and `.cursor/`).
-2. Add `.gitignore` and `.env.example` (`VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY` — no secrets).
+2. Add `.gitignore`. Local `.env` holds only `VITE_SUPABASE_URL` and `VITE_SUPABASE_PUBLISHABLE_KEY` (no secrets); there is no `.env.example`.
 3. Create folders from `.cursor/rules/architecture.mdc`:
    - `src/assets`
    - `src/components/{common,dashboard,meals,recommendations,auth,profile}`
@@ -155,7 +155,7 @@ Do phases in order. Each phase ends with Step D from `AGENTS.md` and a docs upda
 ## Phase 11 — AI provider: secure & usable limits (request 2) ✅ done
 
 55. AI provider: Claude (`claude-haiku-5-5`) via the official Anthropic SDK inside Edge Functions only (was Gemini free tier until the switch). Override via `ANTHROPIC_MODEL`. Provider code is isolated in `_shared/nutrition.ts`.
-56. Key lives only in Supabase secrets: `supabase secrets set ANTHROPIC_API_KEY=...`. Never in `.env`, never with a `VITE_` prefix, never in the repo or client bundle. `.env.example` documents nothing for it.
+56. Key lives only in Supabase secrets: `supabase secrets set ANTHROPIC_API_KEY=...`. Never in `.env`, never with a `VITE_` prefix, never in the repo or client bundle.
 57. Move all shared logic (CORS, user client, rate limit, hashing, provider call) into `supabase/functions/_shared/` and import it; delete inlined copies.
 58. New limits (constants in one place): cooldown 3 s, 20/hour, 60/day per user. Reserve a row in `ai_requests` **before** the provider call (status `pending` → `ok` / `failed`); failed calls do not count toward the daily cap. Concurrent requests are blocked by the reservation.
 59. Cache full estimates (not only calories) by input hash for 48 h.

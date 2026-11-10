@@ -108,7 +108,7 @@ Vue 3 + TypeScript
 │       ├── analyze-photo/      # Edge Function → Claude (Anthropic) (фото)
 │       └── analyze-text/       # Edge Function → Claude (Anthropic) (опис)
 │
-└── ...конфігураційні файли (vite.config, tsconfig, .env.example)
+└── ...конфігураційні файли (vite.config, tsconfig)
 ```
 
 ---
