@@ -179,3 +179,25 @@
   margin: 0;
   overflow-wrap: anywhere;
 }
+
+.dashboard-page__layout,
+.dashboard-page__summary {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+  min-width: 0;
+}
+
+@media (min-width: 64rem) {
+  .dashboard-page__layout {
+    align-items: start;
+    display: grid;
+    gap: var(--space-xl);
+    grid-template-columns: minmax(0, 22rem) minmax(0, 1fr);
+  }
+
+  .dashboard-page__summary {
+    position: sticky;
+    top: var(--space-xl);
+  }
+}

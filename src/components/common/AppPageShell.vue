@@ -1,8 +1,8 @@
 <template>
-  <main class="app-page">
-    <div class="app-page__shell">
-      <AppBurgerNav v-if="showNav" />
+  <main class="app-page" :class="{ 'app-page--with-nav': showNav }">
+    <AppNav v-if="showNav" />
 
+    <div class="app-page__shell">
       <section
         class="app-page__card"
         :class="{ 'app-page__card--wide': wide }"
@@ -12,9 +12,6 @@
             <h1 class="app-page__title">
               <slot name="title" />
             </h1>
-            <p class="app-page__season">
-              {{ t(`common.seasons.${season}`) }}
-            </p>
           </div>
           <p v-if="$slots.intro" class="app-page__intro">
             <slot name="intro" />
@@ -31,10 +28,7 @@
 </template>
 
 <script setup lang="ts">
-import { useI18n } from 'vue-i18n'
-import { storeToRefs } from 'pinia'
-import AppBurgerNav from '@/components/common/AppBurgerNav.vue'
-import { useThemeStore } from '@/stores/theme'
+import AppNav from '@/components/common/AppNav.vue'
 import '@/styles/components/app-page-shell.css'
 
 withDefaults(
@@ -47,7 +41,4 @@ withDefaults(
     showNav: true,
   },
 )
-
-const { t } = useI18n()
-const { season } = storeToRefs(useThemeStore())
 </script>

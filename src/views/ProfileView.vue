@@ -6,6 +6,9 @@
     <template #intro>
       {{ t('common.profile.subtitle') }}
     </template>
+    <template #actions>
+      <AppLanguageSwitch />
+    </template>
 
     <AppLoader v-if="isProfileLoading" />
 
@@ -62,6 +65,7 @@ import { useRouter } from 'vue-router'
 import { useQueryClient } from '@tanstack/vue-query'
 import AppButton from '@/components/common/AppButton.vue'
 import AppLoader from '@/components/common/AppLoader.vue'
+import AppLanguageSwitch from '@/components/common/AppLanguageSwitch.vue'
 import AppPageShell from '@/components/common/AppPageShell.vue'
 import ProfileForm from '@/components/profile/ProfileForm.vue'
 import { useAuth } from '@/composables/useAuth'

@@ -231,3 +231,68 @@ export function buildWeekCaloriePoints(
     calories: byDate.get(date) ?? 0,
   }))
 }
+
+/**
+ * Averages and adherence for the Progress screen over the given dates.
+ * Averages use only days that have at least one entry.
+ */
+export type ProgressStats = {
+  loggedDays: number
+  totalDays: number
+  daysOnTarget: number
+  average: MacroTotals
+}
+
+/**
+ * Builds Progress screen stats from diary entries.
+ */
+export function buildProgressStats(
+  entries: DailyEntryWithMeal[],
+  dates: readonly string[],
+  targetCalories: number | null,
+  tolerance: number,
+): ProgressStats {
+  const byDate = new Map<string, MacroTotals>()
+
+  for (const entry of entries) {
+    if (!dates.includes(entry.date)) {
+      continue
+    }
+
+    const portion = entryPortionMacros(entry)
+    const current = byDate.get(entry.date) ?? { calories: 0, protein: 0, fat: 0, carbs: 0 }
+    byDate.set(entry.date, {
+      calories: current.calories + portion.calories,
+      protein: current.protein + portion.protein,
+      fat: current.fat + portion.fat,
+      carbs: current.carbs + portion.carbs,
+    })
+  }
+
+  const days = [...byDate.values()]
+  const count = days.length
+  const sum = days.reduce(
+    (total, day) => ({
+      calories: total.calories + day.calories,
+      protein: total.protein + day.protein,
+      fat: total.fat + day.fat,
+      carbs: total.carbs + day.carbs,
+    }),
+    { calories: 0, protein: 0, fat: 0, carbs: 0 },
+  )
+  const average = (value: number) => (count ? Math.round(value / count) : 0)
+
+  return {
+    loggedDays: count,
+    totalDays: dates.length,
+    daysOnTarget: targetCalories
+      ? days.filter((day) => Math.abs(day.calories - targetCalories) <= targetCalories * tolerance).length
+      : 0,
+    average: {
+      calories: average(sum.calories),
+      protein: average(sum.protein),
+      fat: average(sum.fat),
+      carbs: average(sum.carbs),
+    },
+  }
+}

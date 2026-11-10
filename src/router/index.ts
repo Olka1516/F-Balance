@@ -71,6 +71,12 @@ export const router = createRouter({
       meta: { requiresAuth: true },
     },
     {
+      path: '/progress',
+      name: ROUTE_NAMES.progress,
+      component: () => import('@/views/ProgressView.vue'),
+      meta: { requiresAuth: true },
+    },
+    {
       path: '/recommendations',
       name: ROUTE_NAMES.recommendations,
       component: () => import('@/views/RecommendationsView.vue'),

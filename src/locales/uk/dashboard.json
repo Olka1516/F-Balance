@@ -63,5 +63,16 @@
   "recommendations": {
     "title": "Рекомендації",
     "stub": "Ідеї страв — у розділі Рекомендації в навігації."
+  },
+  "progressPage": {
+    "title": "Прогрес",
+    "intro": "Ваші останні 7 днів коротко.",
+    "avgCalories": "Середнє за день",
+    "avgMacros": "Середні БЖВ",
+    "daysOnTarget": "Днів у межах норми",
+    "daysOnTargetValue": "{count} з {total}",
+    "loggedDays": "Днів із записами",
+    "emptyTitle": "Цього тижня ще немає записів",
+    "emptyMessage": "Додайте страву — і тут зʼявиться ваш прогрес."
   }
 }

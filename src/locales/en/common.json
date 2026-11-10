@@ -114,21 +114,12 @@
       "total": "{value} kcal"
     }
   },
-  "seasons": {
-    "spring": "Spring",
-    "summer": "Summer",
-    "autumn": "Autumn",
-    "winter": "Winter"
-  },
   "nav": {
     "label": "Main navigation",
-    "menuTitle": "Menu",
-    "menuOpen": "Open menu",
-    "menuClose": "Close menu",
-    "dashboard": "Dashboard",
-    "meals": "My Meals",
-    "addMeal": "Add Food",
+    "meals": "Meals",
+    "addMeal": "Add",
     "profile": "Profile",
-    "recommendations": "Recommendations"
+    "today": "Today",
+    "progress": "Progress"
   }
 }

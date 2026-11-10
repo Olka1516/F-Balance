@@ -14,7 +14,8 @@
       {{ loadError }}
     </p>
 
-    <template v-else>
+    <div v-else class="dashboard-page__layout">
+      <div class="dashboard-page__summary">
       <DashboardDayStrip
         v-model="selectedDate"
         :label="t('dashboard.dayStrip.aria')"
@@ -45,6 +46,7 @@
         :of-target-label="formatMacroOfTarget"
         :ring-aria-label="t('dashboard.progress.ringAria')"
       />
+      </div>
 
       <section class="dashboard-page__section">
         <div class="dashboard-page__section-head">
@@ -134,7 +136,7 @@
           </li>
         </ul>
       </section>
-    </template>
+    </div>
   </AppPageShell>
 </template>
 

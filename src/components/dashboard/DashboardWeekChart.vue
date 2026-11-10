@@ -2,7 +2,7 @@
   <div
     class="dashboard-week-chart"
     role="img"
-    :aria-label="ariaLabel"
+    :aria-label="chartAriaLabel"
     :style="chartSizeStyle"
   >
     <VChart
@@ -15,7 +15,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue'
+import { computed } from 'vue'
 import { use } from 'echarts/core'
 import { CanvasRenderer } from 'echarts/renderers'
 import { BarChart, LineChart } from 'echarts/charts'
@@ -29,6 +29,7 @@ import {
   DASHBOARD_CHART_ANIMATION_MS,
   DASHBOARD_WEEK_CHART_HEIGHT_REM,
 } from '@/constants/dashboard'
+import { useThemeColors } from '@/composables/useThemeColors'
 import type { DashboardWeekDayPoint } from '@/utils/dashboard'
 import '@/styles/components/dashboard-week-chart.css'
 
@@ -48,33 +49,20 @@ const props = defineProps<{
   consumedLabel: string
   targetLabel: string
   unitLabel: string
-  ariaLabel: string
+  chartAriaLabel: string
 }>()
 
-const primaryColor = ref('#c45c26')
-const accentColor = ref('#d4a017')
-const mutedColor = ref('#7a6555')
-const borderColor = ref('#e8d4b8')
-const textColor = ref('#2e2218')
+const colors = useThemeColors({
+  primary: '--color-primary',
+  accent: '--color-accent',
+  muted: '--color-text-muted',
+  border: '--color-border',
+})
 
 const chartSizeStyle = computed(() => ({
   height: `${DASHBOARD_WEEK_CHART_HEIGHT_REM}rem`,
   minHeight: `${DASHBOARD_WEEK_CHART_HEIGHT_REM}rem`,
 }))
-
-onMounted(() => {
-  const styles = getComputedStyle(document.documentElement)
-  primaryColor.value =
-    styles.getPropertyValue('--color-primary').trim() || primaryColor.value
-  accentColor.value =
-    styles.getPropertyValue('--color-accent').trim() || accentColor.value
-  mutedColor.value =
-    styles.getPropertyValue('--color-text-muted').trim() || mutedColor.value
-  borderColor.value =
-    styles.getPropertyValue('--color-border').trim() || borderColor.value
-  textColor.value =
-    styles.getPropertyValue('--color-text').trim() || textColor.value
-})
 
 const option = computed(() => {
   const series: Record<string, unknown>[] = [
@@ -84,7 +72,7 @@ const option = computed(() => {
       data: props.points.map((point) => point.calories),
       barWidth: '46%',
       itemStyle: {
-        color: primaryColor.value,
+        color: colors.primary,
         borderRadius: [6, 6, 0, 0],
       },
     },
@@ -97,7 +85,7 @@ const option = computed(() => {
       data: props.points.map(() => props.target),
       symbol: 'none',
       lineStyle: {
-        color: accentColor.value,
+        color: colors.accent,
         width: 2,
         type: 'dashed',
       },
@@ -117,7 +105,7 @@ const option = computed(() => {
       top: 0,
       left: 'center',
       textStyle: {
-        color: mutedColor.value,
+        color: colors.muted,
         fontSize: 11,
       },
       itemWidth: 12,
@@ -131,9 +119,9 @@ const option = computed(() => {
       type: 'category',
       data: props.labels,
       axisTick: { show: false },
-      axisLine: { lineStyle: { color: borderColor.value } },
+      axisLine: { lineStyle: { color: colors.border } },
       axisLabel: {
-        color: mutedColor.value,
+        color: colors.muted,
         fontSize: 11,
       },
     },
@@ -141,12 +129,12 @@ const option = computed(() => {
       type: 'value',
       min: 0,
       axisLabel: {
-        color: mutedColor.value,
+        color: colors.muted,
         fontSize: 11,
       },
       splitLine: {
         lineStyle: {
-          color: borderColor.value,
+          color: colors.border,
           type: 'dashed',
         },
       },

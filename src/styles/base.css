@@ -19,6 +19,8 @@
   --color-macro-carbs: #3a7ca5;
   --font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
   --touch-target-min: 44px;
+  --app-tabbar-height: 4rem;
+  --app-sidebar-width: 15rem;
   --space-xs: 0.25rem;
   --space-sm: 0.5rem;
   --space-md: 1rem;

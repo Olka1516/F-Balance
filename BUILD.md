@@ -167,12 +167,12 @@ Do phases in order. Each phase ends with Step D from `AGENTS.md` and a docs upda
 62. Macros: protein 2.0 / 1.6 / 1.8 g/kg (lose / maintain / gain), fat ≥ max(0.8 g/kg, 25 % kcal), carbs = remainder. Calorie floor: max(BMR, 1200 F / 1500 M).
 63. Onboarding shows the result with a short "how we calculated" explainer; user can override the numbers in Profile. Recalculate when weight/activity changes.
 
-## Phase 13 — Navigation & layout redesign (requests 1, 4, 7)
+## Phase 13 — Navigation & layout redesign (requests 1, 4, 7) ✅ done
 
-64. Mobile: bottom tab bar — **Today**, **Add (+)** in the centre, **Progress**, **Profile**. Remove the burger menu.
+64. Mobile: bottom tab bar — **Today**, **Meals**, **Add (+)** in the centre, **Progress**, **Profile** (`AppNav`, items in `APP_NAV_ITEMS`). Burger menu removed; Meals tab folds into Add in Phase 15; Recommendations no longer in nav. Language switch: Profile header + desktop sidebar.
 65. Desktop (≥ 1024 px): left sidebar with the same items; Today becomes two columns (budget + macros left, meals by time of day right); max content width, no stretched forms.
 66. Today: one calorie ring (eaten / remaining), three macro bars, meals grouped Breakfast / Lunch / Dinner / Snacks with "+" per group, day strip on top.
-67. Progress: weekly calories, weight trend toward target, averages. Charts read colours from theme CSS variables (no hex literals).
+67. Progress (`/progress`): 7-day calories chart, average kcal and macros, days within ±10 % of target, logged days. Weight trend needs weight history — deferred. Charts read colours via `useThemeColors` (no hex literals); unused macro/progress charts removed.
 68. Remove the visible season label (seasonal theme may stay, silently).
 
 ## Phase 14 — Logging flow (requests 3, 8, 9)

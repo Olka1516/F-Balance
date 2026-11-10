@@ -31,3 +31,4 @@ Thumbs.db
 # Cursor / local agent docs (keep on machine, not on GitHub)
 .cursor/
 AGENTS.md
+supabase/.temp/

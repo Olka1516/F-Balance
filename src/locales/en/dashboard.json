@@ -63,5 +63,16 @@
   "recommendations": {
     "title": "Recommendations",
     "stub": "Open Recommendations from the navigation for recipe ideas."
+  },
+  "progressPage": {
+    "title": "Progress",
+    "intro": "Your last 7 days at a glance.",
+    "avgCalories": "Average per day",
+    "avgMacros": "Average macros",
+    "daysOnTarget": "Days within target",
+    "daysOnTargetValue": "{count} of {total}",
+    "loggedDays": "Days with entries",
+    "emptyTitle": "No entries this week yet",
+    "emptyMessage": "Add a meal and your progress will show up here."
   }
 }

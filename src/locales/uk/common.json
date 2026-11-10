@@ -114,21 +114,12 @@
       "total": "{value} ккал"
     }
   },
-  "seasons": {
-    "spring": "Весна",
-    "summer": "Літо",
-    "autumn": "Осінь",
-    "winter": "Зима"
-  },
   "nav": {
     "label": "Основна навігація",
-    "menuTitle": "Меню",
-    "menuOpen": "Відкрити меню",
-    "menuClose": "Закрити меню",
-    "dashboard": "Головна",
-    "meals": "Мої страви",
-    "addMeal": "Додати їжу",
+    "meals": "Страви",
+    "addMeal": "Додати",
     "profile": "Профіль",
-    "recommendations": "Рекомендації"
+    "today": "Сьогодні",
+    "progress": "Прогрес"
   }
 }
