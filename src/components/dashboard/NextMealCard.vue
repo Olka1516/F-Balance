@@ -1,8 +1,9 @@
 <template>
-  <section v-if="suggestions.length" class="next-meal-card" aria-labelledby="next-meal-title">
-    <h2 id="next-meal-title" class="next-meal-card__title">
+  <details v-if="suggestions.length" class="next-meal-card">
+    <summary class="next-meal-card__title">
       {{ t('dashboard.nextMeal.title', { meal: t(`meals.${mealType}`) }) }}
-    </h2>
+      <span class="next-meal-card__count">{{ suggestions.length }}</span>
+    </summary>
     <ul class="next-meal-card__list">
       <li v-for="meal in suggestions" :key="meal.id" class="next-meal-card__item">
         <div class="next-meal-card__body">
@@ -22,7 +23,7 @@
         </button>
       </li>
     </ul>
-  </section>
+  </details>
 </template>
 
 <script setup lang="ts">

@@ -46,12 +46,6 @@
         :of-target-label="formatMacroOfTarget"
         :ring-aria-label="t('dashboard.progress.ringAria')"
       />
-      <NextMealCard
-        v-if="isToday"
-        :remaining-calories="summary.remaining"
-        :today-meal-ids="todayMealIds"
-        :day-key="selectedDate"
-      />
       </div>
 
       <section class="dashboard-page__section">
@@ -132,6 +126,12 @@
             </ul>
           </li>
         </ul>
+        <NextMealCard
+          v-if="isToday"
+          :remaining-calories="summary.remaining"
+          :today-meal-ids="todayMealIds"
+          :day-key="selectedDate"
+        />
       </section>
     </div>
   </AppPageShell>
