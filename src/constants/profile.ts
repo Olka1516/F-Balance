@@ -1,4 +1,4 @@
-import type { ActivityLevel, UserGoal } from '@/types'
+import type { ActivityLevel, BiologicalSex, GoalPace, UserGoal } from '@/types'
 
 /**
  * Profile goal options collected during onboarding.
@@ -77,15 +77,73 @@ export const PROFILE_DAILY_CARBS_MAX_G = 800
 export const PROFILE_DAILY_MACRO_MIN_G = 0
 
 /**
- * Default macro calorie shares by goal (protein / fat / carbs).
- * Guidance only — not medical advice.
+ * Biological sex options used by the BMR formula.
  */
-export const MACRO_SPLIT_BY_GOAL = {
-  lose: { protein: 0.3, fat: 0.3, carbs: 0.4 },
-  maintain: { protein: 0.25, fat: 0.3, carbs: 0.45 },
-  gain: { protein: 0.25, fat: 0.25, carbs: 0.5 },
-  default: { protein: 0.25, fat: 0.3, carbs: 0.45 },
-} as const
+export const BIOLOGICAL_SEXES = ['female', 'male'] as const satisfies readonly BiologicalSex[]
+
+/**
+ * Goal pace options (how fast to change weight).
+ */
+export const GOAL_PACES = ['slow', 'normal', 'fast'] as const satisfies readonly GoalPace[]
+
+/**
+ * Pace used when the goal changes weight but no pace is chosen yet.
+ */
+export const DEFAULT_GOAL_PACE: GoalPace = 'normal'
+
+/**
+ * Mifflin–St Jeor constant by sex, in kcal.
+ */
+export const MIFFLIN_SEX_OFFSET = {
+  female: -161,
+  male: 5,
+} as const satisfies Record<BiologicalSex, number>
+
+/**
+ * Activity multipliers applied to BMR to get maintenance calories.
+ */
+export const ACTIVITY_FACTORS = {
+  sedentary: 1.2,
+  light: 1.375,
+  moderate: 1.55,
+  active: 1.725,
+  very_active: 1.9,
+} as const satisfies Record<ActivityLevel, number>
+
+/**
+ * Calorie change from maintenance by goal and pace, in percent.
+ */
+export const GOAL_PACE_ADJUSTMENT = {
+  lose: { slow: -10, normal: -15, fast: -20 },
+  gain: { slow: 5, normal: 10, fast: 15 },
+} as const satisfies Record<Exclude<UserGoal, 'maintain'>, Record<GoalPace, number>>
+
+/**
+ * Lowest suggested daily calories by sex; the target never goes below BMR either.
+ */
+export const CALORIE_FLOOR_BY_SEX = {
+  female: 1200,
+  male: 1500,
+} as const satisfies Record<BiologicalSex, number>
+
+/**
+ * Protein target per kilogram of body weight by goal.
+ */
+export const PROTEIN_G_PER_KG_BY_GOAL = {
+  lose: 2,
+  maintain: 1.6,
+  gain: 1.8,
+} as const satisfies Record<UserGoal, number>
+
+/**
+ * Minimum fat per kilogram of body weight.
+ */
+export const FAT_G_PER_KG_MIN = 0.8
+
+/**
+ * Minimum share of daily calories from fat.
+ */
+export const FAT_SHARE_MIN = 0.25
 
 /**
  * TanStack Query key for the current user profile.

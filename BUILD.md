@@ -160,11 +160,11 @@ Do phases in order. Each phase ends with Step D from `AGENTS.md` and a docs upda
 58. New limits (constants in one place): cooldown 3 s, 20/hour, 60/day per user. Reserve a row in `ai_requests` **before** the provider call (status `pending` → `ok` / `failed`); failed calls do not count toward the daily cap. Concurrent requests are blocked by the reservation.
 59. Cache full estimates (not only calories) by input hash for 48 h.
 
-## Phase 12 — Calorie & macro targets (request 5)
+## Phase 12 — Calorie & macro targets (request 5) ✅ done
 
-60. Profile gets `sex`, `birth_year` (instead of age), `target_weight`, `pace` (slow / normal / fast). Migration + RLS unchanged.
-61. `src/utils/nutritionTargets.ts`: BMR by Mifflin–St Jeor → TDEE via activity factor (1.2 / 1.375 / 1.55 / 1.725 / 1.9) → goal adjustment by pace (lose −10/−15/−20 %, gain +5/+10/+15 %) with a floor (no lower than BMR × 1.0 by default).
-62. Macros: protein 1.6–2.0 g/kg (by goal), fat ≥ 0.8 g/kg, carbs = remainder. Water hint optional.
+60. Profile gets `sex`, `target_weight`, `pace` (slow / normal / fast); `age` stays. Migration `20261110130000_profile_body_targets.sql`, RLS unchanged.
+61. `src/utils/nutritionTargets.ts` (constants in `src/constants/profile.ts`): BMR by Mifflin–St Jeor → TDEE via activity factor (1.2 / 1.375 / 1.55 / 1.725 / 1.9) → goal adjustment by pace (lose −10/−15/−20 %, gain +5/+10/+15 %) with a floor (no lower than BMR × 1.0 by default).
+62. Macros: protein 2.0 / 1.6 / 1.8 g/kg (lose / maintain / gain), fat ≥ max(0.8 g/kg, 25 % kcal), carbs = remainder. Calorie floor: max(BMR, 1200 F / 1500 M).
 63. Onboarding shows the result with a short "how we calculated" explainer; user can override the numbers in Profile. Recalculate when weight/activity changes.
 
 ## Phase 13 — Navigation & layout redesign (requests 1, 4, 7)

@@ -1,9 +1,13 @@
 import {
   ACTIVITY_LEVELS,
+  BIOLOGICAL_SEXES,
+  GOAL_PACES,
   USER_GOALS,
 } from '@/constants/profile'
 import type {
   ActivityLevel,
+  BiologicalSex,
+  GoalPace,
   ProfileFormValues,
   UserGoal,
   UserProfile,
@@ -13,7 +17,10 @@ import type {
 type UserProfileRow = {
   user_id: string
   goal: string | null
+  sex: string | null
   weight: number | string | null
+  target_weight: number | string | null
+  pace: string | null
   height: number | string | null
   age: number | null
   activity_level: string | null
@@ -31,7 +38,10 @@ type UserProfileRow = {
 export function createEmptyProfileForm(): ProfileFormValues {
   return {
     goal: '',
+    sex: '',
     weight: '',
+    targetWeight: '',
+    pace: '',
     height: '',
     age: '',
     activityLevel: '',
@@ -52,7 +62,10 @@ export function profileToFormValues(profile: UserProfile | null): ProfileFormVal
 
   return {
     goal: profile.goal ?? '',
+    sex: profile.sex ?? '',
     weight: profile.weight == null ? '' : String(profile.weight),
+    targetWeight: profile.targetWeight == null ? '' : String(profile.targetWeight),
+    pace: profile.pace ?? '',
     height: profile.height == null ? '' : String(profile.height),
     age: profile.age == null ? '' : String(profile.age),
     activityLevel: profile.activityLevel ?? '',
@@ -92,6 +105,20 @@ export function isUserGoal(value: string): value is UserGoal {
 }
 
 /**
+ * Whether a string is a known biological sex option.
+ */
+export function isBiologicalSex(value: string): value is BiologicalSex {
+  return (BIOLOGICAL_SEXES as readonly string[]).includes(value)
+}
+
+/**
+ * Whether a string is a known goal pace.
+ */
+export function isGoalPace(value: string): value is GoalPace {
+  return (GOAL_PACES as readonly string[]).includes(value)
+}
+
+/**
  * Whether a string is a known activity level.
  */
 export function isActivityLevel(value: string): value is ActivityLevel {
@@ -107,7 +134,10 @@ export function formValuesToProfileInput(
 ): UserProfileInput {
   return {
     goal: isUserGoal(values.goal) ? values.goal : null,
+    sex: isBiologicalSex(values.sex) ? values.sex : null,
     weight: parseOptionalNumber(values.weight),
+    targetWeight: values.goal === 'maintain' ? null : parseOptionalNumber(values.targetWeight),
+    pace: values.goal !== 'maintain' && isGoalPace(values.pace) ? values.pace : null,
     height: parseOptionalNumber(values.height),
     age: parseOptionalNumber(values.age),
     activityLevel: isActivityLevel(values.activityLevel)
@@ -128,7 +158,10 @@ export function mapProfileRow(row: UserProfileRow): UserProfile {
   return {
     userId: row.user_id,
     goal: row.goal && isUserGoal(row.goal) ? row.goal : null,
+    sex: row.sex && isBiologicalSex(row.sex) ? row.sex : null,
     weight: row.weight == null ? null : Number(row.weight),
+    targetWeight: row.target_weight == null ? null : Number(row.target_weight),
+    pace: row.pace && isGoalPace(row.pace) ? row.pace : null,
     height: row.height == null ? null : Number(row.height),
     age: row.age,
     activityLevel:

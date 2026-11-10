@@ -91,3 +91,8 @@ export const isOptionalDailyCarbsValid = createOptionalNumberRule(
   PROFILE_DAILY_MACRO_MIN_G,
   PROFILE_DAILY_CARBS_MAX_G,
 )
+
+/**
+ * Optional target weight validator for profile forms.
+ */
+export const isOptionalTargetWeightValid = isOptionalWeightValid

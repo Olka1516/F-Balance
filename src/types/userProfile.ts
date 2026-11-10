@@ -1,5 +1,15 @@
 export type UserGoal = 'lose' | 'maintain' | 'gain'
 
+/**
+ * Biological sex used by the BMR formula.
+ */
+export type BiologicalSex = 'female' | 'male'
+
+/**
+ * How fast the user wants to change weight.
+ */
+export type GoalPace = 'slow' | 'normal' | 'fast'
+
 export type ActivityLevel =
   | 'sedentary'
   | 'light'
@@ -13,7 +23,10 @@ export type ActivityLevel =
 export type UserProfile = {
   userId: string
   goal: UserGoal | null
+  sex: BiologicalSex | null
   weight: number | null
+  targetWeight: number | null
+  pace: GoalPace | null
   height: number | null
   age: number | null
   activityLevel: ActivityLevel | null
@@ -30,7 +43,10 @@ export type UserProfile = {
  */
 export type UserProfileInput = {
   goal: UserGoal | null
+  sex: BiologicalSex | null
   weight: number | null
+  targetWeight: number | null
+  pace: GoalPace | null
   height: number | null
   age: number | null
   activityLevel: ActivityLevel | null
@@ -46,7 +62,10 @@ export type UserProfileInput = {
  */
 export type ProfileFormValues = {
   goal: string
+  sex: string
   weight: string
+  targetWeight: string
+  pace: string
   height: string
   age: string
   activityLevel: string

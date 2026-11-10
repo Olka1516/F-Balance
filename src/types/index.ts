@@ -20,6 +20,8 @@ export type { MealIngredient } from './mealIngredient'
 export type { AppLocale } from './locale'
 export type {
   ActivityLevel,
+  BiologicalSex,
+  GoalPace,
   ProfileFormValues,
   UserGoal,
   UserProfile,

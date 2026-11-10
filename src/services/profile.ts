@@ -11,7 +11,7 @@ export type ProfileActionResult =
   | { ok: false; code: string }
 
 const PROFILE_SELECT =
-  'user_id, goal, weight, height, age, activity_level, daily_calories, daily_protein, daily_fat, daily_carbs, onboarding_completed, updated_at'
+  'user_id, goal, sex, weight, target_weight, pace, height, age, activity_level, daily_calories, daily_protein, daily_fat, daily_carbs, onboarding_completed, updated_at'
 
 /**
  * Loads the authenticated user's profile row, or null when missing.
@@ -61,7 +61,10 @@ export async function upsertUserProfile(
       {
         user_id: userId,
         goal: input.goal,
+        sex: input.sex,
         weight: input.weight,
+        target_weight: input.targetWeight,
+        pace: input.pace,
         height: input.height,
         age: input.age,
         activity_level: input.activityLevel,

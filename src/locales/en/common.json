@@ -38,14 +38,15 @@
     "saving": "Saving…",
     "success": "Profile saved",
     "loadError": "Could not load your profile",
-    "suggestMacros": "Suggest from calories",
-    "macrosHint": "Guidance only — edit freely. Calories recalculate from macros (P×4 + F×9 + C×4). You can also suggest macros from a calorie target.",
+    "macrosHint": "Edit freely. Calories recalculate from macros (P×4 + F×9 + C×4).",
     "sections": {
       "goal": "Your goal",
       "activity": "Activity",
       "body": "Body metrics",
       "target": "Daily calories",
-      "macros": "Daily macros"
+      "macros": "Daily macros",
+      "sex": "Sex",
+      "pace": "Pace"
     },
     "fields": {
       "goal": "Goal",
@@ -56,7 +57,10 @@
       "dailyCalories": "Daily calories (kcal)",
       "dailyProtein": "Protein (g)",
       "dailyFat": "Fat (g)",
-      "dailyCarbs": "Carbs (g)"
+      "dailyCarbs": "Carbs (g)",
+      "sex": "Sex",
+      "targetWeight": "Target weight (kg)",
+      "pace": "Pace"
     },
     "placeholders": {
       "goal": "Choose a goal",
@@ -86,6 +90,28 @@
       "tableMissing": "Profile table is missing in Supabase. Run the SQL in supabase/migrations.",
       "permissionDenied": "No access to the profile. Check RLS policies.",
       "unknown": "Could not save the profile. Try again"
+    },
+    "sex": {
+      "female": "Female",
+      "male": "Male"
+    },
+    "pace": {
+      "slow": "Gentle",
+      "normal": "Steady",
+      "fast": "Fast"
+    },
+    "calc": {
+      "title": "Your daily target",
+      "missing": "Fill in sex, age, weight, height, activity and goal — we will calculate calories and macros for you.",
+      "bmr": "Base (at rest): {value} kcal",
+      "maintenance": "With your activity (×{factor}): {value} kcal",
+      "adjustment": "For your goal ({percent}%): {value} kcal",
+      "maintain": "Goal — keep weight: {value} kcal",
+      "macros": "Protein {protein} g · Fat {fat} g · Carbs {carbs} g",
+      "apply": "Use these numbers",
+      "applied": "In use",
+      "note": "Estimated with the Mifflin–St Jeor formula. It is a starting point — adjust after a couple of weeks if needed.",
+      "total": "{value} kcal"
     }
   },
   "seasons": {
