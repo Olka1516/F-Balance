@@ -81,7 +81,7 @@
                 :aria-label="t('meals.saved.addTo', { meal: t(`meals.${group.mealType}`) })"
                 @click="goToAddMeal(undefined, group.mealType)"
               >
-                +
+                <span class="dashboard-page__section-action-icon" aria-hidden="true" v-html="iconPlus" />
               </button>
             </div>
             <ul v-if="group.items.length" class="dashboard-page__items">
@@ -141,6 +141,7 @@
 import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import iconEdit from '@/assets/icons/edit.svg?raw'
+import iconPlus from '@/assets/icons/plus.svg?raw'
 import AppLoader from '@/components/common/AppLoader.vue'
 import AppPageShell from '@/components/common/AppPageShell.vue'
 import DashboardDayStrip from '@/components/dashboard/DashboardDayStrip.vue'

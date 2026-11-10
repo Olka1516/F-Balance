@@ -120,16 +120,9 @@ export function useSaveManualMealMutation() {
         queryKey: [...MEALS_QUERY_KEY, variables.userId],
       })
 
-      if (!variables.mealId && variables.logToToday) {
-        const today = formatLocalDate(new Date())
-
-        void queryClient.invalidateQueries({
-          queryKey: [...DAILY_ENTRIES_QUERY_KEY, variables.userId, today],
-        })
-        void queryClient.invalidateQueries({
-          queryKey: [...DAILY_ENTRIES_QUERY_KEY, variables.userId, 'week'],
-        })
-      }
+      void queryClient.invalidateQueries({
+        queryKey: [...DAILY_ENTRIES_QUERY_KEY, variables.userId],
+      })
     },
   })
 }

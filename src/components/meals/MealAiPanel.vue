@@ -1,9 +1,5 @@
 <template>
   <div class="meal-ai-panel">
-    <p class="meal-ai-panel__disclaimer">
-      {{ t('meals.ai.disclaimer') }}
-    </p>
-
     <div class="meal-ai-panel__modes" role="tablist">
       <button
         type="button"

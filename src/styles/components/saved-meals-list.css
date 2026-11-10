@@ -149,3 +149,10 @@
 .saved-meals__link--danger:hover:not(:disabled) {
   color: var(--color-error);
 }
+
+.saved-meals__add > span,
+.saved-meals__star > span {
+  display: block;
+  height: 100%;
+  width: 100%;
+}

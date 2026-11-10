@@ -46,7 +46,7 @@
 
       <template v-else>
         <p
-          v-if="entryNotice"
+          v-if="entryNotice && entryNoticeIsWarning"
           class="add-meal-page__notice"
           :class="{ 'add-meal-page__notice--warning': entryNoticeIsWarning }"
           role="status"
@@ -101,7 +101,7 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import AppButton from '@/components/common/AppButton.vue'
 import AppLoader from '@/components/common/AppLoader.vue'
 import AppPageShell from '@/components/common/AppPageShell.vue'
@@ -137,6 +137,7 @@ import '@/styles/views/add-meal.css'
 
 const { t } = useI18n()
 const route = useRoute()
+const router = useRouter()
 const { goToDashboard, goToMyMeals } = useAppNavigation()
 const { user } = useAuth()
 const userId = computed(() => user.value?.id)
@@ -290,7 +291,11 @@ async function onSave(): Promise<void> {
       : t('meals.add.createSuccess')
 
     if (isEditMode.value) {
-      goToMyMeals()
+      if (window.history.state?.back) {
+        router.back()
+      } else {
+        goToDashboard()
+      }
       return
     }
 

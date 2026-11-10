@@ -56,6 +56,6 @@
     "emptyMessage": "Add a meal and your progress will show up here."
   },
   "nextMeal": {
-    "title": "Ideas for {meal}"
+    "title": "What to eat · {meal}"
   }
 }

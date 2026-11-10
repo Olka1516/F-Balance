@@ -172,3 +172,37 @@
 .profile-form__chips--three {
   grid-template-columns: repeat(3, minmax(0, 1fr));
 }
+
+.profile-form__calc-head {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+}
+
+.profile-form__calc-info {
+  align-items: center;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 50%;
+  color: var(--color-text-muted);
+  cursor: help;
+  display: inline-flex;
+  font: inherit;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  height: 1.75rem;
+  justify-content: center;
+  padding: 0;
+  width: 1.75rem;
+}
+
+.profile-form__calc-info[aria-expanded='true'],
+.profile-form__calc-info:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+
+.profile-form__calc-info:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}

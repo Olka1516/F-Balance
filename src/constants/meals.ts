@@ -132,13 +132,11 @@ export const NEXT_MEAL_REMAINING_HEADROOM = 1.1
  * Local hour ranges that map clock time to a default meal slot.
  */
 export const MEAL_TIME_WINDOWS = [
-  { startHour: 5, endHour: 11, mealType: 'breakfast' },
-  { startHour: 11, endHour: 15, mealType: 'lunch' },
-  { startHour: 15, endHour: 17, mealType: 'snack' },
-  { startHour: 17, endHour: 22, mealType: 'dinner' },
+  { startHour: 4, endHour: 11, mealType: 'breakfast' },
+  { startHour: 11, endHour: 17, mealType: 'lunch' },
 ] as const satisfies readonly { startHour: number; endHour: number; mealType: MealType }[]
 
 /**
- * Meal slot used outside the time windows.
+ * Meal slot used outside the time windows (evening and night).
  */
-export const MEAL_TIME_DEFAULT: MealType = 'snack'
+export const MEAL_TIME_DEFAULT: MealType = 'dinner'

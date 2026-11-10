@@ -105,9 +105,8 @@
       "maintain": "Goal — keep weight: {value} kcal",
       "macros": "Protein {protein} g · Fat {fat} g · Carbs {carbs} g",
       "apply": "Use these numbers",
-      "applied": "In use",
-      "note": "Estimated with the Mifflin–St Jeor formula. It is a starting point — adjust after a couple of weeks if needed.",
-      "total": "{value} kcal"
+      "total": "{value} kcal",
+      "how": "How we calculated"
     }
   },
   "nav": {

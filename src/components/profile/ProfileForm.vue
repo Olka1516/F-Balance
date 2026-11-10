@@ -167,9 +167,22 @@
         {{ t('common.profile.sections.target') }}
       </h2>
       <div class="profile-form__calc" aria-live="polite">
-        <p class="profile-form__calc-title">
-          {{ t('common.profile.calc.title') }}
-        </p>
+        <div class="profile-form__calc-head">
+          <p class="profile-form__calc-title">
+            {{ t('common.profile.calc.title') }}
+          </p>
+          <button
+            v-if="targets"
+            type="button"
+            class="profile-form__calc-info"
+            :aria-expanded="showCalcSteps"
+            :aria-label="t('common.profile.calc.how')"
+            :title="calcStepsText"
+            @click="showCalcSteps = !showCalcSteps"
+          >
+            ?
+          </button>
+        </div>
         <template v-if="targets">
           <p class="profile-form__calc-total">
             {{ t('common.profile.calc.total', { value: targets.calories }) }}
@@ -183,41 +196,17 @@
               })
             }}
           </p>
-          <ol class="profile-form__calc-steps">
-            <li>{{ t('common.profile.calc.bmr', { value: targets.bmr }) }}</li>
-            <li>
-              {{
-                t('common.profile.calc.maintenance', {
-                  factor: targets.activityFactor,
-                  value: targets.maintenance,
-                })
-              }}
-            </li>
-            <li v-if="targets.adjustmentPercent !== 0">
-              {{
-                t('common.profile.calc.adjustment', {
-                  percent: formatPercent(targets.adjustmentPercent),
-                  value: targets.calories,
-                })
-              }}
-            </li>
-            <li v-else>
-              {{ t('common.profile.calc.maintain', { value: targets.calories }) }}
-            </li>
+          <ol v-if="showCalcSteps" class="profile-form__calc-steps">
+            <li v-for="step in calcSteps" :key="step">{{ step }}</li>
           </ol>
           <AppButton
+            v-if="!isTargetsApplied"
             type="button"
             :variant="APP_BUTTON_VARIANT.secondary"
-            :disabled="isTargetsApplied"
             @click="applyTargets"
           >
-            {{
-              isTargetsApplied
-                ? t('common.profile.calc.applied')
-                : t('common.profile.calc.apply')
-            }}
+            {{ t('common.profile.calc.apply') }}
           </AppButton>
-          <p class="profile-form__hint">{{ t('common.profile.calc.note') }}</p>
         </template>
         <p v-else class="profile-form__hint">
           {{ t('common.profile.calc.missing') }}
@@ -283,7 +272,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, reactive, watch } from 'vue'
+import { computed, reactive, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRegle } from '@regle/core'
 import { withMessage } from '@regle/rules'
@@ -430,6 +419,32 @@ const hasNoTargets = computed(
     !form.value.dailyFat.trim() &&
     !form.value.dailyCarbs.trim(),
 )
+
+const showCalcSteps = ref(false)
+
+const calcSteps = computed(() => {
+  const current = targets.value
+
+  if (!current) {
+    return []
+  }
+
+  return [
+    t('common.profile.calc.bmr', { value: current.bmr }),
+    t('common.profile.calc.maintenance', {
+      factor: current.activityFactor,
+      value: current.maintenance,
+    }),
+    current.adjustmentPercent !== 0
+      ? t('common.profile.calc.adjustment', {
+          percent: formatPercent(current.adjustmentPercent),
+          value: current.calories,
+        })
+      : t('common.profile.calc.maintain', { value: current.calories }),
+  ]
+})
+
+const calcStepsText = computed(() => calcSteps.value.join('\n'))
 
 let autoApplied = false
 

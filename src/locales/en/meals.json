@@ -19,7 +19,6 @@
     "updateSuccess": "Meal updated"
   },
   "ai": {
-    "disclaimer": "This is an estimate. Check the name, grams and calories before saving.",
     "modes": {
       "text": "Text",
       "photo": "Photo"
@@ -83,7 +82,7 @@
   },
   "myMeals": {
     "title": "Saved meals",
-    "subtitle": "Tap “+” to add a meal to {meal} in one tap. ★ marks favourites.",
+    "subtitle": "Tap “+” to add a meal in one tap ({meal}). ★ marks favourites.",
     "addNew": "New meal",
     "edit": "Edit",
     "duplicate": "Duplicate",
@@ -131,7 +130,7 @@
       "all": "All"
     },
     "meta": "{calories} kcal · {weight} g",
-    "addTo": "Add to {meal}",
+    "addTo": "Add: {meal}",
     "added": "Added to {meal}",
     "favorite": "Add to favourites",
     "unfavorite": "Remove from favourites",
