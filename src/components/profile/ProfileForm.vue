@@ -11,7 +11,7 @@
       <h2 id="profile-form-goal" class="profile-form__section-title">
         {{ t('common.profile.sections.goal') }}
       </h2>
-      <div class="profile-form__chips" role="group">
+      <div class="profile-form__chips profile-form__chips--three" role="group">
         <button
           v-for="option in goalOptions"
           :key="option.value"
@@ -42,7 +42,7 @@
       <h2 id="profile-form-pace" class="profile-form__section-title">
         {{ t('common.profile.sections.pace') }}
       </h2>
-      <div class="profile-form__chips" role="group">
+      <div class="profile-form__chips profile-form__chips--three" role="group">
         <button
           v-for="option in paceOptions"
           :key="option.value"
