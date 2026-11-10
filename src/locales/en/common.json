@@ -27,7 +27,6 @@
     "preview": {
       "kcal": "kcal",
       "protein": "P",
-      "fat": "F",
       "carbs": "C"
     }
   },
@@ -37,7 +36,6 @@
     "save": "Save",
     "saving": "Saving…",
     "success": "Profile saved",
-    "loadError": "Could not load your profile",
     "macrosHint": "Edit freely. Calories recalculate from macros (P×4 + F×9 + C×4).",
     "sections": {
       "goal": "Your goal",
@@ -58,9 +56,7 @@
       "dailyProtein": "Protein (g)",
       "dailyFat": "Fat (g)",
       "dailyCarbs": "Carbs (g)",
-      "sex": "Sex",
-      "targetWeight": "Target weight (kg)",
-      "pace": "Pace"
+      "targetWeight": "Target weight (kg)"
     },
     "placeholders": {
       "goal": "Choose a goal",

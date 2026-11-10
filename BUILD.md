@@ -190,10 +190,17 @@ Do phases in order. Each phase ends with Step D from `AGENTS.md` and a docs upda
 76. Multi-ingredient recipes — deferred (data model already supports `meal_ingredients`).
 77. Recommendations page and TheMealDB code removed (`/recommendations` redirects to Today). `NextMealCard` on Today: up to 3 saved meals that fit remaining kcal, current slot and favourites first, rotated daily, hidden when nothing fits.
 
-## Phase 16 — Polish
+## Phase 16 — Polish ✅ done
 
 78. All new copy in `uk` and `en`; empty / loading / error states; mobile-first then desktop check.
-79. Manual test: register → onboarding with calculated targets → photo log → retry on error → edit grams → save to favourites → re-add in one tap → Progress → desktop layout.
+79. Checked: uk/en key parity and no missing keys; unused keys removed; no `//` comments, no `<style>` in SFCs, no hex in components; build passes. Browser pass (signed in): Today, Saved, Add (all tabs), Progress, Profile in uk and en, mobile 375 px and desktop 1280 px, no console errors. Not exercised end to end: registration of a new account, a real photo analysis + Retry, logging via "+" (would write to the real diary).
 
 ### v2 library map
 No new client libraries. Edge Functions call the Gemini REST API with `fetch` (key in a header, never in the URL). Never: any AI SDK or key in Vue code.
+
+
+### v2 follow-ups (not started)
+
+- Per-ingredient breakdown of an analysed dish; multi-ingredient recipe editor.
+- Weight history for a weight trend on Progress.
+- Optional switch of the AI provider to Claude (paid API; only `_shared/nutrition.ts` changes).

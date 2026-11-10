@@ -20,38 +20,22 @@
     "noTarget": "Set a daily target in Profile"
   },
   "macros": {
-    "title": "Macros",
     "protein": "Protein",
     "fat": "Fat",
     "carbs": "Carbs",
     "grams": "{value} g",
-    "ofTarget": "{value} / {target} g",
-    "noTarget": "No macro targets yet — set them in Profile",
-    "over": "Over target"
+    "ofTarget": "{value} / {target} g"
   },
   "chart": {
-    "title": "Progress charts",
     "tabs": {
-      "calories": "Calories",
-      "macros": "Macros",
       "week": "Week"
     },
     "consumed": "Eaten",
     "target": "Target",
-    "aria": "Bar chart comparing calories eaten today with your daily target",
-    "macrosAria": "Pie chart of protein, fat, and carbs eaten today",
-    "weekAria": "Bar chart of calories eaten over the last 7 days",
-    "macrosEmpty": "No macros logged yet today",
-    "withinTarget": "Within your calorie target",
-    "overTarget": "Over target by {value} kcal",
-    "macrosWithin": "Macros within your targets",
-    "macrosOver": "One or more macros are over target",
-    "macrosNoTarget": "Set macro targets in Profile to compare"
+    "weekAria": "Bar chart of calories eaten over the last 7 days"
   },
   "meals": {
     "title": "Meals",
-    "emptyTitle": "Nothing logged yet",
-    "emptyMessage": "Add a meal or pick one from My Meals to see it here.",
     "edit": "Edit meal",
     "macros": "{calories} kcal · P {protein} · F {fat} · C {carbs}",
     "macrosShort": "P {protein} · F {fat} · C {carbs}",
