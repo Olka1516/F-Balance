@@ -1,0 +1,175 @@
+.saved-meal-card {
+  background: var(--color-surface);
+  border-radius: var(--radius-lg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  padding: var(--space-md);
+  position: relative;
+}
+
+.saved-meal-card__head {
+  align-items: flex-start;
+  display: flex;
+  gap: var(--space-xs);
+}
+
+.saved-meal-card__heading {
+  flex: 1;
+  min-width: 0;
+}
+
+.saved-meal-card__name {
+  color: var(--color-text);
+  font-size: 1rem;
+  font-weight: 600;
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.saved-meal-card__meta {
+  color: var(--color-text-muted);
+  font-size: 0.8125rem;
+  margin: 0;
+}
+
+.saved-meal-card__icon-button,
+.saved-meal-card__add {
+  align-items: center;
+  border: none;
+  border-radius: var(--radius-full);
+  cursor: pointer;
+  display: inline-flex;
+  flex-shrink: 0;
+  justify-content: center;
+  padding: 0;
+}
+
+.saved-meal-card__icon-button {
+  background: transparent;
+  color: var(--color-text-muted);
+  height: 2.5rem;
+  width: 2.5rem;
+}
+
+.saved-meal-card__icon-button:hover:not(:disabled) {
+  background: var(--color-surface-muted);
+}
+
+.saved-meal-card__icon-button--star {
+  color: var(--color-macro-fat);
+}
+
+.saved-meal-card__icon-button--star svg path {
+  fill: currentColor;
+}
+
+.saved-meal-card__icon-button:focus-visible,
+.saved-meal-card__add:focus-visible,
+.saved-meal-card__menu-item:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+.saved-meal-card__icon {
+  display: inline-flex;
+  height: 1.25rem;
+  width: 1.25rem;
+}
+
+.saved-meal-card__icon svg {
+  height: 100%;
+  width: 100%;
+}
+
+.saved-meal-card__menu-root {
+  position: relative;
+}
+
+.saved-meal-card__menu {
+  background: var(--color-surface);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lg);
+  display: flex;
+  flex-direction: column;
+  min-width: 11rem;
+  padding: var(--space-xs);
+  position: absolute;
+  right: 0;
+  top: calc(100% + var(--space-xs));
+  z-index: 5;
+}
+
+.saved-meal-card__menu-item {
+  background: transparent;
+  border: none;
+  border-radius: var(--radius-sm);
+  color: var(--color-text);
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.9375rem;
+  min-height: var(--touch-target-min);
+  padding: 0 var(--space-md);
+  text-align: left;
+}
+
+.saved-meal-card__menu-item:hover {
+  background: var(--color-surface-muted);
+}
+
+.saved-meal-card__menu-item--danger {
+  color: var(--color-error);
+}
+
+.saved-meal-card__foot {
+  align-items: center;
+  display: flex;
+  gap: var(--space-md);
+}
+
+.saved-meal-card__macros {
+  border-radius: var(--radius-full);
+  display: flex;
+  flex: 1;
+  gap: 2px;
+  height: 0.375rem;
+  overflow: hidden;
+}
+
+.saved-meal-card__macro {
+  flex-basis: 0;
+  min-width: 2px;
+}
+
+.saved-meal-card__macro--protein {
+  background: var(--color-macro-protein);
+}
+
+.saved-meal-card__macro--fat {
+  background: var(--color-macro-fat);
+}
+
+.saved-meal-card__macro--carbs {
+  background: var(--color-macro-carbs);
+}
+
+.saved-meal-card__add {
+  background: var(--color-surface-muted);
+  color: var(--color-text);
+  height: var(--touch-target-min);
+  width: var(--touch-target-min);
+}
+
+.saved-meal-card__add:hover:not(:disabled) {
+  background: var(--color-border);
+}
+
+.saved-meal-card__add:disabled {
+  cursor: progress;
+  opacity: 0.6;
+}
+
+.saved-meal-card__add--done {
+  background: var(--color-meal-lunch);
+  color: var(--color-primary-hover);
+}

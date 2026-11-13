@@ -1,14 +1,12 @@
 {
   "title": "Meals",
   "add": {
-    "title": "Add Food",
     "editTitle": "Edit meal",
-    "subtitle": "Snap a photo, describe it, search, or enter it manually — we will save it and log it for today.",
-    "editSubtitle": "Changes apply the next time you add this meal to a day.",
     "tabs": {
-      "ai": "Photo or description",
-      "saved": "Saved",
+      "photo": "Photo",
+      "text": "Describe",
       "search": "Search",
+      "saved": "My meals",
       "manual": "Manual"
     },
     "save": "Save",
@@ -16,17 +14,18 @@
     "saving": "Saving…",
     "toMyMeals": "Go to My Meals",
     "createSuccess": "Meal saved and added to today",
-    "updateSuccess": "Meal updated"
+    "updateSuccess": "Meal updated",
+    "titleFor": "Add: {meal}",
+    "reviewTitle": "Check your meal",
+    "back": "Back to options",
+    "close": "Close",
+    "modesAria": "How to add",
+    "summaryAria": "Meal summary"
   },
   "ai": {
-    "modes": {
-      "text": "Text",
-      "photo": "Photo"
-    },
     "descriptionLabel": "Describe the food",
     "descriptionPlaceholder": "e.g. bowl of oatmeal with banana and honey",
     "clearDescription": "Clear description",
-    "photoLabel": "Food photo",
     "takePhoto": "Take photo",
     "chooseGallery": "Choose from gallery",
     "capturedPhotoName": "Captured photo",
@@ -37,7 +36,6 @@
     "voice": {
       "start": "Voice",
       "stop": "Stop",
-      "listening": "Listening…",
       "errors": {
         "unsupported": "Voice input is not supported in this browser.",
         "denied": "Allow microphone access to dictate text.",
@@ -58,10 +56,8 @@
       "unknown": "Could not analyze. Try again or enter calories manually."
     },
     "retry": "Analyze again",
-    "describeInstead": "Describe in text",
     "clarificationLabel": "Clarification (optional)",
     "clarificationPlaceholder": "E.g. no sauce, half portion",
-    "photoReady": "Photo kept — you can analyze it again or add a clarification.",
     "retryIn": "Retry in {seconds} s"
   },
   "search": {
@@ -81,15 +77,13 @@
     }
   },
   "myMeals": {
-    "title": "Saved meals",
-    "subtitle": "Tap “+” to add a meal in one tap ({meal}). ★ marks favourites.",
+    "title": "My meals",
     "addNew": "New meal",
     "edit": "Edit",
     "duplicate": "Duplicate",
     "delete": "Delete",
     "copySuffix": "copy",
-    "duplicateSuccess": "Copy created",
-    "deleteSuccess": "Meal deleted"
+    "duplicateSuccess": "Copy created"
   },
   "fields": {
     "name": "Name",
@@ -124,22 +118,12 @@
   "dinner": "Dinner",
   "snack": "Snack",
   "saved": {
-    "tabs": {
-      "recent": "Recent",
-      "favorites": "Favourites",
-      "all": "All"
-    },
     "meta": "{calories} kcal · {weight} g",
     "addTo": "Add: {meal}",
     "added": "Added to {meal}",
     "favorite": "Add to favourites",
     "unfavorite": "Remove from favourites",
-    "confirmDelete": "Delete “{name}”? This cannot be undone.",
     "empty": {
-      "recent": {
-        "title": "Nothing recent yet",
-        "message": "Meals you log will show up here."
-      },
       "favorites": {
         "title": "No favourites yet",
         "message": "Tap the ★ on a meal to find it quickly."
@@ -147,7 +131,42 @@
       "all": {
         "title": "No saved meals yet",
         "message": "Add your first meal and it will appear here."
+      },
+      "search": {
+        "title": "Nothing found",
+        "message": "Try another name or create a new meal."
       }
-    }
+    },
+    "filters": {
+      "all": "All",
+      "favorites": "Favourites"
+    },
+    "sorts": {
+      "recent": "Recently logged",
+      "newest": "Newest first",
+      "calories": "Lightest first"
+    },
+    "searchLabel": "Search meals",
+    "searchPlaceholder": "Find a meal",
+    "filterAria": "Meal filter",
+    "sortLabel": "Sort",
+    "count": "Meals: {count}",
+    "macros": "{calories} kcal · P {protein} · F {fat} · C {carbs}",
+    "macrosAria": "Protein {protein} g, fat {fat} g, carbs {carbs} g",
+    "moreActions": "More actions",
+    "undo": "Undo",
+    "addedNamed": "“{name}” added: {meal}",
+    "deletedNamed": "“{name}” deleted"
+  },
+  "camera": {
+    "starting": "Starting the camera…",
+    "denied": "No camera access. Allow it in your browser settings or take a photo with the system camera.",
+    "unavailable": "The camera is not available on this device. Take a photo or choose one from your gallery.",
+    "retry": "Turn the camera on again",
+    "hint": "Keep the whole plate in the frame for a better estimate",
+    "notePlaceholder": "Add a note: half portion, no sauce",
+    "shoot": "Take a photo and analyze",
+    "switch": "Switch camera",
+    "flash": "Flash"
   }
 }

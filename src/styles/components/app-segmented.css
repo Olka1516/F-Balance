@@ -1,0 +1,33 @@
+.app-segmented {
+  background: var(--color-surface-muted);
+  border-radius: var(--radius-full);
+  display: grid;
+  gap: var(--space-xs);
+  grid-auto-columns: minmax(0, 1fr);
+  grid-auto-flow: column;
+  padding: var(--space-xs);
+}
+
+.app-segmented__option {
+  background: transparent;
+  border: none;
+  border-radius: var(--radius-full);
+  color: var(--color-text-muted);
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.875rem;
+  min-height: 2.5rem;
+  padding: 0 var(--space-sm);
+}
+
+.app-segmented__option--active {
+  background: var(--color-surface);
+  box-shadow: var(--shadow-sm);
+  color: var(--color-text);
+  font-weight: 700;
+}
+
+.app-segmented__option:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}

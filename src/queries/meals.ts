@@ -262,22 +262,24 @@ export function useAddMealToTodayMutation() {
 }
 
 /**
- * Loads diary entries for the last N local calendar days.
+ * Loads diary entries for an inclusive list of local calendar dates (first to last).
  */
-export function useWeekDailyEntriesQuery(
+export function useDailyEntriesRangeQuery(
   userId: MaybeRefOrGetter<string | undefined>,
-  dayCount: MaybeRefOrGetter<number>,
+  dates: MaybeRefOrGetter<readonly string[]>,
   enabled: MaybeRefOrGetter<boolean> = true,
 ) {
-  const dates = computed(() => listRecentLocalDates(toValue(dayCount)))
-  const fromDate = computed(() => dates.value[0] ?? '')
-  const toDate = computed(() => dates.value[dates.value.length - 1] ?? '')
+  const fromDate = computed(() => toValue(dates)[0] ?? '')
+  const toDate = computed(() => {
+    const list = toValue(dates)
+    return list[list.length - 1] ?? ''
+  })
 
   return useQuery({
     queryKey: computed(() => [
       ...DAILY_ENTRIES_QUERY_KEY,
       toValue(userId) ?? 'anonymous',
-      'week',
+      'range',
       fromDate.value,
       toDate.value,
     ]),
@@ -291,11 +293,7 @@ export function useWeekDailyEntriesQuery(
         return []
       }
 
-      const result = await fetchDailyEntriesInRange(
-        id,
-        fromDate.value,
-        toDate.value,
-      )
+      const result = await fetchDailyEntriesInRange(id, fromDate.value, toDate.value)
 
       if (!result.ok) {
         throw new Error(result.code)
@@ -304,6 +302,21 @@ export function useWeekDailyEntriesQuery(
       return result.data
     },
   })
+}
+
+/**
+ * Loads diary entries for the last N local calendar days.
+ */
+export function useWeekDailyEntriesQuery(
+  userId: MaybeRefOrGetter<string | undefined>,
+  dayCount: MaybeRefOrGetter<number>,
+  enabled: MaybeRefOrGetter<boolean> = true,
+) {
+  return useDailyEntriesRangeQuery(
+    userId,
+    computed(() => listRecentLocalDates(toValue(dayCount))),
+    enabled,
+  )
 }
 
 /**

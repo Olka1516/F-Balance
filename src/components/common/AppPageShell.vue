@@ -1,8 +1,13 @@
 <template>
-  <main class="app-page" :class="{ 'app-page--with-nav': showNav }">
+  <main
+    class="app-page"
+    :class="{ 'app-page--with-nav': showNav, 'app-page--bare': bare }"
+  >
     <AppNav v-if="showNav" />
 
-    <div class="app-page__shell">
+    <slot v-if="bare" />
+
+    <div v-else class="app-page__shell">
       <section
         class="app-page__card"
         :class="{ 'app-page__card--wide': wide }"
@@ -35,10 +40,16 @@ withDefaults(
   defineProps<{
     wide?: boolean
     showNav?: boolean
+    /**
+     * Renders the default slot edge to edge, without the card and header,
+     * for pages that draw their own full-width layout.
+     */
+    bare?: boolean
   }>(),
   {
     wide: false,
     showNav: true,
+    bare: false,
   },
 )
 </script>

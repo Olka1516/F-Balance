@@ -215,3 +215,20 @@
     max-width: 64rem;
   }
 }
+
+.app-page--bare,
+.app-page--bare.app-page--with-nav {
+  padding-left: 0;
+  padding-right: 0;
+  padding-top: 0;
+}
+
+@media (min-width: 64rem) {
+  .app-page--bare.app-page--with-nav {
+    padding-left: var(--app-sidebar-width);
+  }
+}
+
+.app-page--bare:not(.app-page--with-nav) {
+  padding-bottom: 0;
+}

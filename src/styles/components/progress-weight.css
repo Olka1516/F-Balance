@@ -1,0 +1,66 @@
+.progress-weight {
+  align-items: center;
+  background: var(--color-surface);
+  border-radius: var(--radius-lg);
+  display: flex;
+  gap: var(--space-md);
+  padding: var(--space-md);
+}
+
+.progress-weight__text {
+  flex: 1;
+  min-width: 0;
+}
+
+.progress-weight__label,
+.progress-weight__meta {
+  color: var(--color-text-muted);
+  font-size: 0.875rem;
+  margin: 0;
+}
+
+.progress-weight__meta {
+  font-size: 0.8125rem;
+}
+
+.progress-weight__value {
+  color: var(--color-text);
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin: 0;
+}
+
+.progress-weight__add {
+  align-items: center;
+  background: var(--color-surface-muted);
+  border: none;
+  border-radius: var(--radius-full);
+  color: var(--color-text);
+  cursor: pointer;
+  display: inline-flex;
+  flex-shrink: 0;
+  height: var(--touch-target-min);
+  justify-content: center;
+  padding: 0;
+  width: var(--touch-target-min);
+}
+
+.progress-weight__add:hover {
+  background: var(--color-border);
+}
+
+.progress-weight__add:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+.progress-weight__icon {
+  display: inline-flex;
+  height: 1.25rem;
+  width: 1.25rem;
+}
+
+.progress-weight__icon svg {
+  height: 100%;
+  width: 100%;
+}

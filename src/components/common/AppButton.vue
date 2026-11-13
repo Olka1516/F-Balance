@@ -10,7 +10,7 @@
     @click="$emit('click', $event)"
   >
     <span v-if="loading" class="app-button__spinner" aria-hidden="true" />
-    <span :class="{ 'app-button__label--hidden': loading }">
+    <span class="app-button__label" :class="{ 'app-button__label--hidden': loading }">
       <slot />
     </span>
   </button>

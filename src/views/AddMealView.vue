@@ -1,57 +1,56 @@
 <template>
-  <AppPageShell>
-    <template #title>
-      {{ isEditMode ? t('meals.add.editTitle') : t('meals.add.title') }}
-    </template>
-    <template #intro>
-      {{
-        isEditMode ? t('meals.add.editSubtitle') : t('meals.add.subtitle')
-      }}
-    </template>
-
-    <AppLoader v-if="isLoadingMeal" />
-
-    <template v-else>
-      <div v-if="!isEditMode" class="add-meal-page__tabs" role="tablist">
+  <AppPageShell bare :show-nav="false">
+    <div class="add-meal-page" :class="{ 'add-meal-page--camera': isCameraStep }">
+      <header class="add-meal-page__header">
         <button
-          v-for="tab in ADD_MEAL_ENTRY_TABS"
-          :key="tab"
           type="button"
-          role="tab"
-          class="add-meal-page__tab"
-          :class="{ 'add-meal-page__tab--active': activeTab === tab }"
-          :aria-selected="activeTab === tab"
-          @click="activeTab = tab"
+          class="add-meal-page__round"
+          :aria-label="headerBackLabel"
+          @click="onHeaderBack"
         >
-          {{ t(`meals.add.tabs.${tab}`) }}
+          <span class="add-meal-page__icon" aria-hidden="true" v-html="isReview && !isEditMode ? iconChevronLeft : iconClose" />
         </button>
-      </div>
+        <h1 class="add-meal-page__title">{{ pageTitle }}</h1>
+        <span class="add-meal-page__spacer" aria-hidden="true" />
+      </header>
 
-      <SavedMealsList
-        v-if="!isEditMode && activeTab === 'saved'"
-        compact
-        :meal-type="targetMealType"
-        @added="goToDashboard"
-      />
+      <AppLoader v-if="isLoadingMeal" />
 
-      <FoodSearchPanel
-        v-else-if="!isEditMode && activeTab === 'search'"
-        @select="onSelectSearchHit"
-      />
+      <div v-else-if="isReview" class="add-meal-page__body add-meal-page__review">
+        <img
+          v-if="showPhotoPreview"
+          class="add-meal-page__photo"
+          :src="ai.photoPreviewUrl.value"
+          :alt="t('meals.ai.capturedPhotoName')"
+        />
 
-      <MealAiPanel
-        v-else-if="!isEditMode && activeTab === 'ai'"
-        @estimated="onAiEstimated"
-      />
+        <section class="add-meal-page__summary" :aria-label="t('meals.add.summaryAria')">
+          <p class="add-meal-page__summary-kcal">
+            {{ summary.calories }}
+            <span class="add-meal-page__summary-unit">{{ t('dashboard.summary.kcal') }}</span>
+          </p>
+          <p class="add-meal-page__summary-macros">
+            {{ t('dashboard.meals.macrosShort', summary) }}
+          </p>
+        </section>
 
-      <template v-else>
         <p
-          v-if="entryNotice && entryNoticeIsWarning"
+          v-if="entryNotice"
           class="add-meal-page__notice"
           :class="{ 'add-meal-page__notice--warning': entryNoticeIsWarning }"
           role="status"
         >
           {{ entryNotice }}
+        </p>
+
+        <MealAiRefine
+          v-if="canRefine"
+          :analyzing="ai.isAnalyzing.value"
+          :cooldown-seconds="ai.cooldownSeconds.value"
+          @refine="ai.refine"
+        />
+        <p v-if="ai.errorMessage.value" class="app-page__message app-page__message--error" role="alert">
+          {{ ai.errorMessage.value }}
         </p>
 
         <MealForm
@@ -60,41 +59,70 @@
           :scale-with-amount="isEditMode || foodSource !== FOOD_SOURCE_MANUAL"
         />
 
-        <p
-          v-if="formError"
-          class="app-page__message app-page__message--error"
-          role="alert"
-        >
+        <p v-if="formError" class="app-page__message app-page__message--error" role="alert">
           {{ formError }}
         </p>
-        <p
-          v-if="formSuccess"
-          class="app-page__message app-page__message--success"
-          role="status"
-        >
+        <p v-if="formSuccess" class="app-page__message app-page__message--success" role="status">
           {{ formSuccess }}
         </p>
 
-        <div class="app-page__actions">
-          <AppButton
-            type="button"
-            :loading="isSaving"
-            :disabled="isSaving"
-            @click="onSave"
-          >
+        <div class="add-meal-page__actions">
+          <AppButton type="button" :loading="isSaving" :disabled="isSaving" @click="onSave">
             {{ isSaving ? t('meals.add.saving') : saveLabel }}
           </AppButton>
-          <button
-            type="button"
-            class="app-page__link-action"
-            :disabled="isSaving"
-            @click="goToMyMeals"
-          >
+          <button type="button" class="app-page__link-action" :disabled="isSaving" @click="goToMyMeals">
             {{ t('meals.add.toMyMeals') }}
           </button>
         </div>
+      </div>
+
+      <template v-else>
+        <MealCameraCapture
+          v-if="activeTab === 'photo'"
+          v-model:clarification="photoNote"
+          :analyzing="ai.isAnalyzing.value"
+          @photo="onPhoto"
+        />
+
+        <div v-else class="add-meal-page__body">
+          <MealDescribePanel
+            v-if="activeTab === 'text'"
+            v-model="description"
+            :analyzing="ai.isAnalyzing.value"
+            @analyze="ai.submitText"
+          />
+          <FoodSearchPanel v-else-if="activeTab === 'search'" @select="onSelectSearchHit" />
+          <SavedMealsList
+            v-else-if="activeTab === 'saved'"
+            compact
+            :meal-type="targetMealType"
+            @added="goToDashboard"
+          />
+        </div>
+
+        <p
+          v-if="ai.errorMessage.value"
+          class="add-meal-page__error app-page__message app-page__message--error"
+          role="alert"
+        >
+          {{ ai.errorMessage.value }}
+        </p>
+
+        <nav class="add-meal-page__modes" :aria-label="t('meals.add.modesAria')">
+          <button
+            v-for="tab in ADD_MEAL_ENTRY_TABS"
+            :key="tab"
+            type="button"
+            class="add-meal-page__mode"
+            :class="{ 'add-meal-page__mode--active': activeTab === tab }"
+            :aria-current="activeTab === tab ? 'page' : undefined"
+            @click="selectTab(tab)"
+          >
+            {{ t(`meals.add.tabs.${tab}`) }}
+          </button>
+        </nav>
       </template>
-    </template>
+    </div>
   </AppPageShell>
 </template>
 
@@ -102,15 +130,20 @@
 import { computed, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRoute, useRouter } from 'vue-router'
+import iconChevronLeft from '@/assets/icons/chevron-left.svg?raw'
+import iconClose from '@/assets/icons/close.svg?raw'
 import AppButton from '@/components/common/AppButton.vue'
 import AppLoader from '@/components/common/AppLoader.vue'
 import AppPageShell from '@/components/common/AppPageShell.vue'
 import FoodSearchPanel from '@/components/meals/FoodSearchPanel.vue'
-import MealAiPanel from '@/components/meals/MealAiPanel.vue'
+import MealAiRefine from '@/components/meals/MealAiRefine.vue'
+import MealCameraCapture from '@/components/meals/MealCameraCapture.vue'
+import MealDescribePanel from '@/components/meals/MealDescribePanel.vue'
 import MealForm from '@/components/meals/MealForm.vue'
 import SavedMealsList from '@/components/meals/SavedMealsList.vue'
 import { useAppNavigation } from '@/composables/useAppNavigation'
 import { useAuth } from '@/composables/useAuth'
+import { useMealAiAnalysis } from '@/composables/useMealAiAnalysis'
 import {
   ADD_MEAL_ENTRY_TAB_DEFAULT,
   ADD_MEAL_ENTRY_TABS,
@@ -122,8 +155,8 @@ import {
 } from '@/constants/meals'
 import { useMealQuery, useSaveManualMealMutation } from '@/queries/meals'
 import type { AiNutritionEstimate, FoodSearchHit, FoodSource } from '@/types'
-import { resolveMealErrorI18nKey } from '@/utils/mealErrors'
 import { isEmptyAiEstimate } from '@/utils/aiEstimate'
+import { resolveMealErrorI18nKey } from '@/utils/mealErrors'
 import {
   aiEstimateToFormValues,
   createEmptyMealForm,
@@ -135,7 +168,7 @@ import {
 import { resolveMealTypeFromHour } from '@/utils/savedMeals'
 import '@/styles/views/add-meal.css'
 
-const { t } = useI18n()
+const { t, locale } = useI18n()
 const route = useRoute()
 const router = useRouter()
 const { goToDashboard, goToMyMeals } = useAppNavigation()
@@ -167,7 +200,20 @@ const entryNotice = ref('')
 const entryNoticeIsWarning = ref(false)
 const isSaving = ref(false)
 const activeTab = ref<AddMealEntryTab>(ADD_MEAL_ENTRY_TAB_DEFAULT)
+const step = ref<'entry' | 'review'>('entry')
 const foodSource = ref<FoodSource>(FOOD_SOURCE_MANUAL)
+const photoNote = ref('')
+const description = ref('')
+
+const ai = useMealAiAnalysis({
+  locale: computed(() => String(locale.value)),
+  onEstimated: onAiEstimated,
+})
+
+const isReview = computed(() => isEditMode.value || step.value === 'review')
+const isCameraStep = computed(() => !isReview.value && activeTab.value === 'photo')
+const canRefine = computed(() => foodSource.value === FOOD_SOURCE_AI && ai.source.value !== null)
+const showPhotoPreview = computed(() => canRefine.value && ai.source.value === 'photo')
 
 const isLoadingMeal = computed(
   () =>
@@ -176,13 +222,35 @@ const isLoadingMeal = computed(
     !mealQuery.isFetched.value,
 )
 
+const pageTitle = computed(() => {
+  if (isEditMode.value) {
+    return t('meals.add.editTitle')
+  }
+
+  if (isReview.value) {
+    return t('meals.add.reviewTitle')
+  }
+
+  return t('meals.add.titleFor', { meal: t(`meals.${targetMealType.value}`) })
+})
+
+const headerBackLabel = computed(() =>
+  isReview.value && !isEditMode.value ? t('meals.add.back') : t('meals.add.close'),
+)
+
+const summary = computed(() => ({
+  calories: toWhole(form.value.calories),
+  protein: toWhole(form.value.protein),
+  fat: toWhole(form.value.fat),
+  carbs: toWhole(form.value.carbs),
+}))
+
 watch(
   () => mealQuery.data.value,
   (meal) => {
     if (meal) {
       form.value = mealToFormValues(meal)
       foodSource.value = meal.ingredients[0]?.food.source ?? FOOD_SOURCE_MANUAL
-      activeTab.value = 'manual'
       return
     }
 
@@ -197,66 +265,91 @@ watch(
 watch(
   () => mealQuery.error.value,
   (error) => {
-    if (!error) {
-      return
+    if (error) {
+      formError.value = t(resolveMealErrorI18nKey(String(error.message)))
     }
-
-    formError.value = t(resolveMealErrorI18nKey(String(error.message)))
   },
 )
+
+function toWhole(value: string | number | null | undefined): number {
+  const parsed = Number(value)
+  return Number.isFinite(parsed) ? Math.round(parsed) : 0
+}
+
+function openReview(): void {
+  formError.value = ''
+  formSuccess.value = ''
+  step.value = 'review'
+}
+
+function selectTab(tab: AddMealEntryTab): void {
+  ai.clearError()
+
+  if (tab === 'manual') {
+    form.value = { ...createEmptyMealForm(), mealType: form.value.mealType }
+    foodSource.value = FOOD_SOURCE_MANUAL
+    entryNotice.value = ''
+    openReview()
+    return
+  }
+
+  activeTab.value = tab
+}
+
+function onHeaderBack(): void {
+  if (isReview.value && !isEditMode.value) {
+    step.value = 'entry'
+    entryNotice.value = ''
+    ai.clearError()
+    return
+  }
+
+  if (window.history.state?.back) {
+    router.back()
+    return
+  }
+
+  goToDashboard()
+}
+
+function onPhoto(file: File): void {
+  ai.submitPhoto(file, photoNote.value)
+}
 
 function onSelectSearchHit(hit: FoodSearchHit): void {
   form.value = foodSearchHitToFormValues(hit, form.value.mealType)
   foodSource.value = FOOD_SOURCE_OPEN_FOOD_FACTS
-  activeTab.value = 'manual'
-  formError.value = ''
   entryNoticeIsWarning.value = !hit.isComplete
   entryNotice.value = hit.isComplete
     ? t('meals.search.applied')
     : t('meals.search.appliedIncomplete')
+  openReview()
 }
 
 function onAiEstimated(payload: AiNutritionEstimate): void {
   const empty = isEmptyAiEstimate(payload)
-  const estimate = empty
-    ? {
-        calories: 0,
-        protein: 0,
-        fat: 0,
-        carbs: 0,
-        name: null,
-        amountGrams: null,
-      }
-    : payload
 
   form.value = aiEstimateToFormValues({
-    calories: estimate.calories,
-    protein: estimate.protein,
-    fat: estimate.fat,
-    carbs: estimate.carbs,
+    calories: empty ? 0 : payload.calories,
+    protein: empty ? 0 : payload.protein,
+    fat: empty ? 0 : payload.fat,
+    carbs: empty ? 0 : payload.carbs,
     mealType: form.value.mealType,
-    name: estimate.name,
-    amountGrams: estimate.amountGrams ?? undefined,
+    name: empty ? null : payload.name,
+    amountGrams: empty ? undefined : payload.amountGrams ?? undefined,
   })
   foodSource.value = FOOD_SOURCE_AI
-  activeTab.value = 'manual'
-  formError.value = ''
 
   if (empty) {
     form.value.name = ''
     entryNoticeIsWarning.value = true
     entryNotice.value = t('meals.ai.emptyResult')
-    return
+  } else {
+    entryNoticeIsWarning.value = false
+    entryNotice.value = t('meals.ai.applied', { amount: form.value.amount })
   }
 
-  entryNoticeIsWarning.value = false
-  entryNotice.value = t('meals.ai.applied', {
-    amount: form.value.amount,
-    calories: payload.calories,
-    protein: payload.protein ?? 0,
-    fat: payload.fat ?? 0,
-    carbs: payload.carbs ?? 0,
-  })
+  openReview()
 }
 
 async function onSave(): Promise<void> {
@@ -290,21 +383,15 @@ async function onSave(): Promise<void> {
       ? t('meals.add.updateSuccess')
       : t('meals.add.createSuccess')
 
-    if (isEditMode.value) {
-      if (window.history.state?.back) {
-        router.back()
-      } else {
-        goToDashboard()
-      }
+    if (isEditMode.value && window.history.state?.back) {
+      router.back()
       return
     }
 
     goToDashboard()
   } catch (error) {
     formError.value = t(
-      resolveMealErrorI18nKey(
-        error instanceof Error ? error.message : 'unknown',
-      ),
+      resolveMealErrorI18nKey(error instanceof Error ? error.message : 'unknown'),
     )
   } finally {
     isSaving.value = false

@@ -1,21 +1,22 @@
 {
   "title": "Сьогодні",
-  "subtitle": "Денна ціль калорій, макроси та страви.",
   "addFood": "Додати їжу",
-  "dayStrip": {
-    "aria": "Вибір дня",
-    "prevWeek": "Попередній тиждень",
-    "nextWeek": "Наступний тиждень"
+  "dateNav": {
+    "aria": "Вибір дати",
+    "prev": "Попередній день",
+    "next": "Наступний день",
+    "pick": "Обрати дату",
+    "yesterday": "Вчора"
   },
-  "progress": {
-    "title": "Прогрес за день",
-    "ringAria": "Залишок калорій на вибраний день"
+  "hero": {
+    "aria": "Результат за день",
+    "left": "ккал залишилось",
+    "over": "ккал понад ціль",
+    "ringAria": "Спожито {consumed} з {target} ккал"
   },
   "summary": {
     "target": "Ціль",
     "consumed": "З’їдено",
-    "remaining": "Залишок",
-    "over": "Понад",
     "kcal": "ккал",
     "noTarget": "Вкажіть денну ціль у профілі"
   },
@@ -24,35 +25,51 @@
     "fat": "Жири",
     "carbs": "Вуглеводи",
     "grams": "{value} г",
-    "ofTarget": "{value} / {target} г"
-  },
-  "chart": {
-    "tabs": {
-      "week": "Тиждень"
-    },
-    "consumed": "З’їдено",
-    "target": "Ціль",
-    "weekAria": "Стовпчиковий графік калорій за останні 7 днів"
+    "ofTarget": "{value} / {target} г",
+    "aria": "Білки, жири та вуглеводи за день"
   },
   "meals": {
     "title": "Страви",
     "edit": "Редагувати страву",
     "macros": "{calories} ккал · Б {protein} · Ж {fat} · В {carbs}",
     "macrosShort": "Б {protein} · Ж {fat} · В {carbs}",
-    "servings": "×{count}"
+    "servings": "×{count}",
+    "empty": "Ще нічого не додано"
   },
   "errors": {
     "load": "Не вдалося завантажити прогрес. Спробуйте ще раз"
   },
   "progressPage": {
     "title": "Прогрес",
-    "intro": "Ваші останні 7 днів коротко.",
-    "avgCalories": "Середнє за день",
-    "avgMacros": "Середні БЖВ",
-    "daysOnTarget": "Днів у межах норми",
-    "daysOnTargetValue": "{count} з {total}",
-    "loggedDays": "Днів із записами",
-    "emptyTitle": "Цього тижня ще немає записів",
+    "periods": {
+      "week": "Тиждень",
+      "month": "Місяць"
+    },
+    "periodAria": "Період",
+    "rangeAria": "Вибір періоду",
+    "prev": "Попередній період",
+    "next": "Наступний період",
+    "summaryAria": "Підсумок за період",
+    "avgCalories": "Середнє на день",
+    "targetShort": "норма {value}",
+    "daysOnTargetValue": "{count} з {total} днів у межах норми",
+    "chartTitle": "Калорії по днях",
+    "chartAria": "Стовпчиковий графік калорій по днях відносно норми",
+    "targetLine": "Пунктир — ваша норма {value} ккал",
+    "openDay": "Відкрити день",
+    "dayEmpty": "За цей день немає записів",
+    "dayOnTarget": "У межах норми",
+    "dayOver": "На {value} ккал більше норми",
+    "dayUnder": "На {value} ккал менше норми",
+    "avgMacros": "Білки, жири, вуглеводи в середньому",
+    "weightTitle": "Вага",
+    "kg": "{value} кг",
+    "updateWeight": "Оновити вагу в профілі",
+    "weightMissing": "Вкажіть вагу в профілі",
+    "weightNoTarget": "Цільову вагу можна вказати в профілі",
+    "weightReached": "Цільову вагу досягнуто",
+    "weightToTarget": "До цілі {value} кг (ціль {target} кг)",
+    "emptyTitle": "За цей період ще немає записів",
     "emptyMessage": "Додайте страву — і тут зʼявиться ваш прогрес."
   },
   "nextMeal": {

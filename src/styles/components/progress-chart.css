@@ -1,0 +1,64 @@
+.progress-chart {
+  background: var(--color-surface);
+  border-radius: var(--radius-lg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  padding: var(--space-md);
+}
+
+.progress-chart__title {
+  color: var(--color-text);
+  font-size: 1rem;
+  font-weight: 700;
+  margin: 0;
+}
+
+.progress-chart__canvas {
+  cursor: pointer;
+  width: 100%;
+}
+
+.progress-chart__legend {
+  color: var(--color-text-muted);
+  font-size: 0.8125rem;
+  margin: 0;
+}
+
+.progress-chart__day {
+  align-items: center;
+  background: var(--color-bg);
+  border-radius: var(--radius-md);
+  display: flex;
+  gap: var(--space-sm);
+  justify-content: space-between;
+  padding: var(--space-sm) var(--space-sm) var(--space-sm) var(--space-md);
+}
+
+.progress-chart__day-text {
+  min-width: 0;
+}
+
+.progress-chart__day-title {
+  color: var(--color-text);
+  font-size: 0.875rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+.progress-chart__day-title::first-letter {
+  text-transform: uppercase;
+}
+
+.progress-chart__day-meta {
+  color: var(--color-text-muted);
+  font-size: 0.8125rem;
+  margin: 0;
+}
+
+.progress-chart__day .app-button {
+  flex-shrink: 0;
+  font-size: 0.875rem;
+  min-height: 2.5rem;
+  padding: 0 var(--space-md);
+}

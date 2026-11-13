@@ -1,8 +1,8 @@
+import { DAYS_PER_WEEK, type ProgressPeriod } from '@/constants/dashboard'
 import type { MealType } from '@/constants/meals'
 import type { DailyEntryWithMeal } from '@/types'
 import {
   remainingCalories,
-  roundNutrition,
   scaleMacros,
   sumMacros,
   type MacroTotals,
@@ -121,14 +121,6 @@ export function buildDashboardDaySummary(
 }
 
 /**
- * One day on the weekly calories chart.
- */
-export type DashboardWeekDayPoint = {
-  date: string
-  calories: number
-}
-
-/**
  * Parses a YYYY-MM-DD key into a local Date at midnight.
  */
 export function parseLocalDateKey(dateKey: string): Date {
@@ -170,27 +162,6 @@ export function listRecentLocalDates(
 }
 
 /**
- * Builds Monday–Sunday local dates for the week that contains `dateKey`.
- */
-export function listWeekLocalDates(dateKey: string): string[] {
-  const anchor = parseLocalDateKey(dateKey)
-  const weekday = anchor.getDay()
-  const mondayOffset = weekday === 0 ? -6 : 1 - weekday
-  const monday = new Date(
-    anchor.getFullYear(),
-    anchor.getMonth(),
-    anchor.getDate() + mondayOffset,
-  )
-  const sunday = new Date(
-    monday.getFullYear(),
-    monday.getMonth(),
-    monday.getDate() + 6,
-  )
-
-  return listRecentLocalDates(7, sunday)
-}
-
-/**
  * Shifts a YYYY-MM-DD key by a number of calendar days.
  */
 export function shiftLocalDateKey(dateKey: string, dayDelta: number): string {
@@ -199,37 +170,6 @@ export function shiftLocalDateKey(dateKey: string, dayDelta: number): string {
   date.setDate(date.getDate() + dayDelta)
 
   return formatLocalDateKey(date)
-}
-
-/**
- * Aggregates diary entries into daily calorie totals for the week chart.
- */
-export function buildWeekCaloriePoints(
-  entries: DailyEntryWithMeal[],
-  dates: readonly string[],
-): DashboardWeekDayPoint[] {
-  const byDate = new Map<string, number>()
-
-  for (const date of dates) {
-    byDate.set(date, 0)
-  }
-
-  for (const entry of entries) {
-    if (!byDate.has(entry.date)) {
-      continue
-    }
-
-    const portion = entryPortionMacros(entry)
-    byDate.set(
-      entry.date,
-      roundNutrition((byDate.get(entry.date) ?? 0) + portion.calories),
-    )
-  }
-
-  return dates.map((date) => ({
-    date,
-    calories: byDate.get(date) ?? 0,
-  }))
 }
 
 /**
@@ -244,14 +184,77 @@ export type ProgressStats = {
 }
 
 /**
- * Builds Progress screen stats from diary entries.
+ * Averages macros over logged days and counts days within the calorie target.
  */
-export function buildProgressStats(
+export function buildProgressStats(days: readonly ProgressDay[]): ProgressStats {
+  const logged = days.filter((day) => day.status !== 'empty')
+  const sum = sumMacros(logged.map((day) => day.totals))
+  const average = (value: number) => (logged.length ? Math.round(value / logged.length) : 0)
+
+  return {
+    loggedDays: logged.length,
+    totalDays: days.length,
+    daysOnTarget: logged.filter((day) => day.status === 'onTarget').length,
+    average: {
+      calories: average(sum.calories),
+      protein: average(sum.protein),
+      fat: average(sum.fat),
+      carbs: average(sum.carbs),
+    },
+  }
+}
+
+/**
+ * How a logged day compares with the calorie target.
+ */
+export type ProgressDayStatus = 'empty' | 'onTarget' | 'off'
+
+/**
+ * One calendar day on the Progress screen.
+ */
+export type ProgressDay = {
+  date: string
+  totals: MacroTotals
+  status: ProgressDayStatus
+}
+
+/**
+ * Lists the local calendar dates of a Monday–Sunday week or a calendar month,
+ * `offset` periods away from the one containing `today`.
+ */
+export function listPeriodLocalDates(
+  period: ProgressPeriod,
+  offset: number,
+  today = new Date(),
+): string[] {
+  if (period === 'month') {
+    const first = new Date(today.getFullYear(), today.getMonth() + offset, 1)
+    const daysInMonth = new Date(first.getFullYear(), first.getMonth() + 1, 0).getDate()
+    const last = new Date(first.getFullYear(), first.getMonth(), daysInMonth)
+
+    return listRecentLocalDates(daysInMonth, last)
+  }
+
+  const weekday = today.getDay()
+  const mondayOffset = weekday === 0 ? 1 - DAYS_PER_WEEK : 1 - weekday
+  const sunday = new Date(
+    today.getFullYear(),
+    today.getMonth(),
+    today.getDate() + mondayOffset + DAYS_PER_WEEK - 1 + offset * DAYS_PER_WEEK,
+  )
+
+  return listRecentLocalDates(DAYS_PER_WEEK, sunday)
+}
+
+/**
+ * Builds per-day totals and target status for the Progress screen.
+ */
+export function buildProgressDays(
   entries: DailyEntryWithMeal[],
   dates: readonly string[],
   targetCalories: number | null,
   tolerance: number,
-): ProgressStats {
+): ProgressDay[] {
   const byDate = new Map<string, MacroTotals>()
 
   for (const entry of entries) {
@@ -269,30 +272,17 @@ export function buildProgressStats(
     })
   }
 
-  const days = [...byDate.values()]
-  const count = days.length
-  const sum = days.reduce(
-    (total, day) => ({
-      calories: total.calories + day.calories,
-      protein: total.protein + day.protein,
-      fat: total.fat + day.fat,
-      carbs: total.carbs + day.carbs,
-    }),
-    { calories: 0, protein: 0, fat: 0, carbs: 0 },
-  )
-  const average = (value: number) => (count ? Math.round(value / count) : 0)
+  return dates.map((date) => {
+    const totals = byDate.get(date)
 
-  return {
-    loggedDays: count,
-    totalDays: dates.length,
-    daysOnTarget: targetCalories
-      ? days.filter((day) => Math.abs(day.calories - targetCalories) <= targetCalories * tolerance).length
-      : 0,
-    average: {
-      calories: average(sum.calories),
-      protein: average(sum.protein),
-      fat: average(sum.fat),
-      carbs: average(sum.carbs),
-    },
-  }
+    if (!totals) {
+      return { date, totals: { calories: 0, protein: 0, fat: 0, carbs: 0 }, status: 'empty' }
+    }
+
+    const onTarget =
+      targetCalories != null &&
+      Math.abs(totals.calories - targetCalories) <= targetCalories * tolerance
+
+    return { date, totals, status: onTarget ? 'onTarget' : 'off' }
+  })
 }

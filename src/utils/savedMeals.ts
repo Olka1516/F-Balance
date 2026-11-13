@@ -2,6 +2,8 @@ import {
   MEAL_TIME_DEFAULT,
   MEAL_TIME_WINDOWS,
   type MealType,
+  type SavedMealFilter,
+  type SavedMealSort,
 } from '@/constants/meals'
 import type { DailyEntryWithMeal, MealWithIngredients } from '@/types'
 
@@ -69,4 +71,39 @@ export function suggestNextMeals(input: {
     .filter((meal) => !input.todayMealIds.has(meal.id) && meal.calories > 0 && meal.calories <= limit)
     .sort((a, b) => score(b) - score(a))
     .slice(0, input.count)
+}
+
+/**
+ * Filters saved meals by favourites and a case-insensitive name query,
+ * then orders them for the My meals list.
+ */
+export function arrangeSavedMeals(input: {
+  meals: MealWithIngredients[]
+  recent: MealWithIngredients[]
+  query: string
+  filter: SavedMealFilter
+  sort: SavedMealSort
+}): MealWithIngredients[] {
+  const needle = input.query.trim().toLocaleLowerCase()
+  const matches = input.meals.filter(
+    (meal) =>
+      (input.filter === 'all' || meal.isFavorite) &&
+      (!needle || meal.name.toLocaleLowerCase().includes(needle)),
+  )
+
+  if (input.sort === 'calories') {
+    return [...matches].sort((a, b) => a.calories - b.calories)
+  }
+
+  const byNewest = [...matches].sort((a, b) => b.updatedAt.localeCompare(a.updatedAt))
+
+  if (input.sort === 'newest') {
+    return byNewest
+  }
+
+  const rank = new Map(input.recent.map((meal, index) => [meal.id, index]))
+
+  return byNewest.sort(
+    (a, b) => (rank.get(a.id) ?? Number.MAX_SAFE_INTEGER) - (rank.get(b.id) ?? Number.MAX_SAFE_INTEGER),
+  )
 }

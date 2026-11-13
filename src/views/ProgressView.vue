@@ -1,156 +1,200 @@
 <template>
-  <AppPageShell wide>
-    <template #title>
-      {{ t('dashboard.progressPage.title') }}
-    </template>
-    <template #intro>
-      {{ t('dashboard.progressPage.intro') }}
-    </template>
+  <AppPageShell bare>
+    <div class="progress-page">
+      <header class="progress-page__header">
+        <h1 class="progress-page__title">{{ t('dashboard.progressPage.title') }}</h1>
+        <div class="progress-page__periods" role="group" :aria-label="t('dashboard.progressPage.periodAria')">
+          <button
+            v-for="item in PROGRESS_PERIODS"
+            :key="item"
+            type="button"
+            class="progress-page__period"
+            :class="{ 'progress-page__period--active': period === item }"
+            :aria-pressed="period === item"
+            @click="selectPeriod(item)"
+          >
+            {{ t(`dashboard.progressPage.periods.${item}`) }}
+          </button>
+        </div>
+      </header>
 
-    <AppLoader v-if="isLoading" />
+      <nav class="progress-page__range" :aria-label="t('dashboard.progressPage.rangeAria')">
+        <button
+          type="button"
+          class="progress-page__arrow"
+          :aria-label="t('dashboard.progressPage.prev')"
+          @click="offset -= 1"
+        >
+          <span class="progress-page__icon" aria-hidden="true" v-html="iconChevronLeft" />
+        </button>
+        <span class="progress-page__range-label">{{ rangeLabel }}</span>
+        <button
+          type="button"
+          class="progress-page__arrow"
+          :aria-label="t('dashboard.progressPage.next')"
+          :disabled="offset >= 0"
+          @click="offset += 1"
+        >
+          <span class="progress-page__icon" aria-hidden="true" v-html="iconChevronRight" />
+        </button>
+      </nav>
 
-    <p
-      v-else-if="loadError"
-      class="app-page__message app-page__message--error"
-      role="alert"
-    >
-      {{ t('dashboard.errors.load') }}
-    </p>
+      <AppLoader v-if="isLoading" />
 
-    <AppEmptyState
-      v-else-if="stats.loggedDays === 0"
-      :title="t('dashboard.progressPage.emptyTitle')"
-      :message="t('dashboard.progressPage.emptyMessage')"
-    >
-      <AppButton type="button" @click="goToAddMeal()">
-        {{ t('dashboard.addFood') }}
-      </AppButton>
-    </AppEmptyState>
+      <p v-else-if="loadError" class="app-page__message app-page__message--error" role="alert">
+        {{ t('dashboard.errors.load') }}
+      </p>
 
-    <template v-else>
-      <ul class="progress-page__stats">
-        <li class="progress-page__stat">
-          <p class="progress-page__stat-label">
-            {{ t('dashboard.progressPage.avgCalories') }}
-          </p>
-          <p class="progress-page__stat-value">
-            {{ stats.average.calories }}
-            <span class="progress-page__stat-unit">{{ t('dashboard.summary.kcal') }}</span>
-          </p>
-        </li>
-        <li v-if="targetCalories" class="progress-page__stat">
-          <p class="progress-page__stat-label">
-            {{ t('dashboard.progressPage.daysOnTarget') }}
-          </p>
-          <p class="progress-page__stat-value">
-            {{
-              t('dashboard.progressPage.daysOnTargetValue', {
-                count: stats.daysOnTarget,
-                total: stats.loggedDays,
-              })
-            }}
-          </p>
-        </li>
-        <li class="progress-page__stat">
-          <p class="progress-page__stat-label">
-            {{ t('dashboard.progressPage.loggedDays') }}
-          </p>
-          <p class="progress-page__stat-value">
-            {{
-              t('dashboard.progressPage.daysOnTargetValue', {
-                count: stats.loggedDays,
-                total: stats.totalDays,
-              })
-            }}
-          </p>
-        </li>
-        <li class="progress-page__stat">
-          <p class="progress-page__stat-label">
-            {{ t('dashboard.progressPage.avgMacros') }}
-          </p>
-          <p class="progress-page__stat-macros">
-            {{
-              t('dashboard.meals.macrosShort', {
-                protein: stats.average.protein,
-                fat: stats.average.fat,
-                carbs: stats.average.carbs,
-              })
-            }}
-          </p>
-        </li>
-      </ul>
+      <AppEmptyState
+        v-else-if="stats.loggedDays === 0"
+        :title="t('dashboard.progressPage.emptyTitle')"
+        :message="t('dashboard.progressPage.emptyMessage')"
+      >
+        <AppButton type="button" @click="goToAddMeal()">
+          {{ t('dashboard.addFood') }}
+        </AppButton>
+      </AppEmptyState>
 
-      <section class="progress-page__chart">
-        <h2 class="progress-page__chart-title">{{ t('dashboard.chart.tabs.week') }}</h2>
-        <DashboardWeekChart
-          :points="points"
-          :labels="labels"
+      <template v-else>
+        <ProgressSummary :stats="stats" :days="days" :target="targetCalories" />
+
+        <ProgressCaloriesChart
+          v-model:selected="selectedDate"
+          :days="days"
+          :period="period"
           :target="targetCalories"
-          :consumed-label="t('dashboard.chart.consumed')"
-          :target-label="t('dashboard.chart.target')"
-          :unit-label="t('dashboard.summary.kcal')"
-          :chart-aria-label="t('dashboard.chart.weekAria')"
+          @open="openDay"
         />
-      </section>
-    </template>
+
+        <section class="progress-page__macros" :aria-labelledby="macrosTitleId">
+          <h2 :id="macrosTitleId" class="progress-page__section-title">
+            {{ t('dashboard.progressPage.avgMacros') }}
+          </h2>
+          <DashboardMacros :consumed="stats.average" :targets="macroTargets" />
+        </section>
+      </template>
+
+      <ProgressWeightCard
+        v-if="!isLoading && !loadError"
+        :weight="profile?.weight ?? null"
+        :target-weight="profile?.targetWeight ?? null"
+        @update="goToProfile"
+      />
+    </div>
   </AppPageShell>
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, ref, useId, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { useRouter } from 'vue-router'
+import iconChevronLeft from '@/assets/icons/chevron-left.svg?raw'
+import iconChevronRight from '@/assets/icons/chevron-right.svg?raw'
 import AppButton from '@/components/common/AppButton.vue'
 import AppEmptyState from '@/components/common/AppEmptyState.vue'
 import AppLoader from '@/components/common/AppLoader.vue'
 import AppPageShell from '@/components/common/AppPageShell.vue'
-import DashboardWeekChart from '@/components/dashboard/DashboardWeekChart.vue'
+import DashboardMacros from '@/components/dashboard/DashboardMacros.vue'
+import ProgressCaloriesChart from '@/components/progress/ProgressCaloriesChart.vue'
+import ProgressSummary from '@/components/progress/ProgressSummary.vue'
+import ProgressWeightCard from '@/components/progress/ProgressWeightCard.vue'
 import { useAppNavigation } from '@/composables/useAppNavigation'
 import { useAuth } from '@/composables/useAuth'
 import { useLocale } from '@/composables/useLocale'
-import { DASHBOARD_WEEK_DAYS, PROGRESS_TARGET_TOLERANCE } from '@/constants/dashboard'
-import { useWeekDailyEntriesQuery } from '@/queries/meals'
+import {
+  PROGRESS_PERIODS,
+  PROGRESS_TARGET_TOLERANCE,
+  type ProgressPeriod,
+} from '@/constants/dashboard'
+import { DASHBOARD_DATE_QUERY, ROUTE_NAMES } from '@/constants/routes'
+import { useDailyEntriesRangeQuery } from '@/queries/meals'
 import { useProfileQuery } from '@/queries/profile'
 import {
+  buildProgressDays,
   buildProgressStats,
-  buildWeekCaloriePoints,
-  listRecentLocalDates,
+  formatLocalDateKey,
+  listPeriodLocalDates,
   parseLocalDateKey,
 } from '@/utils/dashboard'
 import '@/styles/views/progress.css'
 
 const { t } = useI18n()
+const router = useRouter()
 const { currentLocale } = useLocale()
-const { goToAddMeal } = useAppNavigation()
+const { goToAddMeal, goToProfile } = useAppNavigation()
 const { user } = useAuth()
 const userId = computed(() => user.value?.id)
+const macrosTitleId = useId()
+const todayKey = formatLocalDateKey(new Date())
 
+const period = ref<ProgressPeriod>('week')
+const offset = ref(0)
+const selectedDate = ref<string | null>(null)
+
+const dates = computed(() => listPeriodLocalDates(period.value, offset.value))
 const profileQuery = useProfileQuery(userId)
-const weekQuery = useWeekDailyEntriesQuery(userId, DASHBOARD_WEEK_DAYS)
+const entriesQuery = useDailyEntriesRangeQuery(userId, dates)
 
-const dates = computed(() => listRecentLocalDates(DASHBOARD_WEEK_DAYS))
-const targetCalories = computed(() => profileQuery.data.value?.dailyCalories ?? null)
+const profile = computed(() => profileQuery.data.value ?? null)
+const targetCalories = computed(() => profile.value?.dailyCalories ?? null)
 
 const isLoading = computed(
   () =>
     (profileQuery.isPending.value && !profileQuery.isFetched.value) ||
-    (weekQuery.isPending.value && !weekQuery.isFetched.value),
+    (entriesQuery.isPending.value && !entriesQuery.isFetched.value),
 )
 
-const loadError = computed(() => Boolean(profileQuery.error.value ?? weekQuery.error.value))
+const loadError = computed(() => Boolean(profileQuery.error.value ?? entriesQuery.error.value))
 
-const stats = computed(() =>
-  buildProgressStats(
-    weekQuery.data.value ?? [],
-    dates.value,
-    targetCalories.value,
-    PROGRESS_TARGET_TOLERANCE,
-  ),
+const days = computed(() =>
+  buildProgressDays(entriesQuery.data.value ?? [], dates.value, targetCalories.value, PROGRESS_TARGET_TOLERANCE),
 )
 
-const points = computed(() => buildWeekCaloriePoints(weekQuery.data.value ?? [], dates.value))
+const stats = computed(() => buildProgressStats(days.value))
 
-const labels = computed(() => {
-  const format = new Intl.DateTimeFormat(currentLocale.value, { weekday: 'short' })
-  return dates.value.map((date) => format.format(parseLocalDateKey(date)))
+const macroTargets = computed(() => ({
+  protein: profile.value?.dailyProtein ?? null,
+  fat: profile.value?.dailyFat ?? null,
+  carbs: profile.value?.dailyCarbs ?? null,
+}))
+
+const rangeLabel = computed(() => {
+  const first = parseLocalDateKey(dates.value[0] ?? todayKey)
+  const last = parseLocalDateKey(dates.value[dates.value.length - 1] ?? todayKey)
+
+  if (period.value === 'month') {
+    return new Intl.DateTimeFormat(currentLocale.value, { month: 'long', year: 'numeric' }).format(first)
+  }
+
+  const full = new Intl.DateTimeFormat(currentLocale.value, { day: 'numeric', month: 'long' })
+  const startLabel =
+    first.getMonth() === last.getMonth()
+      ? new Intl.DateTimeFormat(currentLocale.value, { day: 'numeric' }).format(first)
+      : full.format(first)
+
+  return `${startLabel} – ${full.format(last)}`
 })
+
+watch(
+  days,
+  (list) => {
+    if (list.some((day) => day.date === selectedDate.value)) {
+      return
+    }
+
+    const today = list.find((day) => day.date === todayKey && day.status !== 'empty')
+    const lastLogged = [...list].reverse().find((day) => day.status !== 'empty')
+    selectedDate.value = (today ?? lastLogged)?.date ?? null
+  },
+  { immediate: true },
+)
+
+function selectPeriod(next: ProgressPeriod): void {
+  period.value = next
+  offset.value = 0
+}
+
+function openDay(date: string): void {
+  router.push({ name: ROUTE_NAMES.dashboard, query: { [DASHBOARD_DATE_QUERY]: date } })
+}
 </script>

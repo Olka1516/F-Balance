@@ -22,7 +22,6 @@
       <ProfileForm
         ref="profileFormRef"
         v-model="form"
-        :variant="PROFILE_FORM_VARIANT.onboarding"
       />
 
       <p
@@ -66,7 +65,6 @@ import AppLoader from '@/components/common/AppLoader.vue'
 import AppPageShell from '@/components/common/AppPageShell.vue'
 import ProfileForm from '@/components/profile/ProfileForm.vue'
 import { useAuth } from '@/composables/useAuth'
-import { PROFILE_FORM_VARIANT } from '@/constants/profile'
 import { ROUTE_NAMES } from '@/constants/routes'
 import { useProfileQuery, useUpsertProfileMutation } from '@/queries/profile'
 import { resolveProfileErrorI18nKey } from '@/utils/profileErrors'

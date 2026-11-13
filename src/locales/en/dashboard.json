@@ -1,21 +1,22 @@
 {
   "title": "Today",
-  "subtitle": "Daily calorie target, macros, and meals.",
   "addFood": "Add food",
-  "dayStrip": {
-    "aria": "Day picker",
-    "prevWeek": "Previous week",
-    "nextWeek": "Next week"
+  "dateNav": {
+    "aria": "Date picker",
+    "prev": "Previous day",
+    "next": "Next day",
+    "pick": "Pick a date",
+    "yesterday": "Yesterday"
   },
-  "progress": {
-    "title": "Today’s progress",
-    "ringAria": "Remaining calories for the selected day"
+  "hero": {
+    "aria": "Day summary",
+    "left": "kcal left",
+    "over": "kcal over target",
+    "ringAria": "Eaten {consumed} of {target} kcal"
   },
   "summary": {
     "target": "Target",
     "consumed": "Eaten",
-    "remaining": "Left",
-    "over": "Over",
     "kcal": "kcal",
     "noTarget": "Set a daily target in Profile"
   },
@@ -24,35 +25,51 @@
     "fat": "Fat",
     "carbs": "Carbs",
     "grams": "{value} g",
-    "ofTarget": "{value} / {target} g"
-  },
-  "chart": {
-    "tabs": {
-      "week": "Week"
-    },
-    "consumed": "Eaten",
-    "target": "Target",
-    "weekAria": "Bar chart of calories eaten over the last 7 days"
+    "ofTarget": "{value} / {target} g",
+    "aria": "Protein, fat and carbs for the day"
   },
   "meals": {
     "title": "Meals",
     "edit": "Edit meal",
     "macros": "{calories} kcal · P {protein} · F {fat} · C {carbs}",
     "macrosShort": "P {protein} · F {fat} · C {carbs}",
-    "servings": "×{count}"
+    "servings": "×{count}",
+    "empty": "Nothing added yet"
   },
   "errors": {
     "load": "Could not load progress. Try again"
   },
   "progressPage": {
     "title": "Progress",
-    "intro": "Your last 7 days at a glance.",
-    "avgCalories": "Average per day",
-    "avgMacros": "Average macros",
-    "daysOnTarget": "Days within target",
-    "daysOnTargetValue": "{count} of {total}",
-    "loggedDays": "Days with entries",
-    "emptyTitle": "No entries this week yet",
+    "periods": {
+      "week": "Week",
+      "month": "Month"
+    },
+    "periodAria": "Period",
+    "rangeAria": "Period picker",
+    "prev": "Previous period",
+    "next": "Next period",
+    "summaryAria": "Period summary",
+    "avgCalories": "Daily average",
+    "targetShort": "target {value}",
+    "daysOnTargetValue": "{count} of {total} days within target",
+    "chartTitle": "Calories by day",
+    "chartAria": "Bar chart of calories per day against your target",
+    "targetLine": "Dashed line — your target of {value} kcal",
+    "openDay": "Open day",
+    "dayEmpty": "Nothing logged on this day",
+    "dayOnTarget": "Within target",
+    "dayOver": "{value} kcal over target",
+    "dayUnder": "{value} kcal under target",
+    "avgMacros": "Average protein, fat and carbs",
+    "weightTitle": "Weight",
+    "kg": "{value} kg",
+    "updateWeight": "Update weight in Profile",
+    "weightMissing": "Add your weight in Profile",
+    "weightNoTarget": "You can set a target weight in Profile",
+    "weightReached": "Target weight reached",
+    "weightToTarget": "{value} kg to go (target {target} kg)",
+    "emptyTitle": "Nothing logged in this period yet",
     "emptyMessage": "Add a meal and your progress will show up here."
   },
   "nextMeal": {

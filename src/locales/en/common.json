@@ -32,7 +32,6 @@
   },
   "profile": {
     "title": "Profile",
-    "subtitle": "Update calorie and macro targets. Optional fields can stay empty.",
     "save": "Save",
     "saving": "Saving…",
     "success": "Profile saved",
@@ -44,11 +43,10 @@
       "target": "Daily calories",
       "macros": "Daily macros",
       "sex": "Sex",
-      "pace": "Pace"
+      "pace": "Pace",
+      "settings": "Settings"
     },
     "fields": {
-      "goal": "Goal",
-      "activityLevel": "Activity",
       "weight": "Weight (kg)",
       "height": "Height (cm)",
       "age": "Age",
@@ -56,12 +54,14 @@
       "dailyProtein": "Protein (g)",
       "dailyFat": "Fat (g)",
       "dailyCarbs": "Carbs (g)",
-      "targetWeight": "Target weight (kg)"
+      "targetWeight": "Target weight (kg)",
+      "targetWeightShort": "Target weight",
+      "weightShort": "Weight",
+      "heightShort": "Height"
     },
     "placeholders": {
-      "goal": "Choose a goal",
-      "activityLevel": "Choose activity",
-      "optional": "Optional"
+      "optional": "Optional",
+      "empty": "—"
     },
     "goals": {
       "lose": "Lose",
@@ -107,7 +107,27 @@
       "apply": "Use these numbers",
       "total": "{value} kcal",
       "how": "How we calculated"
-    }
+    },
+    "units": {
+      "kg": "kg",
+      "cm": "cm",
+      "years": "y"
+    },
+    "activityHints": {
+      "sedentary": "Desk job, no workouts",
+      "light": "1–2 workouts a week",
+      "moderate": "3–4 workouts a week",
+      "active": "5–6 workouts a week",
+      "very_active": "Daily training or physical work"
+    },
+    "decrease": "Decrease: {field}",
+    "increase": "Increase: {field}",
+    "targetModes": {
+      "auto": "Automatic",
+      "manual": "Manual"
+    },
+    "unsaved": "You have unsaved changes",
+    "discard": "Discard"
   },
   "nav": {
     "label": "Main navigation",

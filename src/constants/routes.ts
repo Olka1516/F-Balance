@@ -59,3 +59,8 @@ export const APP_NAV_ITEMS: ReadonlyArray<{
   { name: ROUTE_NAMES.progress, labelKey: 'common.nav.progress', icon: 'progress' },
   { name: ROUTE_NAMES.profile, labelKey: 'common.nav.profile', icon: 'profile' },
 ]
+
+/**
+ * Dashboard query parameter that opens a specific day (YYYY-MM-DD).
+ */
+export const DASHBOARD_DATE_QUERY = 'date'

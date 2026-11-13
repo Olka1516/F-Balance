@@ -4,20 +4,51 @@
 @import './themes/winter.css';
 
 :root {
-  --color-primary: #2d8f6f;
-  --color-primary-hover: #247a5f;
-  --color-bg: #f8f9fa;
+  --color-primary: #2e9b46;
+  --color-primary-hover: #247e38;
+  --color-primary-bright: #4cc75a;
+  --color-bg: #f3f4ef;
   --color-surface: #ffffff;
-  --color-text: #1a1a1a;
-  --color-text-muted: #6b7280;
-  --color-accent: #6366f1;
-  --color-border: #e5e7eb;
-  --color-error: #c94c4c;
-  --color-success: #2d8f6f;
-  --color-macro-protein: #c45c6a;
-  --color-macro-fat: #d4a017;
-  --color-macro-carbs: #3a7ca5;
-  --font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --color-surface-muted: #eef0ea;
+  --color-text: #1d2a20;
+  --color-text-muted: #4f5c52;
+  --color-accent: #2f6fa8;
+  --color-border: #e2e5dc;
+  --color-error: #b3261e;
+  --color-success: #2e9b46;
+  --color-macro-protein: #d0566b;
+  --color-macro-fat: #e0a21a;
+  --color-macro-carbs: #3a8fd0;
+  --color-meal-breakfast: #fce7c4;
+  --color-meal-lunch: #d6f0d2;
+  --color-meal-dinner: #e3e6f7;
+  --color-meal-snack: #f8dcd7;
+  --color-chart-on-target: #b8dfbf;
+  --color-chart-off-target: #f2c3a4;
+  --color-chart-empty: var(--color-border);
+  --color-hero-from: #2e9b46;
+  --color-hero-to: #3fae55;
+  --color-hero-glow-warm: #e9b48a;
+  --color-hero-glow-cool: #5cc066;
+  --color-on-hero: #ffffff;
+  --color-camera-bg: #0f1a12;
+  --color-on-dark: #ffffff;
+  --color-on-dark-soft: color-mix(in srgb, var(--color-on-dark) 16%, transparent);
+  --color-on-dark-muted: color-mix(in srgb, var(--color-on-dark) 75%, transparent);
+  --color-scrim: color-mix(in srgb, var(--color-camera-bg) 55%, transparent);
+  --color-button-primary: var(--color-text);
+  --color-button-primary-hover: color-mix(in srgb, var(--color-text) 85%, var(--color-surface));
+  --color-on-hero-track: color-mix(in srgb, var(--color-on-hero) 30%, transparent);
+  --gradient-hero:
+    radial-gradient(120% 80% at 20% 15%, var(--color-hero-glow-warm) 0%, transparent 45%),
+    radial-gradient(90% 90% at 85% 30%, var(--color-hero-glow-cool) 0%, transparent 60%),
+    linear-gradient(180deg, var(--color-hero-from) 0%, var(--color-hero-to) 100%);
+  --gradient-hero-fade:
+    radial-gradient(120% 80% at 20% 15%, var(--color-hero-glow-warm) 0%, transparent 45%),
+    radial-gradient(90% 90% at 85% 30%, var(--color-hero-glow-cool) 0%, transparent 60%),
+    linear-gradient(180deg, var(--color-hero-from) 0%, var(--color-hero-to) 70%, var(--color-bg) 100%);
+  --font-family: 'Onest', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-numeric: 'Unbounded', var(--font-family);
   --touch-target-min: 44px;
   --app-tabbar-height: 4rem;
   --app-sidebar-width: 15rem;
@@ -26,11 +57,11 @@
   --space-md: 1rem;
   --space-lg: 1.5rem;
   --space-xl: 2rem;
-  --radius-sm: 2px;
-  --radius-md: 4px;
-  --radius-lg: 6px;
-  --radius-xl: 8px;
-  --radius-full: 4px;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 18px;
+  --radius-xl: 24px;
+  --radius-full: 999px;
   --shadow-sm: 0 1px 2px color-mix(in srgb, var(--color-text) 8%, transparent);
   --shadow-md: 0 1px 4px color-mix(in srgb, var(--color-text) 10%, transparent);
   --shadow-lg: 0 2px 8px color-mix(in srgb, var(--color-text) 12%, transparent);

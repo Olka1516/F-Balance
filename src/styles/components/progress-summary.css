@@ -1,0 +1,73 @@
+.progress-summary {
+  background: var(--gradient-hero);
+  border-radius: var(--radius-xl);
+  color: var(--color-on-hero);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+  padding: var(--space-lg);
+}
+
+.progress-summary__top {
+  align-items: flex-end;
+  display: flex;
+  gap: var(--space-md);
+  justify-content: space-between;
+}
+
+.progress-summary__average {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+}
+
+.progress-summary__label,
+.progress-summary__target,
+.progress-summary__adherence-text {
+  font-size: 0.875rem;
+  font-weight: 500;
+  margin: 0;
+}
+
+.progress-summary__value {
+  font-family: var(--font-numeric);
+  font-size: 2.25rem;
+  font-weight: 700;
+  line-height: 1.1;
+}
+
+.progress-summary__unit {
+  font-family: var(--font-family);
+  font-size: 0.9375rem;
+  font-weight: 500;
+}
+
+.progress-summary__adherence {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.progress-summary__adherence-text {
+  font-weight: 600;
+}
+
+.progress-summary__dots {
+  display: flex;
+  gap: 4px;
+}
+
+.progress-summary__dot {
+  background: var(--color-on-hero-track);
+  border-radius: var(--radius-full);
+  flex: 1;
+  height: 0.5rem;
+}
+
+.progress-summary__dot--onTarget {
+  background: var(--color-on-hero);
+}
+
+.progress-summary__dot--off {
+  background: color-mix(in srgb, var(--color-on-hero) 60%, transparent);
+}

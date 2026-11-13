@@ -34,9 +34,9 @@ export const FOOD_SOURCE_AI = 'ai' as const
 export const FOOD_SEARCH_DEFAULT_AMOUNT_G = 100
 
 /**
- * Add Food entry modes: search API, AI estimate, or manual macros.
+ * Add Food entry modes: in-app camera, text or voice description, product search, saved meals, or manual macros.
  */
-export const ADD_MEAL_ENTRY_TABS = ['ai', 'saved', 'search', 'manual'] as const
+export const ADD_MEAL_ENTRY_TABS = ['photo', 'text', 'search', 'saved', 'manual'] as const
 
 /**
  * Add Food entry tab identifier.
@@ -46,7 +46,7 @@ export type AddMealEntryTab = (typeof ADD_MEAL_ENTRY_TABS)[number]
 /**
  * Default Add Food tab for new meals.
  */
-export const ADD_MEAL_ENTRY_TAB_DEFAULT: AddMealEntryTab = 'ai'
+export const ADD_MEAL_ENTRY_TAB_DEFAULT: AddMealEntryTab = 'photo'
 
 /**
  * Minimum grams for a meal amount.
@@ -104,14 +104,34 @@ export const MEALS_QUERY_KEY = ['meals'] as const
 export const DAILY_ENTRIES_QUERY_KEY = ['daily-entries'] as const
 
 /**
- * Tabs on the Saved meals list.
+ * Filters on the Saved meals list.
  */
-export const SAVED_MEAL_TABS = ['recent', 'favorites', 'all'] as const
+export const SAVED_MEAL_FILTERS = ['all', 'favorites'] as const
 
 /**
- * Saved meals list tab.
+ * Saved meals list filter.
  */
-export type SavedMealTab = (typeof SAVED_MEAL_TABS)[number]
+export type SavedMealFilter = (typeof SAVED_MEAL_FILTERS)[number]
+
+/**
+ * Sort orders on the Saved meals list: recently logged first, recently edited first, or lightest first.
+ */
+export const SAVED_MEAL_SORTS = ['recent', 'newest', 'calories'] as const
+
+/**
+ * Saved meals list sort order.
+ */
+export type SavedMealSort = (typeof SAVED_MEAL_SORTS)[number]
+
+/**
+ * How long a deleted meal can still be restored with "Undo" before it is removed.
+ */
+export const SAVED_MEAL_UNDO_MS = 5_000
+
+/**
+ * How long the "added" tick stays on a meal card.
+ */
+export const SAVED_MEAL_ADDED_FLASH_MS = 2_000
 
 /**
  * How many days of diary history feed the Recent tab.

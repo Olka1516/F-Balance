@@ -71,3 +71,23 @@ export const AI_PHOTO_MAX_OUTPUT_BYTES = 800_000
  * Default meal name when AI estimate has no description.
  */
 export const AI_ESTIMATE_DEFAULT_NAME = 'AI estimate'
+
+/**
+ * Camera used by default for food photos (the rear camera on phones).
+ */
+export const AI_CAMERA_DEFAULT_FACING: 'environment' | 'user' = 'environment'
+
+/**
+ * Preferred camera stream width; the frame is downscaled again before upload.
+ */
+export const AI_CAMERA_IDEAL_WIDTH = 1280
+
+/**
+ * Image format and quality of a frame captured from the in-app camera.
+ */
+export const AI_CAMERA_CAPTURE_MIME = 'image/jpeg'
+
+/**
+ * JPEG quality of a frame captured from the in-app camera.
+ */
+export const AI_CAMERA_CAPTURE_QUALITY = 0.9

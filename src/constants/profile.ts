@@ -151,25 +151,21 @@ export const FAT_SHARE_MIN = 0.25
 export const PROFILE_QUERY_KEY = ['profile'] as const
 
 /**
- * Visual layouts for the shared profile form.
+ * Step size and the value a blank field jumps to for the −/+ body steppers on Profile.
  */
-export const PROFILE_FORM_VARIANTS = ['default', 'onboarding'] as const
+export const PROFILE_STEPPERS = {
+  weight: { step: 0.5, start: 65 },
+  targetWeight: { step: 0.5, start: 60 },
+  height: { step: 1, start: 168 },
+  age: { step: 1, start: 30 },
+} as const
 
 /**
- * Profile form visual layout variant.
+ * Daily target modes on Profile: follow the calculation, or edit the numbers by hand.
  */
-export type ProfileFormVariant = (typeof PROFILE_FORM_VARIANTS)[number]
+export const PROFILE_TARGET_MODES = ['auto', 'manual'] as const
 
 /**
- * Named profile form layout shortcuts.
+ * Daily target mode on Profile.
  */
-export const PROFILE_FORM_VARIANT = {
-  default: 'default',
-  onboarding: 'onboarding',
-} as const satisfies Record<string, ProfileFormVariant>
-
-/**
- * Default profile form layout.
- */
-export const PROFILE_FORM_DEFAULT_VARIANT: ProfileFormVariant =
-  PROFILE_FORM_VARIANT.default
+export type ProfileTargetMode = (typeof PROFILE_TARGET_MODES)[number]
