@@ -301,24 +301,51 @@ function portionString(perHundred: number | null, amountGrams: number): string {
 }
 
 /**
- * Rescales portion nutrition strings when the eaten grams change, keeping the same density.
+ * Portion nutrition at a known weight, used as the fixed reference when the weight changes.
  */
-export function rescalePortionValues(
-  values: MealFormValues,
-  fromGrams: number,
+export type PortionBasis = Pick<MealFormValues, 'calories' | 'protein' | 'fat' | 'carbs'> & {
+  grams: number
+}
+
+/**
+ * Captures the current portion as a scaling reference, or null when the weight is not positive.
+ */
+export function capturePortionBasis(values: MealFormValues): PortionBasis | null {
+  const grams = Number(values.amount)
+
+  if (!Number.isFinite(grams) || grams <= 0) {
+    return null
+  }
+
+  return {
+    grams,
+    calories: values.calories,
+    protein: values.protein,
+    fat: values.fat,
+    carbs: values.carbs,
+  }
+}
+
+/**
+ * Portion nutrition for a new weight at the same density as the reference portion:
+ * value = reference value × new grams ÷ reference grams. Always computed from the
+ * reference, never from the previous keystroke, so typing a weight does not compound.
+ */
+export function scalePortionFromBasis(
+  basis: PortionBasis,
   toGrams: number,
 ): Pick<MealFormValues, 'calories' | 'protein' | 'fat' | 'carbs'> {
   const scale = (value: string) => {
     const parsed = Number(value)
     return value.trim() && Number.isFinite(parsed)
-      ? String(roundNutrition((parsed * toGrams) / fromGrams))
+      ? String(roundNutrition((parsed * toGrams) / basis.grams))
       : value
   }
 
   return {
-    calories: scale(values.calories),
-    protein: scale(values.protein),
-    fat: scale(values.fat),
-    carbs: scale(values.carbs),
+    calories: scale(basis.calories),
+    protein: scale(basis.protein),
+    fat: scale(basis.fat),
+    carbs: scale(basis.carbs),
   }
 }

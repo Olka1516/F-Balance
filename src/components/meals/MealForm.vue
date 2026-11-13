@@ -45,7 +45,7 @@
         :readonly="hasAllMacros"
       />
     </div>
-    <p v-if="scaleWithAmount" class="meal-form__hint">
+    <p class="meal-form__hint">
       {{ t('meals.fields.scaleHint') }}
     </p>
     <p v-if="per100Calories != null" class="meal-form__hint">
@@ -120,7 +120,12 @@ import {
 } from '@/constants/meals'
 import { APP_INPUT_TYPE } from '@/constants/ui'
 import type { MealFormValues } from '@/types'
-import { isMealType, rescalePortionValues } from '@/utils/mealForm'
+import {
+  capturePortionBasis,
+  isMealType,
+  scalePortionFromBasis,
+  type PortionBasis,
+} from '@/utils/mealForm'
 import { caloriesFromMacros, toPerHundredGrams } from '@/utils/macros'
 import '@/styles/components/meal-form.css'
 
@@ -167,13 +172,6 @@ function parseMacroGrams(value: string): number | null {
 
   return parsed
 }
-
-const props = withDefaults(
-  defineProps<{
-    scaleWithAmount?: boolean
-  }>(),
-  { scaleWithAmount: false },
-)
 
 const showMacros = ref(hasAnyMacro())
 
@@ -222,22 +220,50 @@ watch(
   },
 )
 
-watch(
-  () => ({ values: form.value, amount: form.value.amount }),
-  (next, previous) => {
-    const toGrams = Number(next.amount)
-    const fromGrams = Number(previous.amount)
+let basis: PortionBasis | null = null
+let lastScaled = ''
+let lastScaledMacros = ''
 
-    if (
-      next.values !== previous.values ||
-      !props.scaleWithAmount ||
-      !(toGrams > 0) ||
-      !(fromGrams > 0)
-    ) {
+function macrosKey(): string {
+  const { protein, fat, carbs } = form.value
+  return [protein, fat, carbs].join('|')
+}
+
+function nutritionKey(): string {
+  const { calories, protein, fat, carbs } = form.value
+  return [calories, protein, fat, carbs].join('|')
+}
+
+watch(
+  () => form.value,
+  () => {
+    basis = capturePortionBasis(form.value)
+    lastScaled = ''
+    lastScaledMacros = ''
+  },
+  { immediate: true },
+)
+
+watch(nutritionKey, (key) => {
+  const caloriesDerivedFromScaledMacros = hasAllMacros.value && macrosKey() === lastScaledMacros
+
+  if (key !== lastScaled && !caloriesDerivedFromScaledMacros) {
+    basis = capturePortionBasis(form.value)
+  }
+})
+
+watch(
+  () => form.value.amount,
+  (amount) => {
+    const toGrams = Number(amount)
+
+    if (!basis || !(toGrams > 0)) {
       return
     }
 
-    Object.assign(form.value, rescalePortionValues(form.value, fromGrams, toGrams))
+    Object.assign(form.value, scalePortionFromBasis(basis, toGrams))
+    lastScaled = nutritionKey()
+    lastScaledMacros = macrosKey()
   },
 )
 

@@ -56,7 +56,6 @@
         <MealForm
           ref="mealFormRef"
           v-model="form"
-          :scale-with-amount="isEditMode || foodSource !== FOOD_SOURCE_MANUAL"
         />
 
         <p v-if="formError" class="app-page__message app-page__message--error" role="alert">
